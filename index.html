@@ -409,6 +409,36 @@ const VARS=[
 ['streak','Hot streak','Capture a piece and you move again straight away. The bonus move cannot chain, so you never get more than two moves in a row.'],
 ['quake','Earthquake','Every 10 moves the ground shakes and two random pieces swap places. If that puts a King in danger, the shaken side pays for it.']];
 const vrName=v=>VARS.some(x=>x[0]===v)?v:'classic';
+
+/* ===== address bar follows the game mode: /portals, /rising-lava, /portals/fog-of-war ===== */
+const VR_SLUG={diag:'corner-check',full:'close-quarters',hill:'king-of-the-hill',bounty:'bounty-hunt',shuffle:'shuffle',swords:'sword-storm',sharks:'shark-tank',portal:'portals',lava:'rising-lava',streak:'hot-streak',quake:'earthquake'};
+const FOG_SLUG='fog-of-war';
+const URL_HASHMODE=!/^https?:$/.test(location.protocol);/* file:// and similar cannot change the path, so use #/portals there */
+function urlParseSegs(segs){let vr='classic',fog=false;for(const g of segs){const k=Object.keys(VR_SLUG).find(x=>VR_SLUG[x]===g);if(k)vr=k;else if(g===FOG_SLUG)fog=true}return{vr,fog}}
+const URL_SEGS=(URL_HASHMODE?location.hash.replace(/^#\/?/,''):location.pathname).split('/').filter(Boolean).map(x=>x.toLowerCase());
+const URL_KNOWN=g=>g===FOG_SLUG||Object.values(VR_SLUG).includes(g);
+const URL_BASE=(()=>{if(URL_HASHMODE)return location.pathname;const a=location.pathname.split('/').filter(Boolean);while(a.length&&URL_KNOWN(a[a.length-1].toLowerCase()))a.pop();if(a.length&&/\./.test(a[a.length-1]))a.pop();return'/'+a.join('/')+(a.length?'/':'')})();
+const URL_INIT=urlParseSegs(URL_HASHMODE?URL_SEGS:URL_SEGS.slice(-2));
+const urlRoot=()=>URL_BASE+location.search;
+let urlReady=false,urlPushNext=false;
+function urlBuild(vr,fog){const p=[];if(vr!=='classic'&&VR_SLUG[vr])p.push(VR_SLUG[vr]);if(fog)p.push(FOG_SLUG);
+ if(URL_HASHMODE)return location.pathname+location.search+(p.length?'#/'+p.join('/'):'');
+ return URL_BASE+p.join('/')+location.search+location.hash}
+function urlTitle(vr,fog){const n=[];if(vr!=='classic'){const x=VARS.find(y=>y[0]===vr);if(x)n.push(x[1])}if(fog)n.push('Fog of war');return n.length?'Checks - '+n.join(' + '):'Checks'}
+function urlSync(){if(!urlReady)return;try{
+ if(URL_HASHMODE&&/^#m=/.test(location.hash))return;
+ const ok=mnOK(),vr=ok?VR:'classic',fog=ok&&FOG,want=urlBuild(vr,fog),cur=location.pathname+location.search+location.hash;
+ document.title=urlTitle(vr,fog);
+ if(want!==cur){history[urlPushNext?'pushState':'replaceState'](null,'',want)}
+ urlPushNext=false}catch(e){}}
+function urlApply(r){try{
+ if(!mnOK())return;
+ if(mode==='online'&&(!amHost||(log.length&&!over))){urlSync();return}
+ if(r.vr===VR&&r.fog===FOG)return;
+ VR=r.vr;FOG=r.fog;FH=false;if((VR!=='classic'||FOG)&&ranked){ranked=false;rkMsg='Ranked turned off. It cannot be played with Fog of War or game variants.'}
+ VSEED=vrSeed();init();if(mode==='online'&&room)room.emit('newgame',{lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED});renderMode();menuSync()}catch(e){}}
+addEventListener('load',()=>{urlReady=true;urlApply(URL_INIT);urlSync()});
+addEventListener('popstate',()=>{if(!urlReady)return;urlApply(urlParseSegs(URL_HASHMODE?location.hash.replace(/^#\/?/,'').split('/').filter(Boolean).map(x=>x.toLowerCase()):location.pathname.split('/').filter(Boolean).slice(-2).map(x=>x.toLowerCase())));urlSync()});
 function fogUI(){return''}
 function fogBind(){}
 const mnOK=()=>!PZ&&!tut&&!tour&&!pvp&&(mode==='local'||mode==='bot'||(mode==='online'&&!!room&&lcap===2));
@@ -425,10 +455,10 @@ const vrRule=()=>VRA==='diag'?' VARIANT: here an enemy piece on a diagonal corne
 function mnGuard(what){if(mode==='online'&&(!amHost||(log.length&&!over))){tmToast('Only the host can change '+what+', and only at the start of a game.');return false}return true}
 function fogToggle(){if(!mnOK())return;if(!mnGuard('Fog of war'))return;
  FOG=!FOG;FH=false;if(FOG&&ranked){ranked=false;rkMsg='Ranked turned off. It cannot be played with Fog of War.'}
- VSEED=vrSeed();init();if(mode==='online'&&room)room.emit('newgame',{lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED});renderMode();menuSync()}
+ VSEED=vrSeed();init();if(mode==='online'&&room)room.emit('newgame',{lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED});urlPushNext=true;renderMode();menuSync();urlSync();urlPushNext=false}
 function vrSet(v){if(!mnOK())return;if(!mnGuard('the variant')){menuSync();return}
  VR=vrName(v);FH=false;if(VR!=='classic'&&ranked){ranked=false;rkMsg='Ranked turned off. It cannot be played with game variants.'}
- VSEED=vrSeed();init();if(mode==='online'&&room)room.emit('newgame',{lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED});renderMode();menuSync()}
+ VSEED=vrSeed();init();if(mode==='online'&&room)room.emit('newgame',{lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED});urlPushNext=true;renderMode();menuSync();urlSync();urlPushNext=false}
 const vrRingOf=j=>Math.min(j>>3,j&7,7-(j>>3),7-(j&7));
 const vrRingsAt=n=>VRA==='lava'?Math.min(2,Math.floor(n/16)):0;
 function vrRnd(seed){let a=seed|0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -478,7 +508,7 @@ function menuSync(){const b=document.getElementById('mnFog');if(!b)return;
  L.querySelectorAll('button').forEach(x=>x.onclick=()=>mnPick(x.dataset.v));
  const cur=VARS.find(x=>x[0]===VR);
  nt.textContent=ok?(mode==='online'&&!amHost?'The host picks the game modes.':(VR!=='classic'?cur[1]+': '+cur[2]:'')):'Game modes work in 2 players, Vs bot and private online games.';
- try{rulesDraw()}catch(e){}
+ try{rulesDraw()}catch(e){}urlSync();
  {const bg=document.getElementById('mnBadge'),nm=[];if(ok){if(VR!=='classic')nm.push(VARS.find(y=>y[0]===VR)[1]);if(FOG)nm.push('Fog of war')}
   bg.style.display=nm.length?'':'none';bg.textContent='Game mode: '+nm.join(' + ');if(!bg.dataset.b){bg.dataset.b='1';bg.onclick=()=>mnIntro(true)}}
  if(document.getElementById('mnM'))mnDraw();
@@ -1208,7 +1238,35 @@ const PZD=[["...........n...s.......ks...........s......H.....K......F....S..",3
 const pzKey=()=>qYmd(new Date());
 const pzDayNum=k=>{const a=k.split('-').map(Number);return Math.floor(Date.UTC(a[0],a[1]-1,a[2])/864e5)};
 const pzMir=i=>(i>>3)*8+7-(i&7);
-function pzMake(key){const dn=pzDayNum(key),wd=(dn+3)%7,wk=Math.floor((dn+3)/7),P3=PZD.filter(e=>e[1]===3),P4=PZD.filter(e=>e[1]===4),hard=wd>=4&&P4.length>0,pool=hard?P4:P3,N=pool.length,
+/* ---- daily puzzle generator: builds a fresh, solver-verified position from the date (same for everyone) ---- */
+function pzRng(seed){let a=seed>>>0;return()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
+function pzGen(key,n,maxTry){
+ const dn=pzDayNum(key),R=pzRng(dn*2654435761+n*97+12345),ri=m=>Math.floor(R()*m),KD=['s','n','f','h'];
+ const sv=PZDL;PZDL=0;
+ try{for(let t=0;t<maxTry;t++){
+  const b=Array(64).fill(null),free=()=>{for(let g=0;g<200;g++){const i=ri(64);if(!b[i])return i}return -1};
+  const bk=ri(64);b[bk]={t:'b',k:'king'};
+  const near=()=>{for(let g=0;g<60;g++){const r=(bk>>3)+ri(7)-3,c=(bk&7)+ri(7)-3;if(r<0||r>7||c<0||c>7)continue;const i=r*8+c;if(!b[i])return i}return free()};
+  const wk=free();if(wk<0)continue;b[wk]={t:'w',k:'king'};
+  const nw=3+ri(3),nb=3+ri(3);let bad=false;
+  const put=(side,cnt)=>{for(let q=0;q<cnt;q++){const i=(side==='b'&&R()<.6)?near():free();if(i<0||b[i]){bad=true;return}const kk=KD[ri(4)];if(kk==='s'&&(side==='w'?(i>>3)<1:(i>>3)>6)){bad=true;return}b[i]={t:side,k:RP[kk]}}};
+  put('b',nb);if(bad)continue;put('w',nw);if(bad)continue;
+  if(inCheck(b,'w')||inCheck(b,'b'))continue;
+  if(!pzMoves(b,'b').length||!pzMoves(b,'w').length)continue;
+  if(pzWins1(b,'w').length)continue;
+  PZTT.clear();
+  let m;try{m=pzForce(b,n,'w')}catch(e){continue}
+  if(!m)continue;
+  if(pzForce(b,n-1,'w'))continue;
+  return{b,sol:[m[0],m[1]]}
+ }}finally{PZDL=sv}
+ return null}
+
+function pzMake(key){let c=null;try{const o=JSON.parse(localStorage.getItem('checks-pzgen')||'null');if(o&&o.key===key&&o.b&&o.b.length===64)c=o}catch(e){}
+ if(!c){let g=null;try{g=pzGen(key,3,4000)}catch(e){g=null}if(g){c={key,b:g.b,sol:g.sol};try{localStorage.setItem('checks-pzgen',JSON.stringify(c))}catch(e){}}}
+ if(c)return{key,n:3,b:c.b.map(x=>x?{t:x.t,k:x.k}:null),sol:c.sol,done:false,lv:2};
+ return pzMakeOld(key)}
+function pzMakeOld(key){const dn=pzDayNum(key),wd=(dn+3)%7,wk=Math.floor((dn+3)/7),P3=PZD.filter(e=>e[1]===3),P4=PZD.filter(e=>e[1]===4),hard=wd>=4&&P4.length>0,pool=hard?P4:P3,N=pool.length,
   cnt=hard?wk*3+(wd-4):wk*4+wd,mul=N%41?41:1,idx=(((cnt*mul)%N)+N)%N,mir=Math.floor(cnt/N)%2===1,e=pool[idx],b=Array(64).fill(null);
  for(let i=0;i<64;i++){const c=e[0][i];if(c!=='.')b[mir?pzMir(i):i]={t:c===c.toLowerCase()?'b':'w',k:RP[c.toLowerCase()]}}
  return{key,n:e[1],b,sol:[mir?pzMir(e[2]):e[2],mir?pzMir(e[3]):e[3]],done:false,lv:2}}
@@ -1425,7 +1483,7 @@ document.getElementById('botv').onclick=function(){BV=!BV;BVF=false;bvUI();try{l
  if(!BV){try{speechSynthesis.cancel()}catch(e){}}else{bvPick();if(mode==='bot')bvSay("Let's play.",true)}};
 
 document.getElementById('again').onclick=()=>{if(pvpR){pvpR=false;leaveLobby();mmStart(true);return}again()};
-document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>{const m=b.dataset.m;let w=null;try{w=window.open(urlRoot()+'#m='+m,'_blank')}catch(e){}if(!w)setMode(m)});addEventListener('load',()=>{const h=/^#m=(local|bot|online|tutor)$/.exec(location.hash);if(h){setTimeout(()=>{try{history.replaceState(null,'',location.href.split('#')[0])}catch(e){}setMode(h[1])},0)}});
 document.getElementById('setlim').onclick=()=>{if(pvp)return;if(rkLive()){askForfeit(()=>{rkForfeitLive();document.getElementById('setlim').onclick()});return}limit=Math.max(0,Math.min(180,Math.floor(+document.getElementById('lim').value)||0));rkForfeitLive();if(ranked&&limit<=7){ranked=false;rkMsg='Ranked turned off. It needs a timer over 7 minutes.'}document.getElementById('new').onclick();renderMode()};
 const fmt=ms=>{const s=Math.max(0,Math.ceil(ms/1000));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 setInterval(()=>{const c=document.getElementById('clock');if(!limit){c.textContent='No time limit';return}if(over)return;
@@ -2290,7 +2348,7 @@ document.getElementById('frb').onclick=frOpen;frStart();setInterval(()=>{if(!doc
 /* ===== auto-update: checks the site for a new version every minute. Reloads when you are not in the middle of a game, otherwise shows a banner. ===== */
 (function(){
  if(!/^https?:/.test(location.protocol))return;
- const url=location.origin+location.pathname;let base=null,pending=false,bn=null;
+ const url=location.origin+urlRoot();let base=null,pending=false,bn=null;
  const sig=async()=>{const r=await fetch(url+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;const t=await r.text();let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return h+':'+t.length};
  const busy=()=>{try{return !!(mm||room||pvp||peerBusy||(typeof tut!=='undefined'&&tut)||(typeof tour!=='undefined'&&tour)||(typeof over!=='undefined'&&!over&&log&&log.length))}catch(e){return false}};
  const banner=()=>{if(bn)return;bn=document.createElement('div');bn.style.cssText='position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99999;background:#222;color:#fff;padding:10px 14px;border-radius:10px;font:14px system-ui,sans-serif;box-shadow:0 4px 16px #0006;display:flex;gap:10px;align-items:center';bn.innerHTML='<span>A new update is available. It will refresh when your game ends.</span>';const b=document.createElement('button');b.textContent='Refresh now';b.style.cssText='padding:4px 10px;border-radius:6px;border:0;cursor:pointer';b.onclick=()=>location.reload();bn.appendChild(b);document.body.appendChild(bn)};
