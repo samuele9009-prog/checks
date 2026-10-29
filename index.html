@@ -1861,10 +1861,16 @@ async function acSave(force,retry){if(!ACC||acBusy||!(CLOUD_URL||SB_URL))return'
  catch(e){if(e.st===409&&e.j&&!retry){ACC.v=e.j.v;acStore();acBusy=false;
    if(confirm('Another device saved newer progress. OK = keep THIS device\'s progress (overwrites the other). Cancel = load the other one here.'))return acSave(true,1);
    try{const l=await acApi('load',{u:ACC.u,h:ACC.h});await acApply(l.d,ACC.k);ACC.v=l.v;acStore();location.reload()}catch(x){return x.message}return''}
-  return e.message||'Could not save.'}
+  if(acIsGone(e)){acBusy=false;acGone();return''}
+  return netErr(e)}
  finally{acBusy=false}}
+let acGoneOn=false;
+const acIsGone=e=>{const m=(e&&e.j&&e.j.e)||'';return!!m&&/wrong|no such|not found|unknown|exist|invalid|incorrect/i.test(m)&&!/too many|locked|wait|later|version|newer/i.test(m)&&!(e.st===409)};
+function acGone(){if(!ACC||acGoneOn)return;acGoneOn=true;const u=ACC.u;try{localStorage.removeItem('checks-acct')}catch(x){}ACC=null;
+ const o=document.createElement('div');o.className='modal';o.style.zIndex=400;o.innerHTML='<div class="card acc" role="alertdialog" aria-modal="true"><div class="acHd"><div class="acIc">'+IC_USER+'</div><h2>Logged out</h2><p>The account <b>'+esc(u)+'</b> was deleted or its password was changed, so you have been logged out. Your progress on this device is still here.</p></div><button class="b1 acPri" id="agOk">OK</button></div>';
+ document.body.appendChild(o);o.querySelector('#agOk').onclick=()=>location.reload();o.querySelector('#agOk').focus()}
 async function acCheck(){if(!ACC||!(CLOUD_URL||SB_URL))return;try{const j=await acApi('ver',{u:ACC.u,h:ACC.h});if(j.v<=ACC.v)return;
- if(confirm('Your account has newer progress from another device. OK = load it here (replaces this device). Cancel = keep this device\'s progress.')){const l=await acApi('load',{u:ACC.u,h:ACC.h});await acApply(l.d,ACC.k);ACC.v=l.v;acStore();location.reload()}else{ACC.v=j.v;acStore()}}catch(e){}}
+ if(confirm('Your account has newer progress from another device. OK = load it here (replaces this device). Cancel = keep this device\'s progress.')){const l=await acApi('load',{u:ACC.u,h:ACC.h});await acApply(l.d,ACC.k);ACC.v=l.v;acStore();location.reload()}else{ACC.v=j.v;acStore()}}catch(e){if(acIsGone(e))acGone()}}
 async function acAuth(reg,u,p,say,em){u=u.trim().toLowerCase();if(!/^[a-z0-9_]{3,20}$/.test(u))return say('Username: 3 to 20 letters, numbers or _.');if(p.length<6)return say('Password needs 6 or more characters.');say('Working…');
  try{const K=await acKeys(u,p);
   if(reg){await acApi('register',{u,h:K.h});ACC={u,h:K.h,k:K.k,v:0};acStore();const r=await acSave(true);say(r||'Account created. Your progress is saved.');if(!r)setTimeout(()=>{document.getElementById('acM')&&document.getElementById('acM').remove();if(em)emOpen('verify',em);else acOpen(true)},700);return}
@@ -1955,7 +1961,7 @@ document.getElementById('acb').onclick=acOpen;
 document.addEventListener('click',e=>{const t=e.target&&e.target.closest?e.target.closest('button,a[href],[role=button],[role=tab],summary,select,label,input[type=checkbox],input[type=radio],.b1,.b2,[onclick]'):null;
  if(!t||t.disabled||t.closest('#board'))return;const n=SFXN;setTimeout(()=>{if(SFXN===n&&!muted)sfx('select')},0)},true);
 
-setInterval(()=>{acSave(false)},20000);document.addEventListener('visibilitychange',()=>{document.hidden?acSave(false):acCheck()});setTimeout(acCheck,1500);
+setInterval(()=>{acSave(false)},20000);document.addEventListener('visibilitychange',()=>{document.hidden?acSave(false):acCheck()});setTimeout(acCheck,1500);setInterval(()=>{if(!document.hidden)acCheck()},30000);
 /* ===== friends: friend codes + invites that pop up on a friend's screen (saved copy of the page; uses the PeerJS broker) ===== */
 const FPX='checksf1',FCA='ABCDEFGHJKLMNPQRSTUVWXYZ23456789',FRX=/^[A-HJ-NP-Z2-9]{8}$/;
 const frLd=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v||d}catch(e){return d}},frSv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
