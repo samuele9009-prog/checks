@@ -1893,8 +1893,8 @@ function acOpen(fresh,r0,back){if(document.getElementById('acM'))return;const m=
    m.innerHTML='<div class="card acc" role="dialog" aria-modal="true" aria-labelledby="acT">'+acHead(IC_USER,fresh?'Account created':'Your account',fresh?'Welcome, <b>'+esc(ACC.u)+'</b>. Your progress is saved and follows you to any device.':'Signed in as <b>'+esc(ACC.u)+'</b>. Your progress saves automatically.')
     +'<div class="acEm'+(em?' ok':'')+'">'+(em?'<span class="acTick">&#10003;</span><div><b>Email verified</b><small>'+esc(emMask(em))+'</small></div>':'<div><b>No email added yet</b><small>Add one so you can reset your password if you forget it.</small></div>')+'</div>'
     +'<p class="acmsg" id="acE"></p>'
-    +'<button class="b1 acPri" id="acV">'+(em?'Change email':'Verify email')+'</button><button class="b2" id="acS">Save now</button><button class="b2" id="acO">Log out</button><button class="acLink" id="acX">Close</button></div>';
-   q('#acV').onclick=()=>{close();emOpen('verify')};q('#acS').onclick=async()=>{say('Saving…');say(await acSave(true)||'Saved.')};
+    +'<button class="b1 acPri" id="acV">'+(em?'Change email':'Verify email')+'</button><button class="b2" id="acO">Log out</button><button class="acLink" id="acX">Close</button></div>';
+   q('#acV').onclick=()=>{close();emOpen('verify')};
    q('#acO').onclick=async()=>{await acSave(false);const wipe=confirm('Logging out. Also erase the progress from THIS device? (It stays safe in your account.)');localStorage.removeItem('checks-acct');ACC=null;if(wipe)ACK().forEach(x=>localStorage.removeItem(x));location.reload()};
    q('#acX').onclick=close;return}
   m.innerHTML='<div class="card acc" role="dialog" aria-modal="true" aria-labelledby="acT">'+acHead(IC_USER,reg?'Create your account':'Welcome back',reg?'Pick a username and password to save your progress on every device.':'Log in to load your progress on this device.')
