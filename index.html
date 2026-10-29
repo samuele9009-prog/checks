@@ -674,7 +674,7 @@ async function mmLoopSb(m,tries){
 async function peerJoin(c,host,sb){if(peerBusy)return;peerBusy=true;msg='Connecting…';renderMode();let r;
   try{r=await (sb?mkSbRoom:mkPeerRoom)(c,host)}catch(e){peerBusy=false;msg=String(e&&e.message||e);renderMode();return}
   peerBusy=false;room=r;code=c;lcap=host?lobbyCap:2;lbots=host?effBots():0;mySide=host?'w':'b';flip=!host;mode='online';oppHere=false;msg='';init();wireRoom(host);r.fire(false);
-  if(!host)setTimeout(()=>{if(room===r&&!roster.some(x=>x.id===myId))leaveLobby('No lobby found for that code. Check it and try again.')},7000)}
+  if(!host)setTimeout(()=>{if(room===r&&!roster.some(x=>x.id===myId))leaveLobby('No lobby found for that code. Check it and try again.')},12000)}
 async function joinLobby(c,host){
  const R=(window.claude&&claude.use)?await claude.use('room'):null;
  if(!R)return peerJoin(c,host);
@@ -886,8 +886,8 @@ function wireRoom(host){oppName='';amHost=host;trio=null;peersN=0;if(room.direct
   room.on('admr',m=>{if(!m.isMe&&admWait){clearTimeout(admWait);admWait=null}if(m.isMe||!admSay||!document.getElementById('admM')||!isOwnerName(user)||!ownerOK())return;admSay('↳ '+(oppName||'Player')+': '+String((m.data||{}).t||'').slice(0,300))});
   room.on('sync',m=>{if(!m.isMe&&!amHost&&m.data)load(m.data)});
   room.on('newgame',m=>{if(!m.isMe&&lcap<3){FOG=pvp?false:!!(m.data||{}).fg;limit=+((m.data||{}).lm||0);document.getElementById('lim').value=limit||'';init()}});
-  room.onPeers(ch=>{peersN=ch.peers.filter(p=>!p.isMe).length;oppHere=peersN>=humanCap()-1;renderMode();maybeBot();if(amHost&&ch.joined.some(p=>!p.isMe)&&(lcap===2||trio))sendSync()});
-  sendWho();if(!host)sayHello();renderMode()}
+  room.onPeers(ch=>{peersN=ch.peers.filter(p=>!p.isMe).length;oppHere=peersN>=humanCap()-1;renderMode();maybeBot();if(amHost&&ch.joined.some(p=>!p.isMe)){try{room.emit('roster',{lcap,r:roster,nb:lbots,bl:obLvl})}catch(e){}if(lcap===2||trio)sendSync()}});
+  sendWho();if(!host){sayHello();const rr=room;let k=0;const iv=setInterval(()=>{if(room!==rr||roster.some(x=>x.id===myId)||++k>14){clearInterval(iv);return}sayHello()},800)}renderMode()}
 
 /* free direct connection: WebRTC, codes swapped by hand, no server */
 let dir=null;
@@ -1607,7 +1607,8 @@ function splash(next){
  if(a&&a.state==='running'){played=true;logoSfx()}
  else if(a){const arm=()=>{if(played||gone)return;a.resume().then(()=>{if(!played&&!gone){played=true;logoSfx()}}).catch(()=>{})};d.addEventListener('pointerdown',arm,{once:true});document.addEventListener('keydown',arm,{once:true})}
  const go=()=>{if(gone)return;gone=true;d.classList.add('out');d.addEventListener('animationend',e=>{if(e.target===d)d.remove()});setTimeout(()=>d.remove(),1500);if(AC&&AC.state==='running')try{startMusic()}catch(e){}if(next)next()};
- musicKick();d.onclick=go;setTimeout(go,matchMedia('(prefers-reduced-motion:reduce)').matches?1500:1900)}
+ musicKick();d.onclick=()=>{musicKick();go()};
+ setTimeout(go,matchMedia('(prefers-reduced-motion:reduce)').matches?1500:1900)}
 /* ===== settings ===== */
 function setApply(){const c=document.body.classList;c.toggle('noCoord',!SET.coords);c.toggle('noDots',!SET.mvdots);c.toggle('noLast',!SET.last);c.toggle('noAnim',!SET.anim);c.toggle('noLog',!SET.log);c.toggle('noRules',!SET.rules);try{if(mM&&AC)mM.gain.setTargetAtTime(SET.mv*(mDk?.3:1),AC.currentTime,.1)}catch(e){}}
 function setBtns(){document.getElementById('mute').textContent=muted?'Sound off':'Sound on';document.getElementById('music').textContent=mOn?'Music on':'Music off'}
