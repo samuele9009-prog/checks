@@ -1851,7 +1851,7 @@ function emOpen(mode){if(document.getElementById('emM'))return;const rs=mode==='
    const tok=q('#emC').value.trim();if(!tok)return say('Enter the code from the email.');
    let K=null;if(rs){const pw=q('#emP').value;if(pw.length<6)return say('Password needs 6 or more characters.');
     if(!confirm('Heads up: your saved progress is encrypted with your OLD password, so progress saved in the cloud cannot be opened after a reset. This device\'s progress will be saved to the account instead. Continue?'))return say('Cancelled.');K=await acKeys(u,pw)}
-   say('Working…');const v=await sb.auth.verifyOtp({email:em,token:tok,type:'email'});if(v.error)throw new Error('That code is wrong or has expired.');
+   say('Working…');let v=await sb.auth.verifyOtp({email:em,token:tok,type:'email'});if(v.error)v=await sb.auth.verifyOtp({email:em,token:tok,type:'signup'});if(v.error)throw new Error('That code is wrong or has expired. Use the code from the newest email only.');
    const r=rs?await sb.rpc('checks_reset_password',{p_u:u,p_h:K.h}):await sb.rpc('checks_link_email',{p_u:u,p_h:ACC.h});
    try{await sb.auth.signOut()}catch(e){}
    if(r.error||(r.data&&r.data.e))throw new Error((r.data&&r.data.e)||'Could not finish. Check the details and try again.');
