@@ -279,6 +279,11 @@ body.noCoord .co{display:none!important}body.noDots .sq.mv::after,body.noDots .s
 .card.ci{width:min(92vw,400px);padding:26px 24px;border-radius:18px;gap:14px}.card.ci h2{text-align:center;margin:0}.card.ci .ciTxt{color:var(--text);opacity:.92;text-align:center;font-size:16.5px}
 .card.ci .ciNav button.b1,.card.ci button.b1{background:var(--tide);color:#06222e;font-weight:600;border-radius:12px}
 .card.ci #ciAc{background:rgba(111,195,232,.12);border-color:var(--tide);color:var(--text);font-weight:600}.card.ci #ciHv{border-color:transparent;color:var(--tide)}
+
+.gearBtn{display:inline-flex;align-items:center;justify-content:center;padding:7px 9px!important}.gearBtn svg{display:block;transition:transform .35s}.gearBtn:hover svg{transform:rotate(60deg)}
+@media(prefers-reduced-motion:reduce){.gearBtn svg{transition:none}}
+.avBtn{cursor:pointer}.avBtn:hover,.avBtn:focus-visible{outline:2px solid var(--tide);outline-offset:2px}
+.fdL{display:flex;flex-direction:column;gap:6px;max-height:min(46vh,320px);overflow:auto}.fdR{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:#0f1f26}.fdR b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}.fdR em{font-style:normal;font-size:12px;color:var(--tide)}.fdA{width:30px;height:30px;border-radius:50%;background:var(--line);display:flex;align-items:center;justify-content:center;font-weight:600;flex:none}
 </style>
 </head>
 <body>
@@ -298,7 +303,7 @@ body.noCoord .co{display:none!important}body.noDots .sq.mv::after,body.noDots .s
  </div>
  <aside class="side">
   <h1>Checks</h1>
-  <div class="row" style="margin-top:-6px"><span id="who" class="hint" style="flex:1"></span><button class="b2" id="chg">Change</button><button class="b2" id="sty">Style</button><button class="b2" id="pfb">Picture</button><button class="b2" id="acb">Account</button><button class="b2" id="frb">Friends</button><button class="b2" id="setb">Settings</button><button class="b2" id="adm" style="display:none">Admin</button></div>
+  <div class="row" style="margin-top:-6px"><span id="who" class="hint" style="flex:1"></span><button class="b2" id="chg">Change</button><button class="b2" id="sty">Style</button><button class="b2" id="pfb">Picture</button><button class="b2" id="acb">Account</button><button class="b2" id="frb">Friends</button><button class="b2 gearBtn" id="setb" type="button" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button><button class="b2" id="adm" style="display:none">Admin</button></div>
   <div class="status" id="status" aria-live="polite"></div>
   <div id="tut" class="tut"></div>
   <div class="seg" id="modes"><button data-m="local">2 players</button><button data-m="bot">Vs bot</button><button data-m="online">Online</button><button data-m="tour">Tournament</button><button data-m="tutor">Tutorial</button></div>
@@ -333,7 +338,7 @@ let RM=new Set(),FOG=false,FH=false,QDN=false,RMT=0,LPT=0,QRW=false,QWP='';
 /* ===== quests ===== */
 const QDAY=[{id:'puzzle',t:'Solve the daily puzzle',e:'puzzle',n:1,pts:80},{id:'cap8',t:'Capture 8 enemy pieces',e:'cap',n:8},{id:'play3',t:'Finish 3 games',e:'game',n:3},{id:'win1',t:'Win a game',e:'win',n:1},{id:'promo1',t:'Promote a sword',e:'promo',n:1},{id:'chk5',t:'Give check 5 times',e:'check',n:5},{id:'winbot',t:'Beat a bot',e:'winbot',n:1},{id:'shark3',t:'Capture 3 pieces with a Shark',e:'capShark',n:3},{id:'kn3',t:'Capture 3 pieces with a Knight',e:'capKnight',n:3},{id:'fog1',t:'Finish a Fog of War game',e:'fogGame',n:1},{id:'winrk',t:'Win a ranked game',e:'winRanked',n:1,pts:25},{id:'winon',t:'Win an online game',e:'winOnline',n:1,pts:15},{id:'winsw',t:'Win a game with a Sword making the final move',e:'winSword',n:1,pts:20},{id:'winkn',t:'Win a game with a Knight making the final move',e:'winKnight',n:1,pts:20},{id:'shsh',t:'Capture a Shark with your Shark',e:'sharkXshark',n:1,pts:20}];
 const QWEEK=[{id:'w_win5',t:'Win 5 games',e:'win',n:5},{id:'w_cap40',t:'Capture 40 pieces',e:'cap',n:40},{id:'w_play12',t:'Finish 12 games',e:'game',n:12},{id:'w_online2',t:'Win 2 online games',e:'winOnline',n:2},{id:'w_fogwin',t:'Win a Fog of War game',e:'fogWin',n:1},{id:'w_chk25',t:'Give check 25 times',e:'check',n:25},{id:'w_rk2',t:'Win 2 ranked games',e:'winRanked',n:2,pts:50},{id:'w_shsh3',t:'Capture 3 Sharks with your Shark',e:'sharkXshark',n:3,pts:45},{id:'w_swkn',t:'Win 2 games with a Knight making the final move',e:'winKnight',n:2,pts:45}];
-const QRANK=[[0,'Sword'],[50,'Fish'],[150,'Knight'],[350,'Shark'],[700,'Crown']];
+const QRANK=[[0,'Sword'],[50,'Fish'],[150,'Knight'],[350,'Shark'],[700,'King']];
 let Q=null;
 const qYmd=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 function qPick(pool,n,seed){let h=2166136261;for(const c of seed){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}const rnd=()=>{h=(h+0x6D2B79F5)|0;let t=Math.imul(h^(h>>>15),1|h);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296},a=pool.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,n).map(x=>x.id)}
@@ -568,10 +573,10 @@ function botMove(){if(mode!=='bot'||over||turn===mySide)return;const t=turn;let 
 function botPick(t){if(PZ&&t!==mySide){const pm=pzDefend(t);if(pm)return pm}const ms=[];
  for(let i=0;i<64;i++)if(B[i]&&B[i].t===t)for(const j of legalFrom(B,i))if(lvl<2||thin(B,i,j,t))ms.push([i,j]);
  if(!ms.length)return null;let pick;
- if(lvl===1){/* Easy = learner bot: marches pieces toward your Crown, likes captures, and usually (not always) takes a check when it sees one. It never looks at your replies, so you can still punish it. */
+ if(lvl===1){/* Easy = learner bot: marches pieces toward your King, likes captures, and usually (not always) takes a check when it sees one. It never looks at your replies, so you can still punish it. */
   const op=t==='w'?'b':'w',K=kingIdx(B,op),dk=x=>K<0?0:Math.abs((x>>3)-(K>>3))+Math.abs((x&7)-(K&7)),chk=[];let bs1=-1e9;
   const out=K>=0&&Math.abs((K>>3)-(op==='w'?7:0))>=2,home=t==='w'?7:0,early=log.length<12,mid=log.length>=14,tw=out?60:20;
-  /* Easy plays a real plan: develop swords and the centre first, keep Knights and the Crown home early, then start hunting. */
+  /* Easy plays a real plan: develop swords and the centre first, keep Knights and the King home early, then start hunting. */
   const thr=nb=>{let n=0;for(let x=0;x<64;x++){const q=nb[x];if(!q||q.t!==t||q.k==='king'||(q.k==='ninja'&&!mid))continue;if(gen(nb,x,false).some(j=>Math.abs((j>>3)-(K>>3))+Math.abs((j&7)-(K&7))===1))n++}return n};
   for(const m of ms){const nb=apply(B,m[0],m[1]);if(inCheck(nb,op)){chk.push(m);continue}const p=B[m[0]],cp=!!B[m[1]],r0=m[0]>>3,c1=m[1]&7;let sc=Math.random()*10;
    if(cp)sc+=(VAL[B[m[1]].k]||0)/25;
@@ -972,6 +977,7 @@ function sfx(n,k,d){SFXN++;d=d||0;
  else if(n==='promo')[523,659,784,1047].forEach((f,i)=>tone(f,.18,'triangle',.14,d+i*.07));
  else if(n==='win')[523,659,784,1047,1319].forEach((f,i)=>tone(f,.3,'triangle',.15,d+i*.1));
  else if(n==='verified'){hiss(.5,.05,300,3200,d,1.2);tone(392,.3,'sine',.12,d+.3,523);[659,784,988].forEach((f,i)=>tone(f,.22,'triangle',.14,d+.85+i*.1));tone(1319,.8,'sine',.14,d+1.15);tone(1976,.5,'sine',.06,d+1.2)}
+ else if(n==='warn'){tone(784,.13,'sine',.13,d);tone(587,.22,'sine',.13,d+.12);tone(587,.3,'triangle',.05,d+.12)}
  else if(n==='draw')[392,392,330].forEach((f,i)=>tone(f,.25,'sine',.15,d+i*.15))}
 /* slide animation: a floating copy of the piece glides from its old square to the new one */
 function glide(sl){const bd=document.getElementById('board'),q=[...bd.querySelectorAll('.sq')],sq=i=>q[flip?63-i:i],br=bd.getBoundingClientRect(),
@@ -1069,7 +1075,7 @@ function pzStat(){if(turn!==mySide)return NAME[turn]+' is replying…';return 'D
 function pzMsg(){return over.win===mySide?'Puzzle solved! 🎉':over.win?NAME[over.win]+' got there first. Try again!':'Not solved this time. Try again!'}
 function pzEnd(){if(!PZ||PZ.done||!over)return;PZ.done=true;if(over.win===mySide){pzMarkDone(PZ.key);qEv('puzzle');pzBadge();renderMode()}}
 function pzPanel(){const a=PZ.key.split('-').map(Number),ds=new Date(a[0],a[1]-1,a[2]).toLocaleDateString(undefined,{month:'long',day:'numeric'}),done=pzIsDone(PZ.key);
- return '<div class="row sp"><b>Daily puzzle</b><span class="hint">'+ds+'</span></div><p class="hint">You are '+NAME[mySide]+'. Win in <b>'+PZ.n+'</b> move'+(PZ.n>1?'s':'')+': land a piece directly above, below or beside the enemy Crown. The bot defends as well as it can after each of your moves, so you will have to plan ahead and set up the final blow. Everyone gets the same puzzle today.</p>'+(done?'<p class="own">Solved today ✓</p>':'<p class="hint">Solve it to finish the daily quest (80 pts).</p>')+'<div class="row"><button class="b2" id="pzH">Hint</button><button class="b2" id="pzR">Retry</button><button class="b2" id="pzX">Leave puzzle</button></div>'}
+ return '<div class="row sp"><b>Daily puzzle</b><span class="hint">'+ds+'</span></div><p class="hint">You are '+NAME[mySide]+'. Win in <b>'+PZ.n+'</b> move'+(PZ.n>1?'s':'')+': land a piece directly above, below or beside the enemy King. The bot defends as well as it can after each of your moves, so you will have to plan ahead and set up the final blow. Everyone gets the same puzzle today.</p>'+(done?'<p class="own">Solved today ✓</p>':'<p class="hint">Solve it to finish the daily quest (80 pts).</p>')+'<div class="row"><button class="b2" id="pzH">Hint</button><button class="b2" id="pzR">Retry</button><button class="b2" id="pzX">Leave puzzle</button></div>'}
 function pzBind(){document.getElementById('pzR').onclick=()=>{init();renderMode()};document.getElementById('pzX').onclick=()=>setMode('bot');document.getElementById('pzH').onclick=pzHint}
 function pzHint(){if(!PZ||over||pending||turn!==mySide)return;const done=log.length>>1,left=PZ.n-done;
  const show=m=>{if(!m){tmToast('No winning move from here. Press Retry to start over.');return}HI={i:m[0],j:-1,key:tutKey()};render();tmToast('Hint: move the highlighted piece.')};
@@ -1177,7 +1183,7 @@ document.getElementById('rules').innerHTML=[
  ['ninja','Knight','Teleports to any empty square unless an enemy piece stands on the same file between your rank and the target’s rank (you can pass through your own pieces). Unless an enemy piece is in the 3×3 around it, then it can only step or capture one square up, down, left or right.'],
  ['fish','Fish','Swims any distance diagonally, or one step straight.'],
  ['shark','Shark','Charges any distance in straight lines, but only two squares diagonally.'],
- ['king','Crown','One step any way, or swap places with a friendly piece next to it. Once per game a two-square leap. Any enemy piece directly above, below or beside it is checkmate; its diagonal corners are safe. It can never be captured.']
+ ['king','King','One step any way, or swap places with a friendly piece next to it. Once per game a two-square leap. Any enemy piece directly above, below or beside it is checkmate; its diagonal corners are safe. It can never be captured.']
 ].map(r=>'<div><img src="'+S[r[0]]+'" alt=""><span><b>'+r[1]+'.</b> '+r[2]+'</span></div>').join('');
 document.getElementById('undo').onclick=()=>{if(mode==='online'||tour||ranked||FOG)return;let n=mode==='bot'?2:1;while(n--){const h=hist.pop();if(!h)break;({B,turn,cap,last,log}=h)}pending=null;sel=null;legal=[];over=null;if(PZ)PZ.done=false;render();maybeBot()};
 document.getElementById('flip').onclick=()=>{flip=!flip;render()};
@@ -1196,7 +1202,7 @@ let BV=false;try{BV=localStorage.getItem('checks-botvoice2')==='1'}catch(e){}
 const BVL={
  idle:["You're too predictable.","Is that really your best move?","I saw that coming a mile away.","Keep running. It won't help.","Too slow.","Is that all you've got?","I'm getting bored over here.","Interesting. Wrong, but interesting.","Bruh.","Are you even trying?","My grandma plays faster than this.","Hurry up. I have places to be.","Hmm. Bold strategy.","Take your time. You'll need it.","Is it your first time playing?","Cute."],
  cap:["Thanks for the piece!","That one's mine now.","Careless.","One down. Many more to go.","You left that hanging.","Yoink!","Delicious.","Sorry, not sorry.","Bruh, that was free.","Don't mind if I do."],
- chk:["Check! Your Crown is in trouble.","Your Crown is next.","Better run!","Feeling the pressure yet?","Check. Sweat a little.","Knock knock. It's your Crown.","Oops. Did I do that?"],
+ chk:["Check! Your King is in trouble.","Your King is next.","Better run!","Feeling the pressure yet?","Check. Sweat a little.","Knock knock. It's your King.","Oops. Did I do that?"],
  promo:["Look at my new piece.","Upgrade complete.","Now it gets serious.","Level up!","Say hello to my little friend."],
  youcap:["Lucky shot.","Enjoy it while it lasts.","That was my decoy. Obviously.","Fine. Take it.","Bruh.","Wow. Even a broken clock.","Once in a blue moon.","Okay okay, calm down."],
  youchk:["Ha, you call that a threat?","Nice try. Not enough.","Hm. Annoying.","Bruh, seriously?","Oh no. Anyway.","Cool story."],
@@ -1322,7 +1328,7 @@ function rkTogGo(){{
 function rkLiveUI(){const el=document.getElementById('rkLive'),on=ranked&&mode==='bot';document.getElementById('undo').disabled=on;el.style.display=on?'flex':'none';if(!on)return;
  const u=user?rkAcct(user):null;el.innerHTML='<b>RANKED</b><span>'+(rk.cur&&rk.cur.done?'Game complete':u&&u.placed?'Rank '+rkBadge(rkIdx(u.rating)):'Placement match '+Math.min(5,(u?u.plr.length:0)+1)+' of 5')+'</span>'}
 /* tutorial mode: best-move hints, piece guide, ways to win */
-const KN={sword:'Sword',ninja:'Knight',fish:'Fish',shark:'Shark',king:'Crown'};
+const KN={sword:'Sword',ninja:'Knight',fish:'Fish',shark:'Shark',king:'King'};
 const tutKey=()=>tutGen+'.'+log.length;
 function hiOn(){return (tut||PZ)&&HI&&HI.key===tutKey()&&!over&&turn===mySide&&!pending}
 function canMate(b,t){const op=t==='w'?'b':'w';for(let i=0;i<64;i++)if(b[i]&&b[i].t===t)for(const j of gen(b,i,false)){const nb=apply(b,i,j);if(!inCheck(nb,t)&&inCheck(nb,op))return true}return false}
@@ -1333,13 +1339,13 @@ function bestFor(t){const op=t==='w'?'b':'w',ms=[];for(let i=0;i<64;i++)if(B[i]&
  for(let d=2;d<=4;d++){stop=false;let bs=-1e9,bm=null;for(const m of ms){const s=-nm(apply(B,m[0],m[1]),op,d-1,-1e9,1e9);if(stop)break;if(s>bs){bs=s;bm=m}}if(stop||!bm)break;best=bm;ms.sort((x,y)=>x===bm?-1:y===bm?1:0)}
  dl=0;stop=false;EV=ev;return best}
 function whyText(m,t){const i=m[0],j=m[1],p=B[i],q=B[j]&&B[j].t!==t?B[j]:null,op=t==='w'?'b':'w',nb=apply(B,i,j);
- if(inCheck(nb,op))return'Checkmate! It lands right beside their Crown, so you win on the spot.';
+ if(inCheck(nb,op))return'Checkmate! It lands right beside their King, so you win on the spot.';
  const w=[];if(q)w.push('captures their '+KN[q.k]);
  if(p.k==='sword'&&promoRow(p.t,j))w.push('promotes your Sword into something much stronger');
  else if(p.k==='ninja'&&!q&&Math.max(Math.abs((j>>3)-(i>>3)),Math.abs((j&7)-(i&7)))>2)w.push('teleports your Knight to a better square');
  if(canMate(B,op)&&!canMate(nb,op))w.push('stops their threat to checkmate you');
  if(canMate(nb,t))w.push('threatens checkmate next turn');
- if(!w.length)w.push('improves your position while keeping your Crown safe');
+ if(!w.length)w.push('improves your position while keeping your King safe');
  const s=w.length>1?w.slice(0,-1).join(', ')+' and '+w[w.length-1]:w[0];return s[0].toUpperCase()+s.slice(1)+'.'}
 function applyHI(){const on=hiOn();document.querySelectorAll('#board .sq').forEach(e=>{const i=+e.dataset.i;e.classList.toggle('hf',on&&HI.i===i);e.classList.toggle('ht',on&&HI.j===i)})}
 function schedHint(){const key=tutKey();if(hq===key)return;hq=key;setTimeout(()=>{if(!tut||over||pending||turn!==mySide||tutKey()!==key){hq=null;return}const m=bestFor(turn);hq=null;HI=m?{i:m[0],j:m[1],key,why:whyText(m,turn)}:null;tutUI()},40)}
@@ -1360,21 +1366,21 @@ function pieceDiag(k,v){const b=Array(64).fill(null),pcs=[];let pos=27;
  const dots=gen(b,pos,false).map(j=>[j>>3,j&7,b[j]?(b[j].t==='w'?'s':'x'):'g']);
  for(let i=0;i<64;i++)if(b[i])pcs.push([i>>3,i&7,b[i].k,b[i].t]);return mini(pcs,dots)}
 const PINFO=[
-['sword','Sword','Steps one square forward or sideways (two forward from its starting row). Strikes diagonally forward, or thrusts two squares straight ahead to capture. At the far end it promotes to a Shark, Fish or Knight.','Cheap but sneaky. Use Swords to capture the guards beside the enemy Crown, and run one to the end for a free Shark.'],
-['ninja','Knight','Teleports to any empty square, unless an enemy piece stands on the target’s file between you and it. If an enemy touches it (anywhere in the 3×3 around it), it is pinned down and can only step or capture one square up, down, left or right.','The deadliest attacker. A free Knight can land beside the Crown from across the board. Defend by keeping pieces on the files around your Crown.'],
-['fish','Fish','Swims any distance diagonally, or one step up, down, left or right.','Park a Fish on a diagonal corner of the enemy Crown (those squares are safe), then step in beside it.'],
-['shark','Shark','Charges any distance in straight lines, but only two squares diagonally.','Your strongest piece. Open a file or row to the Crown and a Shark lands beside it from far away.'],
-['king','Crown','Steps one square any way, swaps places with a friendly neighbour, or leaps two squares once per game. It can never be captured, but if any enemy piece lands directly above, below or beside it, you lose. The diagonal corners are safe.','Keep friendly pieces on the four squares beside your Crown so nothing can land there, and use the swap to pull a defender into place.']];
+['sword','Sword','Steps one square forward or sideways (two forward from its starting row). Strikes diagonally forward, or thrusts two squares straight ahead to capture. At the far end it promotes to a Shark, Fish or Knight.','Cheap but sneaky. Use Swords to capture the guards beside the enemy King, and run one to the end for a free Shark.'],
+['ninja','Knight','Teleports to any empty square, unless an enemy piece stands on the target’s file between you and it. If an enemy touches it (anywhere in the 3×3 around it), it is pinned down and can only step or capture one square up, down, left or right.','The deadliest attacker. A free Knight can land beside the King from across the board. Defend by keeping pieces on the files around your King.'],
+['fish','Fish','Swims any distance diagonally, or one step up, down, left or right.','Park a Fish on a diagonal corner of the enemy King (those squares are safe), then step in beside it.'],
+['shark','Shark','Charges any distance in straight lines, but only two squares diagonally.','Your strongest piece. Open a file or row to the King and a Shark lands beside it from far away.'],
+['king','King','Steps one square any way, swaps places with a friendly neighbour, or leaps two squares once per game. It can never be captured, but if any enemy piece lands directly above, below or beside it, you lose. The diagonal corners are safe.','Keep friendly pieces on the four squares beside your King so nothing can land there, and use the swap to pull a defender into place.']];
 function buildPieces(c){c.innerHTML='<p class="hint">Dots show where the piece (white, in the middle) can go. Red ring = capture, blue ring = swap.</p>';
  PINFO.forEach(r=>{const d=document.createElement('div');d.className='pc';d.innerHTML='<b>'+r[1]+'</b>';
   if(r[0]==='ninja'){d.insertAdjacentHTML('beforeend','<p>Free (no enemy touching):</p>');d.appendChild(pieceDiag('ninja',0));d.insertAdjacentHTML('beforeend','<p>Pinned (enemy touching):</p>');d.appendChild(pieceDiag('ninja',1))}else d.appendChild(pieceDiag(r[0]));
   d.insertAdjacentHTML('beforeend','<p>'+r[2]+'</p><p class="tip">Tip: '+r[3]+'</p>');c.appendChild(d)})}
 const WINS=[
-['1. Shark charge','Sharks fly any distance in a straight line. If a file or row to the Crown is open, land right beside it.',[[0,4,'king','b'],[1,3,'sword','b'],[1,5,'sword','b'],[6,4,'shark','w'],[7,4,'king','w']],[[6,4,1,4]],[0,4]],
-['2. Fish flank','A Fish slides down a diagonal and lands on a square beside the Crown, even when the Crown looks guarded.',[[0,4,'king','b'],[1,4,'sword','b'],[3,0,'fish','w'],[7,4,'king','w']],[[3,0,0,3]],[0,4]],
-['3. Knight teleport','A free Knight jumps straight to a square beside the Crown, as long as no enemy piece stands on that file in between.',[[0,4,'king','b'],[1,3,'sword','b'],[1,5,'sword','b'],[7,1,'ninja','w'],[7,4,'king','w']],[[7,1,1,4]],[0,4]],
-['4. Promote, then strike','Run a Sword to the far end. It becomes a Shark and threatens the Crown along the back row.',[[0,4,'king','b'],[1,0,'sword','w'],[7,4,'king','w']],[[1,0,0,0,'shark'],[0,0,0,3]],[0,4]],
-['5. Capture the guard','A Sword strikes diagonally. Take the piece guarding the Crown and you land beside it.',[[0,4,'king','b'],[1,4,'fish','b'],[2,3,'sword','w'],[7,4,'king','w']],[[2,3,1,4]],[0,4]]];
+['1. Shark charge','Sharks fly any distance in a straight line. If a file or row to the King is open, land right beside it.',[[0,4,'king','b'],[1,3,'sword','b'],[1,5,'sword','b'],[6,4,'shark','w'],[7,4,'king','w']],[[6,4,1,4]],[0,4]],
+['2. Fish flank','A Fish slides down a diagonal and lands on a square beside the King, even when the King looks guarded.',[[0,4,'king','b'],[1,4,'sword','b'],[3,0,'fish','w'],[7,4,'king','w']],[[3,0,0,3]],[0,4]],
+['3. Knight teleport','A free Knight jumps straight to a square beside the King, as long as no enemy piece stands on that file in between.',[[0,4,'king','b'],[1,3,'sword','b'],[1,5,'sword','b'],[7,1,'ninja','w'],[7,4,'king','w']],[[7,1,1,4]],[0,4]],
+['4. Promote, then strike','Run a Sword to the far end. It becomes a Shark and threatens the King along the back row.',[[0,4,'king','b'],[1,0,'sword','w'],[7,4,'king','w']],[[1,0,0,0,'shark'],[0,0,0,3]],[0,4]],
+['5. Capture the guard','A Sword strikes diagonally. Take the piece guarding the King and you land beside it.',[[0,4,'king','b'],[1,4,'fish','b'],[2,3,'sword','w'],[7,4,'king','w']],[[2,3,1,4]],[0,4]]];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function runSc(e,sc){await sleep(500);
  for(const s of sc[3]){const img=e.querySelector('img[data-p="'+s[0]+','+s[1]+'"]');if(!img)return;
@@ -1382,13 +1388,13 @@ async function runSc(e,sc){await sleep(500);
   e.querySelectorAll('img[data-p="'+s[2]+','+s[3]+'"]').forEach(o=>o.remove());
   img.style.setProperty('--r',s[2]);img.style.setProperty('--c',s[3]);img.dataset.p=s[2]+','+s[3];a.cancel();if(s[4])img.src=S[s[4]];await sleep(250)}
  e.insertAdjacentHTML('beforeend','<u class="w" style="--r:'+sc[4][0]+';--c:'+sc[4][1]+'"></u><s>Checkmate!</s>')}
-function buildWins(c){c.innerHTML='<p class="hint">You win the moment any of your pieces lands directly above, below or beside the enemy Crown. Five ways to do it:</p>';
+function buildWins(c){c.innerHTML='<p class="hint">You win the moment any of your pieces lands directly above, below or beside the enemy King. Five ways to do it:</p>';
  WINS.forEach((sc,n)=>{const d=document.createElement('div');d.className='sc';d.innerHTML='<b>'+sc[0]+'</b><p>'+sc[1]+'</p>';
   const mk=()=>mini(sc[2].map(q=>q.slice()),[]);let m=mk();d.appendChild(m);const b=document.createElement('button');b.className='b2';b.textContent='Replay';b.style.marginTop='8px';
   b.onclick=()=>{const k=mk();m.replaceWith(k);m=k;runSc(m,sc)};d.appendChild(b);c.appendChild(d);setTimeout(()=>runSc(m,sc),n*400)});
- c.insertAdjacentHTML('beforeend','<div class="sc"><b>Winning plans</b><p><b>Open the lines.</b> Capture or lure away anything standing between your Sharks and Knights and the Crown.</p><p><b>Make double threats.</b> Aim two pieces at two different squares beside the Crown. They can only stop one.</p><p><b>Remove the guards.</b> Friendly pieces on the four squares beside a Crown protect it, so capture them.</p><p><b>Defend the same way.</b> Keep your own pieces beside your Crown, and watch for any Knight or Shark with a clear path.</p></div>')}
+ c.insertAdjacentHTML('beforeend','<div class="sc"><b>Winning plans</b><p><b>Open the lines.</b> Capture or lure away anything standing between your Sharks and Knights and the King.</p><p><b>Make double threats.</b> Aim two pieces at two different squares beside the King. They can only stop one.</p><p><b>Remove the guards.</b> Friendly pieces on the four squares beside a King protect it, so capture them.</p><p><b>Defend the same way.</b> Keep your own pieces beside your King, and watch for any Knight or Shark with a clear path.</p></div>')}
 function tutBuild(){const el=document.getElementById('tut');
- el.innerHTML='<div class="goal"><b>Goal:</b> land any piece directly above, below or beside the enemy Crown. Diagonals don’t count.</div><div id="hintBox" class="hbox"></div><button class="b1" id="hintGo">▶ Play best move</button><div class="seg" id="tabs"><button data-t="p">Pieces</button><button data-t="w">How to win</button></div><div id="tcont" class="tcont"></div>';
+ el.innerHTML='<div class="goal"><b>Goal:</b> land any piece directly above, below or beside the enemy King. Diagonals don’t count.</div><div id="hintBox" class="hbox"></div><button class="b1" id="hintGo">▶ Play best move</button><div class="seg" id="tabs"><button data-t="p">Pieces</button><button data-t="w">How to win</button></div><div id="tcont" class="tcont"></div>';
  document.getElementById('hintGo').onclick=()=>{if(hiOn()){const h=HI;HI=null;move(h.i,h.j)}};
  el.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{const was=b.classList.contains('on'),c=document.getElementById('tcont');el.querySelectorAll('#tabs button').forEach(x=>x.classList.remove('on'));c.innerHTML='';c.style.display='none';if(was)return;b.classList.add('on');c.style.display='block';b.dataset.t==='p'?buildPieces(c):buildWins(c)})}
 tutBuild();
@@ -1398,7 +1404,7 @@ let user='',oppName='',admSay=null,admWait=null;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function nameOf(t){if(mode==='online')return t===mySide?(user||'Guest'):oppName;if(mode==='bot')return t===mySide?(user||'Guest'):(tour?'The Champion':'Bot');return ''}
 function dn(t){return mode==='online'&&room&&lcap>=3&&trio?teamName(t):nameOf(t)||NAME[t]}
-function renderWho(){const u=user?rkAcct(user):null;lbPres();const ad=document.getElementById('adm');if(ad){ad.style.display=isOwnerName(user)&&ownerOK()?'':'none';ad.onclick=adminOpen}document.getElementById('who').innerHTML=av(myPf,user)+' '+(user?'Playing as '+esc(user)+ownTag(user):'Playing as guest')+(u&&u.placed?' '+rkBadge(rkIdx(u.rating)):'')}
+function renderWho(){const u=user?rkAcct(user):null;lbPres();const ad=document.getElementById('adm');if(ad){ad.style.display=isOwnerName(user)&&ownerOK()?'':'none';ad.onclick=adminOpen}document.getElementById('who').innerHTML=av(myPf,user)+' '+(user?'Playing as '+esc(user)+ownTag(user):'Playing as guest')+(u&&u.placed?' '+rkBadge(rkIdx(u.rating)):'');const pa=document.querySelector('#who .av');if(pa){pa.classList.add('avBtn');pa.setAttribute('role','button');pa.tabIndex=0;pa.title='Account';pa.onclick=()=>acOpen();pa.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();acOpen()}}}}
 /* owner + admin (client-side only: it can only touch data saved in this browser) */
 const OWN_H='3a5369129d2a0a3e3cbfe450125ed518cab98c2e78d261626f7d06fc30be1ca9';let ownSess=false,ownRaw='';
 const isOwnerName=n=>String(n||'').replace(/\s+/g,'').toLowerCase()==='figo9009';
@@ -1434,7 +1440,7 @@ function admIncoming(d){
  const out=[];try{admCmd(d.c+' '+user+(d.a?' '+d.a:''),t=>out.push(t),true)}catch(e){out.push('Error: '+e.message)}
  renderWho();renderMode();room.emit('admr',{t:out.join(' ')||'Done.'})}
 function admCmd(line,say,local){const w=line.split(/\s+/),c=w[0].toLowerCase(),rest=w.slice(1);
- if(!local){if(c==='code')return codeGen(rest,say);if(c==='gencode')return cdMake(rest,say);if(c==='codes')return cdList(say);if(c==='delcode')return cdDel(rest,say);if(c==='codekey')return cdSetKey(rest,say);if(c==='announce'){if(!LB)return say('Live lobby unavailable.');if(!rest.length)return say('Usage: announce TEXT');LB.emit('ann',{t:rest.join(' ').slice(0,200)}).then(()=>say('Sent to everyone online.'),()=>say('Could not send (Editors only).'));return}if(c==='online'||c==='who'){if(hubList(say))return;return lbList(say)}if(c==='forcefriend')return hubForce(rest,say);if(hubRemote(c,rest,say))return;if(lbRemote(c,rest,say))return;if(admRemote(c,rest,say))return}
+ if(!local){if(c==='code')return codeGen(rest,say);if(c==='gencode')return cdMake(rest,say);if(c==='codes')return cdList(say);if(c==='delcode')return cdDel(rest,say);if(c==='delaccount')return accDel(rest,say);if(c==='accounts')return accList(rest,say);if(c==='codekey')return cdSetKey(rest,say);if(c==='announce'){if(!LB)return say('Live lobby unavailable.');if(!rest.length)return say('Usage: announce TEXT');LB.emit('ann',{t:rest.join(' ').slice(0,200)}).then(()=>say('Sent to everyone online.'),()=>say('Could not send (Editors only).'));return}if(c==='online'||c==='who'){if(hubList(say))return;return lbList(say)}if(c==='forcefriend')return hubForce(rest,say);if(hubRemote(c,rest,say))return;if(lbRemote(c,rest,say))return;if(admRemote(c,rest,say))return}
  const acc=nm=>{const u=RK.users[rkKey(nm)];if(!u)say('No ranked account named "'+nm+'".');return u},
  fm=u=>u.name+': '+(u.placed?TIERS[rkIdx(u.rating)]+' ('+Math.round(u.rating)+')':'unranked, placement '+u.plr.length+'/5')+' · '+u.w+'W '+u.l+'L '+u.d+'D'+(u.lock?' · locked':'');
  if(c==='help'){['PLAYERS (also work on someone online with you: use their name, or the word online)',
@@ -1458,6 +1464,8 @@ function admCmd(line,say,local){const w=line.split(/\s+/),c=w[0].toLowerCase(),r
  'gencode inf PTS · random code that unlimited people can redeem (each person once)',
  'gencode custom TEXT PTS [USES] · a code you write yourself, e.g. gencode custom RELEASE 500. USES is a number or inf (default inf)',
  'codes · list every code with its points and uses · delcode CODE · delete a code',
+ 'REGISTERED ACCOUNTS (online, needs accounts_setup.sql)',
+ 'accounts [TEXT] · count registered accounts and list names starting with TEXT · delaccount NAME · permanently delete a registered account (frees the name)',
  'codekey YOUR-OWNER-CODE · save your owner code on this device so code commands work after a reload (logout removes it)',
  'ACCOUNTS (this browser only)',
  'list · all accounts · top · best 5 · find TEXT · search names · count · totals',
@@ -1516,7 +1524,7 @@ function askName(){
  m.innerHTML='<div class="card acc" id="nmCard" role="dialog" aria-modal="true" aria-labelledby="nmT"><div class="acHd">'+(lg?'<img class="nmLogo" alt="" src="'+lg+'">':'')+'<h2 id="nmT">Welcome to Checks</h2><p>Pick a name to play with, or play as a guest. You can make an account any time to save your progress on every device.</p></div><label class="acLb" for="nmIn">Display name</label><input id="nmIn" maxlength="16" autocomplete="off" placeholder="Pick a name" spellcheck="false"><p class="acmsg err" id="nmErr" style="display:none"></p><button class="b1 acPri" id="nmGo">Continue</button><button class="b2" id="nmGuest">Play as guest</button><div class="nmOr"><span>or</span></div><div class="nmAcc"><button class="b2" id="nmNew" type="button">Create account</button><button class="b2" id="nmLog" type="button">Log in</button></div></div>';
  document.body.appendChild(m);
  const inp=m.querySelector('#nmIn'),er=m.querySelector('#nmErr');inp.value=user;inp.focus();
- const go=()=>{const n=inp.value.replace(/[<>]/g,'').replace(/\s+/g,' ').trim();if(!n){er.textContent='Type a name, or play as guest.';er.style.display='block';inp.focus();return}if(isOwnerName(n)&&!ownerOK()){ownerAsk(n,m);return}m.remove();setUser(n)};
+ let chk=false;const go=async()=>{if(chk)return;const n=inp.value.replace(/[<>]/g,'').replace(/\s+/g,' ').trim();if(!n){er.textContent='Type a name, or play as guest.';er.style.display='block';inp.focus();return}if(isOwnerName(n)&&!ownerOK()){ownerAsk(n,m);return}chk=true;er.style.display='none';let tk=false;try{tk=await nameTaken(n)}catch(e){}chk=false;if(tk){er.textContent='That username belongs to a registered account. Pick another name, or log in to use it.';er.style.display='block';sfx('warn');inp.focus();return}m.remove();setUser(n)};
  m.querySelector('#nmGo').onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go()};
  m.querySelector('#nmGuest').onclick=()=>{m.remove();setUser('')};
  m.querySelector('#nmNew').onclick=()=>{m.remove();acOpen(false,true,true)};m.querySelector('#nmLog').onclick=()=>{m.remove();acOpen(false,false,true)};
@@ -1527,14 +1535,14 @@ function askName(){
 const CI_KEY='checks-intro';
 const CI=[
  {t:'Hi, welcome to Checks!',p:['king','shark','fish','ninja','sword'],s:'Hi, welcome to Checks! Let me show you how to play. It only takes a minute, and I will read everything out loud as we go.'},
- {t:'How to win',p:['king'],s:'To win, checkmate the other side’s Crown. The Crown can never be captured. Instead, if one of your pieces ends up directly above, below, or beside the enemy Crown, that is checkmate and you win. The diagonal corners are safe. Keep your own Crown safe the same way.'},
+ {t:'How to win',p:['king'],s:'To win, checkmate the other side’s King. The King can never be captured. Instead, if one of your pieces ends up directly above, below, or beside the enemy King, that is checkmate and you win. The diagonal corners are safe. Keep your own King safe the same way.'},
  {t:'The Sword',p:['sword'],s:'The Sword steps forward or sideways. It strikes diagonally, or thrusts two squares straight ahead. If it reaches the far end of the board, it becomes a Shark, a Fish, or a Knight, your choice.'},
  {t:'Fish and Shark',p:['fish','shark'],s:'The Fish swims any distance diagonally, or one step straight. The Shark is the opposite. It charges any distance in straight lines, but only two squares diagonally.'},
  {t:'The Knight',p:['ninja'],s:'The Knight teleports to empty squares across the board, but an enemy piece in its file can block it. If an enemy is right next to it, it can only step or capture one square up, down, left or right.'},
- {t:'The Crown',p:['king'],s:'The Crown moves one step in any direction, or swaps places with a friendly piece next to it. Once per game, it can leap two squares.'},
+ {t:'The King',p:['king'],s:'The King moves one step in any direction, or swaps places with a friendly piece next to it. Once per game, it can leap two squares.'},
  {t:'Ways to play',p:['sword','fish','ninja'],s:'You can play a friend on the same screen, play a bot, play online, or enter a tournament. Tutorial mode shows you the best move and has a guide to every piece, so it is a great place to start.'},
  {t:'Add friends',p:[],b:'Friends',s:'Playing with friends is easy. Press the Friends button near the top. You will see your own friend code there. Send it to a friend, or type in theirs and press Add. Once you are friends, you can search your list, see their pictures, and chat with them even when you are not in a match. Both of you need the game open for a request to come through.'},
- {t:'Your profile picture',p:[],b:'Picture',s:'To change your profile picture, press the Picture button near the top. Pick one of the avatars, or upload your own photo. Other players see it next to your name in online games and in your friends list. The Style button changes your piece and board colors, and the Settings button has sound and everything else.'},
+ {t:'Your profile picture',p:[],b:'Picture',s:'To change your profile picture, press the Picture button near the top. Pick one of the avatars, or upload your own photo. Other players see it next to your name in online games and in your friends list. The Style button changes your piece and board colors, and the gear icon has sound and everything else.'},
  {t:'Save your progress',p:[],s:'If you want to save your data and move it to another device, make an account. You only need a username and a password, no email. Then log in on your phone or anywhere else and your progress comes with you. You can add an email later so you can reset a forgotten password. Or tap Let’s play to get started. Have fun!'}
 ];
 let ciOn=SET.tts!==false;
@@ -1896,7 +1904,7 @@ function acOpen(fresh,r0,back){if(document.getElementById('acM'))return;const m=
   if(q('#acEm')){q('#acEm').value=ev;q('#acEm').oninput=()=>{if(warned){warned=false;q('#acGo').textContent='Create account';const e=q('#acE');e.textContent='';e.className='acmsg'}}}
   q('#acEye').onclick=()=>{const p=q('#acP'),s=p.type==='password';p.type=s?'text':'password';q('#acEye').textContent=s?'Hide':'Show'};
   const go=()=>{let em='';if(reg){em=q('#acEm').value.trim().toLowerCase();if(em&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))return say('Enter a valid email, or leave it blank.');
-   if(!em&&!warned){warned=true;q('#acGo').textContent='Continue without email';const e=q('#acE');e.textContent='Adding an email can save your data and keep your account safe. If you forget your password, it is the only way to get back in. Add one above, or tap again to continue without.';e.className='acmsg warn';q('#acEm').focus();return}}
+   if(!em&&!warned){warned=true;q('#acGo').textContent='Continue without email';const e=q('#acE');e.textContent='Adding an email can save your data and keep your account safe. If you forget your password, it is the only way to get back in. Add one above, or tap again to continue without.';e.className='acmsg warn';sfx('warn');q('#acEm').focus();return}}
   acAuth(reg,q('#acU').value,q('#acP').value,say,em)};q('#acGo').onclick=go;q('#acP').onkeydown=e=>{if(e.key==='Enter')go()};q('#acU').onkeydown=e=>{if(e.key==='Enter')q('#acP').focus()};
   if(q('#acF'))q('#acF').onclick=()=>{m.remove();emOpen('reset')};q('#acX').onclick=close;q('#acU').focus()}
  draw()}
@@ -2046,14 +2054,31 @@ function frChOpen(k){const f=frGet(k);if(!f||!f.ok||document.getElementById('frC
  m.querySelector('#frChS').onclick=send;inp.onkeydown=e=>{if(e.key==='Enter')send()};m.querySelector('#frChX').onclick=close;
  m.onkeydown=e=>{if(e.key==='Escape')close()};m.addEventListener('pointerdown',e=>{if(e.target===m)close()});
  frChRender();frFlush(k);frRender();inp.focus()}
+/* ===== reserved usernames, player finder, owner account tools (needs accounts_setup.sql) ===== */
+async function nameTaken(n){const k=String(n||'').trim().toLowerCase();if(!k||!SB_URL||(ACC&&ACC.u===k))return false;
+ try{const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/checks_name_taken',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify({p_u:k})});if(!r.ok)return false;return(await r.json())===true}catch(e){return false}}
+function findOpen(){if(document.getElementById('fdM'))return;const m=document.createElement('div');m.className='modal';m.id='fdM';
+ m.innerHTML='<div class="card acc" role="dialog" aria-modal="true" aria-labelledby="fdT"><div class="acHd"><div class="acIc">'+IC_USER+'</div><h2 id="fdT">Find players</h2><p>Every registered account on Checks. Usernames are reserved, so a name here belongs to one player.</p></div><input id="fdQ" type="search" placeholder="Search usernames" autocomplete="off" spellcheck="false" maxlength="20"><div id="fdL" class="fdL" aria-live="polite"></div><button class="b2" id="fdX">Close</button></div>';
+ document.body.appendChild(m);const q=x=>m.querySelector(x),L=q('#fdL');let tm=0,seq=0;const close=()=>m.remove();
+ q('#fdX').onclick=close;m.onkeydown=e=>{if(e.key==='Escape')close()};m.addEventListener('pointerdown',e=>{if(e.target===m)close()});
+ const draw=a=>{L.innerHTML=a.length?a.map(n=>'<div class="fdR"><span class="fdA">'+esc(n.slice(0,1).toUpperCase())+'</span><b>'+esc(n)+'</b>'+(ACC&&ACC.u===n?'<em>you</em>':'')+'</div>').join(''):'<p class="hint" style="text-align:center;padding:10px 0">No players found.</p>'};
+ const run=async()=>{const my=++seq,v=q('#fdQ').value.trim().toLowerCase();if(!/^[a-z0-9_]{0,20}$/.test(v)){L.innerHTML='<p class="hint" style="text-align:center;padding:10px 0">Usernames only use letters, numbers and _.</p>';return}
+  L.innerHTML='<p class="hint" style="text-align:center;padding:10px 0">Searching…</p>';
+  try{const j=await cdFn('checks_find',{p_q:v});if(my===seq)draw(Array.isArray(j)?j:[])}catch(e){if(my===seq)L.innerHTML='<p class="acmsg err">'+esc(e.st===404?'Player search is not set up on the server yet.':netErr(e))+'</p>'}};
+ q('#fdQ').oninput=()=>{clearTimeout(tm);tm=setTimeout(run,250)};q('#fdQ').focus();run()}
+async function accAdmin(say,op,o){if(!hubIsOwner())return say('Owner only.');const k=cdKey();if(!k)return say('Type: codekey YOUR-OWNER-CODE (once per device), then try again.');
+ try{const j=await cdFn('checks_acc_admin',Object.assign({p_key:k,p_op:op},o));if(j.e){say(j.e);return null}return j}catch(e){say(e.st===404?'Run accounts_setup.sql once in Supabase (SQL Editor) first.':e.message);return null}}
+async function accList(rest,say){const j=await accAdmin(say,'list',{p_u:rest.join('')});if(!j)return;say(j.n+' registered account'+(j.n===1?'':'s')+(rest.length?' (showing names starting with "'+rest.join('').toLowerCase()+'")':'')+':');(j.names||[]).forEach(n=>say('  '+n));if(!(j.names||[]).length)say('  none')}
+async function accDel(rest,say){const n=rest.join('').trim().toLowerCase();if(!n)return say('Usage: delaccount NAME');if(!confirm('Permanently delete the account "'+n+'" and its saved progress? This cannot be undone.'))return say('Cancelled.');
+ const j=await accAdmin(say,'delete',{p_u:n});if(!j)return;say(j.n?'Deleted account '+n+'. The name is free again.':'No registered account named '+n+'.')}
 function frOpen(){if(document.getElementById('frM'))return;const m=document.createElement('div');m.className='modal';m.id='frM';
- m.innerHTML='<div class="card wide" role="dialog" aria-modal="true" aria-labelledby="frT"><h2 id="frT">Friends</h2><div class="row"><span class="hint" style="flex:1">Your friend code</span><b class="code" style="font-size:20px">'+fcf(FC)+'</b><button class="b2" id="frCp">Copy</button></div><div class="row"><input id="frI" maxlength="9" placeholder="Friend code" autocomplete="off" style="flex:1;width:auto"><button class="b1" id="frAdd">Add</button></div><p class="hint" id="frMs"></p><input id="frQ" type="search" placeholder="Search your friends" autocomplete="off" aria-label="Search your friends" style="flex:none;width:100%"><div id="frL" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow:auto"></div><p class="hint">Invites pop up on your friend’s screen, no code typing. If they say No, you wait 3 minutes before inviting them again.</p><button class="b2" id="frDone">Close</button></div>';
+ m.innerHTML='<div class="card wide" role="dialog" aria-modal="true" aria-labelledby="frT"><h2 id="frT">Friends</h2><div class="row"><span class="hint" style="flex:1">Your friend code</span><b class="code" style="font-size:20px">'+fcf(FC)+'</b><button class="b2" id="frCp">Copy</button></div><div class="row"><input id="frI" maxlength="9" placeholder="Friend code" autocomplete="off" style="flex:1;width:auto"><button class="b1" id="frAdd">Add</button></div><p class="hint" id="frMs"></p><input id="frQ" type="search" placeholder="Search your friends" autocomplete="off" aria-label="Search your friends" style="flex:none;width:100%"><div id="frL" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow:auto"></div><p class="hint">Invites pop up on your friend’s screen, no code typing. If they say No, you wait 3 minutes before inviting them again.</p><button class="b2" id="frFind" type="button">Find players</button><button class="b2" id="frDone">Close</button></div>';
  document.body.appendChild(m);FQ='';FCF='';const inp=m.querySelector('#frI'),qi=m.querySelector('#frQ'),iv=setInterval(frRender,1000),close=()=>{clearInterval(iv);m.remove()};
  m.querySelector('#frCp').onclick=function(){try{navigator.clipboard.writeText(FC)}catch(e){}this.textContent='Copied'};
  const add=()=>{const k=fcn(inp.value);if(!FRX.test(k))return frSay('Enter the 8-character friend code.');if(k===FC)return frSay('That is your own code.');if(frGet(k))return frSay('They are already on your list.');if(FR.length>=40)return frSay('Your friend list is full.');
   FR.push({c:k,n:'',ok:false});frSave();inp.value='';frTell(k,{c:'fr',code:FC,n:frNm(),pf:frPf()});frRender();frSay('Request sent. They need the game open to see it. It keeps retrying while this page is open.')};
  qi.oninput=()=>{FQ=qi.value;frRender()};m.querySelector('#frAdd').onclick=add;inp.onkeydown=e=>{if(e.key==='Enter')add()};
- m.querySelector('#frDone').onclick=close;m.onkeydown=e=>{if(e.key==='Escape')close()};m.addEventListener('pointerdown',e=>{if(e.target===m)close()});
+ m.querySelector('#frDone').onclick=close;m.querySelector('#frFind').onclick=findOpen;m.onkeydown=e=>{if(e.key==='Escape')close()};m.addEventListener('pointerdown',e=>{if(e.target===m)close()});
  frStatus();frRender();frPoll();inp.focus()}
 document.getElementById('frb').onclick=frOpen;frStart();setInterval(()=>{if(!document.hidden)frPoll()},30000);
 
