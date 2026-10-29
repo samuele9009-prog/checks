@@ -635,13 +635,16 @@ async function mkSbRoom(c,host){const sb=await sbClient(),h={},ps=[],key=myId+Ma
   ch.subscribe(async st=>{if(st==='SUBSCRIBED'){try{await ch.track({t:Date.now()})}catch(e){}clearTimeout(to);r.ready=true;ok()}
    else if(st==='CHANNEL_ERROR'||st==='TIMED_OUT'){if(r.ready){if(room===r&&!r.closed)(pvpR?pvpDrop(r):leaveLobby('Connection lost.'))}else{clearTimeout(to);no(new Error('Could not connect to the game server.'))}}})});
  return r}
-async function mmLoopSb(m){
+let mmClean=Promise.resolve(),mmLast=0;
+async function mmLoopSb(m,tries){
  let sb;try{sb=await sbClient()}catch(e){if(mm===m)mmStop(String(e&&e.message||e));return}
+ /* wait for the previous search channel to be fully removed (and a short cooldown) so a quick re-queue never reuses a half-closed channel or pairs with our own ghost */
+ try{await mmClean}catch(e){}const w=1500-(Date.now()-mmLast);if(w>0)await new Promise(ok=>setTimeout(ok,w));if(m.stop||mm!==m)return;
  const key=myId+Math.random().toString(36).slice(2,6),ar=m.ranked&&user?rkAcct(user):null,rt=ar&&ar.placed?ar.rating:0;
  const ch=sb.channel(m.ranked?'checks-mm-r':'checks-mm-q',{config:{broadcast:{self:false},presence:{key}}});
  let matched=false,sent=null;
  const st=t=>{m.st=t;const x=document.getElementById('mmS');if(x)x.textContent=t};
- const cleanup=()=>{try{ch.untrack()}catch(e){}try{sb.removeChannel(ch)}catch(e){}};
+ const cleanup=()=>{mmLast=Date.now();mmClean=(async()=>{try{await ch.untrack()}catch(e){}try{await sb.removeChannel(ch)}catch(e){}})();return mmClean};
  m.abort=()=>{matched=true;cleanup()};
  const finish=async(code2,host)=>{if(matched||m.stop||mm!==m)return;matched=true;cleanup();mm=null;clearInterval(mmTick);
   if(typeof tmToast==='function')tmToast('Match found!');
@@ -667,7 +670,7 @@ async function mmLoopSb(m){
  st('Connecting to the matchmaking server…');
  ch.subscribe(s=>{if(matched||m.stop||mm!==m)return;
   if(s==='SUBSCRIBED'){ch.track({t:Date.now(),r:rt});st('Connected. Waiting for another player to search…')}
-  else if(s==='CHANNEL_ERROR'||s==='TIMED_OUT'){mmStop('Could not reach the matchmaking server. Check your internet.')}})}
+  else if(s==='CHANNEL_ERROR'||s==='TIMED_OUT'){const n=(tries||0)+1;matched=true;cleanup();if(n<4)setTimeout(()=>{if(!m.stop&&mm===m)mmLoopSb(m,n)},1000);else mmStop('Could not reach the matchmaking server. Check your internet.')}})}
 async function peerJoin(c,host,sb){if(peerBusy)return;peerBusy=true;msg='Connecting…';renderMode();let r;
   try{r=await (sb?mkSbRoom:mkPeerRoom)(c,host)}catch(e){peerBusy=false;msg=String(e&&e.message||e);renderMode();return}
   peerBusy=false;room=r;code=c;lcap=host?lobbyCap:2;lbots=host?effBots():0;mySide=host?'w':'b';flip=!host;mode='online';oppHere=false;msg='';init();wireRoom(host);r.fire(false);
@@ -2110,6 +2113,18 @@ document.getElementById('frb').onclick=frOpen;frStart();setInterval(()=>{if(!doc
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&d.classList.contains('open')){set(false);t.focus()}});
  document.getElementById('pzTab').onclick=()=>{set(false);pzStart()};
  pzBadge();qBadge()})();
+
+/* ===== auto-update: checks the site for a new version every minute. Reloads when you are not in the middle of a game, otherwise shows a banner. ===== */
+(function(){
+ if(!/^https?:/.test(location.protocol))return;
+ const url=location.origin+location.pathname;let base=null,pending=false,bn=null;
+ const sig=async()=>{const r=await fetch(url+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;const t=await r.text();let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return h+':'+t.length};
+ const busy=()=>{try{return !!(mm||room||pvp||peerBusy||(typeof tut!=='undefined'&&tut)||(typeof tour!=='undefined'&&tour)||(typeof over!=='undefined'&&!over&&log&&log.length))}catch(e){return false}};
+ const banner=()=>{if(bn)return;bn=document.createElement('div');bn.style.cssText='position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99999;background:#222;color:#fff;padding:10px 14px;border-radius:10px;font:14px system-ui,sans-serif;box-shadow:0 4px 16px #0006;display:flex;gap:10px;align-items:center';bn.innerHTML='<span>A new update is available. It will refresh when your game ends.</span>';const b=document.createElement('button');b.textContent='Refresh now';b.style.cssText='padding:4px 10px;border-radius:6px;border:0;cursor:pointer';b.onclick=()=>location.reload();bn.appendChild(b);document.body.appendChild(bn)};
+ const tick=async()=>{try{const s=await sig();if(base===null){base=s;return}if(s!==base)pending=true}catch(e){}
+  if(pending){if(busy())banner();else location.reload()}};
+ tick();setInterval(tick,60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});
+})();
 </script>
 </body>
 </html>
