@@ -407,7 +407,7 @@ const VARS=[
 ['portal','Portals','Two pairs of glowing portals sit on the board, and they jump to new squares every two moves. A piece caught on a new portal gets pulled through to its twin. Land on one and you pop out of its twin, if the twin is free. Capturing a piece on a portal square doesn\u2019t use the portal. Check from a portal still wins.'],
 ['lava','Rising lava','The edge of the board collapses into lava: first the outer ring at move 16, then the next ring at move 32. Pieces left on a fallen ring are lost, and you cannot step onto fallen squares. A King on a collapsing ring loses, so watch the flashing border!'],
 ['streak','Hot streak','Capture a piece and you move again straight away. The bonus move cannot chain, so you never get more than two moves in a row.'],
-['quake','Earthquake','Every 10 moves the ground shakes and two random pieces swap places. If that puts a King in danger, the shaken side pays for it.']];
+['quake','Earthquake','Every 10 moves the ground shakes and two random pieces swap places. Pieces right next to a King are never moved. If the swap puts a King in danger, the shaken side pays for it.']];
 const vrName=v=>VARS.some(x=>x[0]===v)?v:'classic';
 
 /* ===== address bar follows the game mode: /portals, /rising-lava, /portals+fog-of-war ===== */
@@ -475,7 +475,8 @@ function vrTwist(p,i,j,cp){const me=p.t,opp=me==='w'?'b':'w',ply=log.length+1;le
   for(let x=0;x<64;x++)if(B[x]&&vrRingOf(x)<rg){if(B[x].k==='king')dead[B[x].t]=true;else B[x]=null}
   if(rg>vrRingsAt(ply-1))tmToast('The floor collapsed! Everything on the outer ring is gone.');
   if(dead.w||dead.b)over=dead.w&&dead.b?{draw:1}:{win:dead.w?'b':'w',vm:'when the floor collapsed'}}
- if(VRA==='quake'&&ply%10===0){const rnd=vrRnd((VSEED|0)+ply*131),L=[];B=B.slice();for(let x=0;x<64;x++)if(B[x]&&B[x].k!=='king')L.push(x);
+ if(VRA==='quake'&&ply%10===0){const rnd=vrRnd((VSEED|0)+ply*131),L=[];B=B.slice();const kz=new Set();for(let x=0;x<64;x++)if(B[x]&&B[x].k==='king')for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const r=(x>>3)+dr,c=(x&7)+dc;if(r>=0&&r<8&&c>=0&&c<8)kz.add(r*8+c)}/* squares touching a King are safe from the quake */
+  for(let x=0;x<64;x++)if(B[x]&&B[x].k!=='king'&&!kz.has(x))L.push(x);
   if(L.length>1){const a=L.splice(Math.floor(rnd()*L.length),1)[0],b=L[Math.floor(rnd()*L.length)],t=B[a];B[a]=B[b];B[b]=t;if(a===jf)jf=b;else if(b===jf)jf=a;tmToast('Earthquake! Two pieces swapped places.');vrShake()}}
  if(!over&&VRA!=='lava'){if(inCheck(B,opp))over={win:me};else if(inCheck(B,me))over={win:opp,vm:'after the board shifted into danger'}}
  if(over)add+='#';return{j:jf,add}}
@@ -813,14 +814,15 @@ async function mmLoopSb(m,tries){
  /* wait for the previous search channel to be fully removed (and a short cooldown) so a quick re-queue never reuses a half-closed channel or pairs with our own ghost */
  try{await mmClean}catch(e){}const w=1500-(Date.now()-mmLast);if(w>0)await new Promise(ok=>setTimeout(ok,w));if(m.stop||mm!==m)return;
  const key=myId+Math.random().toString(36).slice(2,6),ar=m.ranked&&user?rkAcct(user):null,rt=ar&&ar.placed?ar.rating:0;
- const ch=sb.channel(m.ranked?'checks-mm-r':'checks-mm-q',{config:{broadcast:{self:false},presence:{key}}});
+ const ch=sb.channel(m.ranked?'checks-mm-r':(m.mode&&m.mode!=='classic'?'checks-mm-q-'+m.mode:'checks-mm-q'),{config:{broadcast:{self:false},presence:{key}}});
  let matched=false,sent=null;
  const st=t=>{m.st=t;const x=document.getElementById('mmS');if(x)x.textContent=t};
  const cleanup=()=>{mmLast=Date.now();mmClean=(async()=>{try{await ch.untrack()}catch(e){}try{await sb.removeChannel(ch)}catch(e){}})();return mmClean};
  m.abort=()=>{matched=true;cleanup()};
  const finish=async(code2,host)=>{if(matched||m.stop||mm!==m)return;matched=true;cleanup();mm=null;clearInterval(mmTick);
-  if(typeof tmToast==='function')tmToast('Match found!');
+  if(typeof tmToast==='function')tmToast('Match found!'+(!m.ranked&&m.mode&&m.mode!=='classic'?' Mode: '+mmModeName(m.mode):''));
   const oc=lobbyCap;lobbyCap=2;try{await peerJoin(code2,host,true)}catch(e){}lobbyCap=oc;
+  if(host&&!m.ranked&&room&&m.mode&&m.mode!=='classic'){try{if(m.mode==='fog'){if(!FOG)fogToggle()}else vrSet(m.mode)}catch(e){}}
   if(m.ranked&&room)pvpBegin()};
  const pair=()=>{if(matched||m.stop||sent)return;
   const L=Object.entries(ch.presenceState()).map(([k,v])=>({k,t:(v[0]&&v[0].t)||0,r:(v[0]&&v[0].r)||0}));
@@ -856,14 +858,16 @@ async function joinLobby(c,host){
 /* ===== matchmaking: shared waiting spots on the PeerJS broker. The first searcher waits there and hosts, the next one connects to it and is sent a fresh lobby code.
    Ranked searches use their own spots: your rank band for 20s, then the "any rank" spot for 20s, alternating on the clock so players can find each other ===== */
 const MM_RE=/^[A-HJ-NP-Z2-9]{6}$/,MM_NET=['network','server-error','socket-error','socket-closed','browser-incompatible'];
-let mmTick=null;
+let mmTick=null,mmMode='classic';
+const mmModeName=v=>v==='fog'?'Fog of war':((VARS.find(x=>x[0]===v)||[])[1]||'Classic');
+const mmModeOK=v=>v==='classic'||v==='fog'||VARS.some(x=>x[0]===v);
 const mmBand=()=>{const u=user?rkAcct(user):null;return u&&u.placed?'b'+Math.floor(rkIdx(u.rating)/3):'new'};
 function mmSlot(m){if(!m.ranked)return{id:'checksmmv1-q',ms:0};const w=20000,t=Date.now(),ph=Math.floor(t/w)%2;return{id:'checksmmv1-r-'+(ph?'any':m.band),ms:Math.max(1500,w-(t%w))}}
 function mmClock(){clearInterval(mmTick);mmTick=setInterval(()=>{const e=document.getElementById('mmT');if(!mm||!e){if(!mm)clearInterval(mmTick);return}const s=Math.floor((Date.now()-mm.t0)/1000);e.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')},500)}
 function mmStop(note){const m=mm;mm=null;clearInterval(mmTick);if(m){m.stop=true;try{m.abort&&m.abort()}catch(e){}}if(note!==undefined){msg=note}renderMode()}
 function mmStart(ranked){if(mm||room||peerBusy){if(peerBusy&&!mm&&!room){msg='Still connecting from your last try. Wait a few seconds and press again.';renderMode()}return}if(modGate())return;
  if(ranked&&!user){msg='Ranked matchmaking needs a username so your rank can be saved to your account.';renderMode();askName();return}
- const m={stop:false,t0:Date.now(),fails:0,abort:null,ranked:!!ranked,band:ranked?mmBand():''};mm=m;msg='';renderMode();mmClock();mmLoopSb(m)}
+ const m={stop:false,t0:Date.now(),fails:0,abort:null,ranked:!!ranked,band:ranked?mmBand():'',mode:ranked||!mmModeOK(mmMode)?'classic':mmMode};mm=m;msg='';renderMode();mmClock();mmLoopSb(m)}
 async function mmLoop(m){
  try{await loadPeer()}catch(e){if(mm===m)mmStop(String(e&&e.message||e));return}
  while(!m.stop&&mm===m){
@@ -905,7 +909,7 @@ function mmTry(m){return new Promise(res=>{
     cn.on('close',()=>{if(!done&&!room)taken=false})})})};
  asWaiter()})}
 function mmPanel(){const el=document.getElementById('modeBox'),r=mm&&mm.ranked;
- el.innerHTML='<div class="row sp"><b>'+(r?'Ranked matchmaking':'Matchmaking')+'</b><span class="code" id="mmT">0:00</span></div><p class="hint">Searching for '+(r?'a ranked opponent near your rank':'another player who is also in matchmaking')+'…</p><p class="hint" id="mmS">'+esc(mm&&mm.st||'Connecting…')+'</p><p class="hint">Keep this page open. You will be put into a game as soon as someone is found.'+(r?' Ranked games have a 10 minute timer and leaving mid-game counts as a loss.':'')+'</p><button class="b2" id="mmX">Cancel</button>';
+ el.innerHTML='<div class="row sp"><b>'+(r?'Ranked matchmaking':'Matchmaking')+'</b><span class="code" id="mmT">0:00</span></div><p class="hint">Searching for '+(r?'a ranked opponent near your rank':'another player who is also in matchmaking'+(mm&&!r&&mm.mode&&mm.mode!=='classic'?' in '+mmModeName(mm.mode)+' mode':''))+'…</p><p class="hint" id="mmS">'+esc(mm&&mm.st||'Connecting…')+'</p><p class="hint">Keep this page open. You will be put into a game as soon as someone is found.'+(r?' Ranked games have a 10 minute timer and leaving mid-game counts as a loss.':'')+'</p><button class="b2" id="mmX">Cancel</button>';
  document.getElementById('mmX').onclick=()=>mmStop('Matchmaking cancelled.')}
 
 /* ===== ranked online match (player vs player). Each player's own rank is updated on their own device from the result ===== */
@@ -1116,9 +1120,9 @@ function renderMode(){chatSync();
   l.onchange=()=>{lvl=+l.value;init();renderMode()};s.onchange=()=>{mySide=s.value;flip=mySide==='b';init()};rkBind();fogBind();bvBind()}
  else if(!room&&dir){el.innerHTML=dirHTML();dirBind()}
  else if(!room&&mm){mmPanel()}
- else if(!room){el.innerHTML='<div class="row"><button class="b1" id="mmGo">Find a match</button><button class="b1" id="mmRk">Ranked matchmaking</button></div><p class="hint">Find a match: quick game, no rank change. Ranked matchmaking: 10 minute timer, counts for your rank. '+pvpRankLine()+'</p><div class="seg" id="capSeg"><button data-c="2">2 players</button><button data-c="3">3 players</button><button data-c="4">4 players</button></div>'+obUI()+'<div class="row"><button class="b1" id="mk">Create private lobby</button></div><div class="row"><input id="jc" maxlength="6" placeholder="Lobby code" autocomplete="off"><button class="b2" id="jn">Join</button></div><p class="hint">'+(msg||'Friends open this same page and type your code to connect instantly.'+(lobbyCap===3?' With 3 players the teams are picked at random: one team gets two players who take turns.':lobbyCap===4?' With 4 players it is 2 vs 2. Teams are picked at random and teammates take turns.':'')+(effBots()?' Bots fill the empty seats and move on their own from your device.':''))+'</p>'+lbHint()+'';
+ else if(!room){el.innerHTML='<div class="row"><label for="mmMd">Game mode</label><select id="mmMd" aria-label="Game mode for Find a match"><option value="classic">Classic</option><option value="fog">Fog of war</option>'+VARS.map(x=>'<option value="'+x[0]+'">'+x[1]+'</option>').join('')+'</select></div><div class="row"><button class="b1" id="mmGo">Find a match</button><button class="b1" id="mmRk">Ranked matchmaking</button></div><p class="hint">Find a match: quick game, no rank change. Pick a game mode and you are only matched with people searching for that same mode. Ranked matchmaking: 10 minute timer, counts for your rank. '+pvpRankLine()+'</p><div class="seg" id="capSeg"><button data-c="2">2 players</button><button data-c="3">3 players</button><button data-c="4">4 players</button></div>'+obUI()+'<div class="row"><button class="b1" id="mk">Create private lobby</button></div><div class="row"><input id="jc" maxlength="6" placeholder="Lobby code" autocomplete="off"><button class="b2" id="jn">Join</button></div><p class="hint">'+(msg||'Friends open this same page and type your code to connect instantly.'+(lobbyCap===3?' With 3 players the teams are picked at random: one team gets two players who take turns.':lobbyCap===4?' With 4 players it is 2 vs 2. Teams are picked at random and teammates take turns.':'')+(effBots()?' Bots fill the empty seats and move on their own from your device.':''))+'</p>'+lbHint()+'';
   document.querySelectorAll('#capSeg button').forEach(b=>{b.classList.toggle('on',+b.dataset.c===lobbyCap);b.onclick=()=>{lobbyCap=+b.dataset.c;lobbyBots=effBots();renderMode()}});obBind();
-  document.getElementById('mmGo').onclick=()=>mmStart(false);document.getElementById('mmRk').onclick=()=>mmStart(true);document.getElementById('mk').onclick=()=>joinLobby(mkCode(),true);
+  {const sel=document.getElementById('mmMd');sel.value=mmModeOK(mmMode)?mmMode:'classic';sel.onchange=()=>{mmMode=sel.value}}document.getElementById('mmGo').onclick=()=>mmStart(false);document.getElementById('mmRk').onclick=()=>mmStart(true);document.getElementById('mk').onclick=()=>joinLobby(mkCode(),true);
   document.getElementById('jn').onclick=()=>{const c=document.getElementById('jc').value.trim().toUpperCase();if(c.length===6)joinLobby(c,false);else{msg='Enter the 6-character code.';renderMode()}}}
  else{el.innerHTML=(pvp?pvpBanner():'')+(room.direct?'<div class="row"><b>Direct game</b></div>':'<div class="row">Lobby code <b class="code">'+code+'</b><button class="b2" id="cp">Copy</button></div>')+lobbyInfo()+(lcap===2&&!pvp?fogUI():'')+'<button class="b2" id="lv">Leave lobby</button>';
   if(document.getElementById('cp'))document.getElementById('cp').onclick=()=>{try{navigator.clipboard.writeText(code)}catch(e){}};
