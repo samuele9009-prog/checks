@@ -410,21 +410,21 @@ const VARS=[
 ['quake','Earthquake','Every 10 moves the ground shakes and two random pieces swap places. If that puts a King in danger, the shaken side pays for it.']];
 const vrName=v=>VARS.some(x=>x[0]===v)?v:'classic';
 
-/* ===== address bar follows the game mode: /portals, /rising-lava, /portals/fog-of-war ===== */
+/* ===== address bar follows the game mode: /portals, /rising-lava, /portals+fog-of-war ===== */
 const VR_SLUG={diag:'corner-check',full:'close-quarters',hill:'king-of-the-hill',bounty:'bounty-hunt',shuffle:'shuffle',swords:'sword-storm',sharks:'shark-tank',portal:'portals',lava:'rising-lava',streak:'hot-streak',quake:'earthquake'};
 const FOG_SLUG='fog-of-war';
 const URL_HASHMODE=!/^https?:$/.test(location.protocol);/* file:// and similar cannot change the path, so use #/portals there */
-function urlParseSegs(segs){let vr='classic',fog=false;for(const g of segs){const k=Object.keys(VR_SLUG).find(x=>VR_SLUG[x]===g);if(k)vr=k;else if(g===FOG_SLUG)fog=true}return{vr,fog}}
+function urlParseSegs(segs){let vr='classic',fog=false;for(const g of segs.flatMap(x=>x.split('+'))){const k=Object.keys(VR_SLUG).find(x=>VR_SLUG[x]===g);if(k)vr=k;else if(g===FOG_SLUG)fog=true}return{vr,fog}}
 const URL_SEGS=(URL_HASHMODE?location.hash.replace(/^#\/?/,''):location.pathname).split('/').filter(Boolean).map(x=>x.toLowerCase());
-const URL_KNOWN=g=>g===FOG_SLUG||Object.values(VR_SLUG).includes(g);
+const URL_KNOWN=g=>g.split('+').every(x=>x===FOG_SLUG||Object.values(VR_SLUG).includes(x));
 const URL_BASE=(()=>{if(URL_HASHMODE)return location.pathname;const a=location.pathname.split('/').filter(Boolean);while(a.length&&URL_KNOWN(a[a.length-1].toLowerCase()))a.pop();if(a.length&&/\./.test(a[a.length-1]))a.pop();return'/'+a.join('/')+(a.length?'/':'')})();
 const URL_INIT=urlParseSegs(URL_HASHMODE?URL_SEGS:URL_SEGS.slice(-2));
 const urlRoot=()=>URL_BASE+location.search;
 let urlReady=false,urlPushNext=false;
-function urlBuild(vr,fog){const p=[];if(vr!=='classic'&&VR_SLUG[vr])p.push(VR_SLUG[vr]);if(fog)p.push(FOG_SLUG);
- if(URL_HASHMODE)return location.pathname+location.search+(p.length?'#/'+p.join('/'):'');
- return URL_BASE+p.join('/')+location.search+location.hash}
-function urlTitle(vr,fog){const n=[];if(vr!=='classic'){const x=VARS.find(y=>y[0]===vr);if(x)n.push(x[1])}if(fog)n.push('Fog of war');return n.length?'Checks - '+n.join(' + '):'Checks'}
+function urlBuild(vr,fog){const p=[];if(fog)p.push(FOG_SLUG);else if(vr!=='classic'&&VR_SLUG[vr])p.push(VR_SLUG[vr]);
+ if(URL_HASHMODE)return location.pathname+location.search+(p.length?'#/'+p.join('+'):'');
+ return URL_BASE+p.join('+')+location.search+location.hash}
+function urlTitle(vr,fog){const n=[];if(vr!=='classic'&&!fog){const x=VARS.find(y=>y[0]===vr);if(x)n.push(x[1])}if(fog)n.push('Fog of war');return n.length?'Checks - '+n.join(' + '):'Checks'}
 function urlSync(){if(!urlReady)return;try{
  if(URL_HASHMODE&&/^#m=/.test(location.hash))return;
  const ok=mnOK(),vr=ok?VR:'classic',fog=ok&&FOG,want=urlBuild(vr,fog),cur=location.pathname+location.search+location.hash;
@@ -435,7 +435,7 @@ function urlApply(r){try{
  if(!mnOK())return;
  if(mode==='online'&&(!amHost||(log.length&&!over))){urlSync();return}
  if(r.vr===VR&&r.fog===FOG)return;
- VR=r.vr;FOG=r.fog;FH=false;if((VR!=='classic'||FOG)&&ranked){ranked=false;rkMsg='Ranked turned off. It cannot be played with Fog of War or game variants.'}
+ VR=r.vr;FOG=r.vr==='classic'&&r.fog;FH=false;if((VR!=='classic'||FOG)&&ranked){ranked=false;rkMsg='Ranked turned off. It cannot be played with Fog of War or game variants.'}
  VSEED=vrSeed();init();if(mode==='online'&&room)room.emit('newgame',{lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED});renderMode();menuSync()}catch(e){}}
 addEventListener('load',()=>{urlReady=true;urlApply(URL_INIT);urlSync()});
 addEventListener('popstate',()=>{if(!urlReady)return;urlApply(urlParseSegs(URL_HASHMODE?location.hash.replace(/^#\/?/,'').split('/').filter(Boolean).map(x=>x.toLowerCase()):location.pathname.split('/').filter(Boolean).slice(-2).map(x=>x.toLowerCase())));urlSync()});
@@ -443,7 +443,7 @@ function fogUI(){return''}
 function fogBind(){}
 const mnOK=()=>!PZ&&!tut&&!tour&&!pvp&&(mode==='local'||mode==='bot'||(mode==='online'&&!!room&&lcap===2));
 function vrAvail(){return mnOK()&&!ranked}
-function vrSync(){VRA=vrAvail()?VR:'classic'}
+function vrSync(){if(VR!=='classic'&&FOG)VR='classic';VRA=vrAvail()?VR:'classic'}
 const vrSeed=()=>(Math.random()*2147483646|0)+1;
 function vrSetup(){const v=VRA;if(v!=='shuffle'&&v!=='swords'&&v!=='sharks')return;
  let back=BACK.slice();
@@ -454,10 +454,10 @@ function vrSetup(){const v=VRA;if(v!=='shuffle'&&v!=='swords'&&v!=='sharks')retu
 const vrRule=()=>VRA==='diag'?' VARIANT: here an enemy piece on a diagonal corner is checkmate, and straight-on neighbours are safe.':VRA==='full'?' VARIANT: here any enemy piece touching it, even at a corner, is checkmate.':VRA==='hill'?' VARIANT: walk it onto one of the four centre squares to win.':VRA==='bounty'?' VARIANT: capture 6 enemy pieces first to win.':'';
 function mnGuard(what){if(mode==='online'&&(!amHost||(log.length&&!over))){tmToast('Only the host can change '+what+', and only at the start of a game.');return false}return true}
 function fogToggle(){if(!mnOK())return;if(!mnGuard('Fog of war'))return;
- FOG=!FOG;FH=false;if(FOG&&ranked){ranked=false;rkMsg='Ranked turned off. It cannot be played with Fog of War.'}
+ FOG=!FOG;FH=false;if(FOG)VR='classic';if(FOG&&ranked){ranked=false;rkMsg='Ranked turned off. It cannot be played with Fog of War.'}
  urlPushNext=true;VSEED=vrSeed();init();if(mode==='online'&&room)room.emit('newgame',{lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED});renderMode();menuSync();urlSync();urlPushNext=false}
 function vrSet(v){if(!mnOK())return;if(!mnGuard('the variant')){menuSync();return}
- VR=vrName(v);FH=false;if(VR!=='classic'&&ranked){ranked=false;rkMsg='Ranked turned off. It cannot be played with game variants.'}
+ VR=vrName(v);FH=false;if(VR!=='classic')FOG=false;if(VR!=='classic'&&ranked){ranked=false;rkMsg='Ranked turned off. It cannot be played with game variants.'}
  urlPushNext=true;VSEED=vrSeed();init();if(mode==='online'&&room)room.emit('newgame',{lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED});renderMode();menuSync();urlSync();urlPushNext=false}
 const vrRingOf=j=>Math.min(j>>3,j&7,7-(j>>3),7-(j&7));
 const vrRingsAt=n=>VRA==='lava'?Math.min(2,Math.floor(n/16)):0;
@@ -489,7 +489,8 @@ function vrMark(bd){if(VRA!=='portal'&&VRA!=='lava')return;
   else{const r=vrRingOf(i);if(r<rg)h='<span class="vrm lv"></span>';else if(nx&&r===rg)h='<span class="vrm lw"></span>'}
   if(h)e.insertAdjacentHTML('afterbegin',h)})}
 let mnKey='',mnShown='off';
-function mnIntro(force){if(!mnOK())return;const on=[];if(FOG)on.push(['Fog of war','You only see your own pieces and the squares they can move to. The move list is hidden.']);
+let mnQuiet=false;
+function mnIntro(force){if(mnQuiet||PZ||!mnOK())return;const on=[];if(FOG)on.push(['Fog of war','You only see your own pieces and the squares they can move to. The move list is hidden.']);
  if(VR!=='classic'){const x=VARS.find(y=>y[0]===VR);on.push([x[1],x[2]])}
  const k=on.map(x=>x[0]).join('+')||'off';if(k===mnShown&&!force)return;mnShown=k;if(!on.length||document.getElementById('mnI'))return;
  const m=document.getElementById('mnM');if(m)m.remove();
@@ -515,7 +516,7 @@ function menuSync(){const b=document.getElementById('mnFog');if(!b)return;
  if(window.dsbFit)window.dsbFit()}
 function mnDraw(){const b=document.getElementById('mnB');if(!b)return;const ok=mnOK();
  b.innerHTML=(ok?'':'<p class="hint">Game modes work in 2 players, Vs bot and private online games.</p>')+
- '<button class="b2 mnC'+(FOG&&ok?' on':'')+'" type="button" data-f="1"'+(ok?'':' disabled')+'><b>Fog of war: '+(FOG&&ok?'On':'Off')+'</b><span>You only see your own pieces and the squares they can move to. The move list is hidden. Mixes with any variant.</span></button>'+
+ '<button class="b2 mnC'+(FOG&&ok?' on':'')+'" type="button" data-f="1"'+(ok?'':' disabled')+'><b>Fog of war: '+(FOG&&ok?'On':'Off')+'</b><span>You only see your own pieces and the squares they can move to. The move list is hidden.</span></button>'+
  VARS.map(x=>{const on=ok?VR===x[0]:x[0]==='classic';return'<button class="b2 mnC'+(on?' on':'')+'" type="button" data-v="'+x[0]+'"'+(ok?'':' disabled')+'><b>'+x[1]+(on?' ✓':'')+'</b><span>'+x[2]+'</span></button>'}).join('');
  b.querySelectorAll('[data-v]').forEach(x=>x.onclick=()=>{vrSet(x.dataset.v);mnDraw()});
  const f=b.querySelector('[data-f]');if(f)f.onclick=()=>{fogToggle();mnDraw()}}
@@ -1122,7 +1123,7 @@ function renderMode(){chatSync();
  else{el.innerHTML=(pvp?pvpBanner():'')+(room.direct?'<div class="row"><b>Direct game</b></div>':'<div class="row">Lobby code <b class="code">'+code+'</b><button class="b2" id="cp">Copy</button></div>')+lobbyInfo()+(lcap===2&&!pvp?fogUI():'')+'<button class="b2" id="lv">Leave lobby</button>';
   if(document.getElementById('cp'))document.getElementById('cp').onclick=()=>{try{navigator.clipboard.writeText(code)}catch(e){}};
   fogBind();document.getElementById('lv').onclick=()=>leaveLobby()}}
-function setMode(m){if(m==='online'&&modGate())return;if(mm){const q=mm;mm=null;clearInterval(mmTick);q.stop=true;try{q.abort&&q.abort()}catch(e){}}pvpForfeit();pvpR=false;if(PZ){lvl=PZ.lv;PZ=null}rkForfeitLive();mnShown='off';FH=false;ranked=false;rkMsg='';dirReset();if(room){const r0=room;setTimeout(()=>{try{r0.leave()}catch(e){}},300);room=null;oppHere=false}trio=null;roster=[];lcap=2;lbots=0;tour=null;tut=m==='tutor';mode=(m==='tour'||tut)?'bot':m;if(tut)lvl=1;if(m==='tour'){tour={me:0,bot:0,g:1,sc:false,done:false};lvl=4}else if(lvl===4)lvl=2;msg='';mySide='w';flip=false;clearTimeout(bt);init();renderMode()}
+function setMode(m){if(m==='online'&&modGate())return;if(mm){const q=mm;mm=null;clearInterval(mmTick);q.stop=true;try{q.abort&&q.abort()}catch(e){}}pvpForfeit();pvpR=false;if(PZ){lvl=PZ.lv;PZ=null}rkForfeitLive();FH=false;ranked=false;rkMsg='';dirReset();if(room){const r0=room;setTimeout(()=>{try{r0.leave()}catch(e){}},300);room=null;oppHere=false}trio=null;roster=[];lcap=2;lbots=0;tour=null;tut=m==='tutor';mode=(m==='tour'||tut)?'bot':m;if(tut)lvl=1;if(m==='tour'){tour={me:0,bot:0,g:1,sc:false,done:false};lvl=4}else if(lvl===4)lvl=2;msg='';mySide='w';flip=false;clearTimeout(bt);init();renderMode()}
 function renderCount(){document.getElementById('count').innerHTML=['w','b'].map(t=>{if(fogOn()&&t!==fogSide())return '<div class="cr '+t+'"><b>'+NAME[t]+' ?</b></div>';const n={};let tot=0;B.forEach(p=>{if(p&&p.t===t){n[p.k]=(n[p.k]||0)+1;tot++}});
  return '<div class="cr '+t+'"><b>'+NAME[t]+' '+tot+'</b>'+['sword','ninja','fish','shark','king'].map(k=>'<span><img class="'+t+'" src="'+S[k]+'" alt="'+(k==='ninja'?'knight':k)+'">'+(n[k]||0)+'</span>').join('')+'</div>'}).join('')}
 const REDUCE=matchMedia('(prefers-reduced-motion:reduce)');
@@ -1273,7 +1274,7 @@ function pzMakeOld(key){const dn=pzDayNum(key),wd=(dn+3)%7,wk=Math.floor((dn+3)/
 const pzIsDone=k=>{try{return(JSON.parse(localStorage.getItem('checks-puzzle'))||{}).d===k}catch(e){return false}};
 function pzMarkDone(k){try{localStorage.setItem('checks-puzzle',JSON.stringify({d:k}))}catch(e){}}
 function pzBadge(){const e=document.getElementById('pzBdg');if(!e)return;const d=pzIsDone(pzKey());e.textContent=d?'Solved ✓':'New';e.className=d?'done':''}
-function pzStart(){setMode('bot');const sv=lvl;lvl=3;limit=0;document.getElementById('lim').value='';PZ=pzMake(pzKey());PZ.lv=sv;init();renderMode();pzBadge()}
+function pzStart(){mnQuiet=true;try{setMode('bot')}finally{mnQuiet=false}{const o=document.getElementById('mnI');if(o)o.remove()}const sv=lvl;lvl=3;limit=0;document.getElementById('lim').value='';PZ=pzMake(pzKey());PZ.lv=sv;init();renderMode();pzBadge()}
 function pzStat(){if(turn!==mySide)return NAME[turn]+' is replying…';return 'Daily puzzle: win in '+PZ.n+' · move '+(((log.length+1)>>1)+1)+' of '+PZ.n}
 function pzMsg(){return over.win===mySide?'Puzzle solved! 🎉':over.win?NAME[over.win]+' got there first. Try again!':'Not solved this time. Try again!'}
 function pzEnd(){if(!PZ||PZ.done||!over)return;PZ.done=true;if(over.win===mySide){pzMarkDone(PZ.key);qEv('puzzle');pzBadge();renderMode()}}
@@ -1483,7 +1484,7 @@ document.getElementById('botv').onclick=function(){BV=!BV;BVF=false;bvUI();try{l
  if(!BV){try{speechSynthesis.cancel()}catch(e){}}else{bvPick();if(mode==='bot')bvSay("Let's play.",true)}};
 
 document.getElementById('again').onclick=()=>{if(pvpR){pvpR=false;leaveLobby();mmStart(true);return}again()};
-document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>{const m=b.dataset.m;let w=null;try{w=window.open(urlRoot()+'#m='+m,'_blank')}catch(e){}if(!w)setMode(m)});addEventListener('load',()=>{const h=/^#m=(local|bot|online|tutor)$/.exec(location.hash);if(h){setTimeout(()=>{try{history.replaceState(null,'',location.href.split('#')[0])}catch(e){}setMode(h[1])},0)}});
+document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));addEventListener('load',()=>{const h=/^#m=(local|bot|online|tutor)$/.exec(location.hash);if(h){setTimeout(()=>{try{history.replaceState(null,'',location.href.split('#')[0])}catch(e){}setMode(h[1])},0)}});
 document.getElementById('setlim').onclick=()=>{if(pvp)return;if(rkLive()){askForfeit(()=>{rkForfeitLive();document.getElementById('setlim').onclick()});return}limit=Math.max(0,Math.min(180,Math.floor(+document.getElementById('lim').value)||0));rkForfeitLive();if(ranked&&limit<=7){ranked=false;rkMsg='Ranked turned off. It needs a timer over 7 minutes.'}document.getElementById('new').onclick();renderMode()};
 const fmt=ms=>{const s=Math.max(0,Math.ceil(ms/1000));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
 setInterval(()=>{const c=document.getElementById('clock');if(!limit){c.textContent='No time limit';return}if(over)return;
@@ -2102,10 +2103,11 @@ async function acApi(a,body){if(!CLOUD_URL&&!SB_URL)throw new Error('Cloud savin
 async function acApply(d,k){const[i,c]=d.split('.'),o=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(i)},await acKey(k),b64d(c))));
  ACK().forEach(x=>localStorage.removeItem(x));Object.keys(o).forEach(x=>{if(/^checks-/.test(x)&&!AC_BAD.includes(x)&&typeof o[x]==='string')localStorage.setItem(x,o[x])})}
 async function acSave(force,retry){if(!ACC||acBusy||!(CLOUD_URL||SB_URL))return'';acBusy=true;
- try{const o={};ACK().forEach(x=>o[x]=localStorage.getItem(x));const t=JSON.stringify(o);if(!force&&t===acLast)return'';if(t.length>1.5e6)return'Too much data to save.';
+ try{acSyncV();const o={};ACK().forEach(x=>o[x]=localStorage.getItem(x));const t=JSON.stringify(o);if(!force&&t===acLast)return'';if(t.length>1.5e6)return'Too much data to save.';
   const iv=crypto.getRandomValues(new Uint8Array(12)),ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},await acKey(ACC.k),new TextEncoder().encode(t));
   const j=await acApi('save',{u:ACC.u,h:ACC.h,v:ACC.v,d:b64e(iv)+'.'+b64e(ct)});ACC.v=j.v;acLast=t;acStore();return''}
  catch(e){if(e.st===409&&e.j&&!retry){ACC.v=e.j.v;acStore();acBusy=false;
+   try{const l0=await acApi('load',{u:ACC.u,h:ACC.h});if(l0.d&&acSame(await acPeek(l0.d,ACC.k))){ACC.v=l0.v;acStore();return''}}catch(x){}
    if(confirm('Another device saved newer progress. OK = keep THIS device\'s progress (overwrites the other). Cancel = load the other one here.'))return acSave(true,1);
    try{const l=await acApi('load',{u:ACC.u,h:ACC.h});await acApply(l.d,ACC.k);ACC.v=l.v;acStore();location.reload()}catch(x){return x.message}return''}
   if(acIsGone(e)){acBusy=false;acGone();return''}
@@ -2116,8 +2118,16 @@ const acIsGone=e=>{const m=(e&&e.j&&e.j.e)||'';return!!m&&/wrong|no such|not fou
 function acGone(){if(!ACC||acGoneOn)return;acGoneOn=true;const u=ACC.u;try{localStorage.removeItem('checks-acct')}catch(x){}ACC=null;
  const o=document.createElement('div');o.className='modal';o.style.zIndex=400;o.innerHTML='<div class="card acc" role="alertdialog" aria-modal="true"><div class="acHd"><div class="acIc">'+IC_USER+'</div><h2>Logged out</h2><p>The account <b>'+esc(u)+'</b> was deleted or its password was changed, so you have been logged out. Your progress on this device is still here.</p></div><button class="b1 acPri" id="agOk">OK</button></div>';
  document.body.appendChild(o);o.querySelector('#agOk').onclick=()=>location.reload();o.querySelector('#agOk').focus()}
-async function acCheck(){if(!ACC||!(CLOUD_URL||SB_URL))return;try{const j=await acApi('ver',{u:ACC.u,h:ACC.h});if(j.v<=ACC.v)return;
- if(confirm('Your account has newer progress from another device. OK = load it here (replaces this device). Cancel = keep this device\'s progress.')){const l=await acApi('load',{u:ACC.u,h:ACC.h});await acApply(l.d,ACC.k);ACC.v=l.v;acStore();location.reload()}else{ACC.v=j.v;acStore()}}catch(e){if(acIsGone(e))acGone()}}
+const acSyncV=()=>{try{const t=JSON.parse(localStorage.getItem('checks-acct'));if(t&&ACC&&t.u===ACC.u&&t.h===ACC.h&&t.v>ACC.v)ACC.v=t.v}catch(e){}};
+async function acPeek(d,k){const[i,c]=d.split('.');return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(i)},await acKey(k),b64d(c))))}
+const acSame=o=>{const mine={};ACK().forEach(x=>mine[x]=localStorage.getItem(x));const a=Object.keys(o).filter(x=>/^checks-/.test(x)&&!AC_BAD.includes(x)&&typeof o[x]==='string').sort(),b=Object.keys(mine).sort();return a.length===b.length&&a.every((x,n)=>x===b[n]&&o[x]===mine[x])};
+/* only ask when the account really holds different progress: a newer version number alone can come from this same device (another tab, or a save still in flight) */
+async function acCheck(){if(!ACC||acBusy||!(CLOUD_URL||SB_URL))return;try{acSyncV();const j=await acApi('ver',{u:ACC.u,h:ACC.h});acSyncV();if(acBusy||!ACC||j.v<=ACC.v)return;
+ const l=await acApi('load',{u:ACC.u,h:ACC.h});acSyncV();if(acBusy||!ACC||l.v<=ACC.v)return;
+ if(!l.d){ACC.v=l.v;acStore();return}
+ try{if(acSame(await acPeek(l.d,ACC.k))){ACC.v=l.v;acStore();return}}catch(e){}
+ if(acBusy)return;
+ if(confirm('Your account has newer progress from another device. OK = load it here (replaces this device). Cancel = keep this device\'s progress.')){await acApply(l.d,ACC.k);ACC.v=l.v;acStore();location.reload()}else{ACC.v=l.v;acStore()}}catch(e){if(acIsGone(e))acGone()}}
 async function acAuth(reg,u,p,say,em){u=u.trim().toLowerCase();if(!/^[a-z0-9_]{3,20}$/.test(u))return say('Username: 3 to 20 letters, numbers or _.');if(p.length<6)return say('Password needs 6 or more characters.');say('Working…');
  try{const K=await acKeys(u,p);
   if(reg){await acApi('register',{u,h:K.h});ACC={u,h:K.h,k:K.k,v:0};acStore();const r=await acSave(true);say(r||'Account created. Your progress is saved.');if(!r)setTimeout(()=>{document.getElementById('acM')&&document.getElementById('acM').remove();if(em)emOpen('verify',em);else acOpen(true)},700);return}
