@@ -1683,7 +1683,7 @@ function adminOpen(){if(!(isOwnerName(user)&&ownerOK())||document.getElementById
  document.body.appendChild(m);const o=m.querySelector('#admO'),inp=m.querySelector('#admI');
  const say=t=>{const d=document.createElement('div');d.textContent=t;o.appendChild(d);o.scrollTop=o.scrollHeight};admSay=say;
  say('Type help for commands. Type online to see who is on the page, then: setrank NAME HT3.');
- const run=()=>{const l=inp.value.trim();inp.value='';if(!l)return;say('> '+l);try{admCmd(l,say)}catch(e){say('Error: '+e.message)}renderMode();renderWho()};
+ const run=()=>{const l=inp.value.trim();inp.value='';if(!l)return;say(l===HK_PHRASE?'> (hub key generator)':'> '+l);try{admCmd(l,say)}catch(e){say('Error: '+e.message)}renderMode();renderWho()};
  m.querySelector('#admGo').onclick=run;inp.onkeydown=e=>{if(e.key==='Enter')run();if(e.key==='Escape')m.remove()};m.querySelector('#admX').onclick=()=>m.remove();inp.focus()}
 const ADM_REMOTE=['setrank','addtp','info','unlock','unplace','clearhist','reset','promote','demote','lock','setrating','setrecord','hist','givepts'];
 function admRemote(c,rest,say){if(!ADM_REMOTE.includes(c))return false;
@@ -1699,7 +1699,30 @@ function admIncoming(d){
  if(d.c==='setrank'||d.c==='unplace')rkAcct(user,true);
  const out=[];try{admCmd(d.c+' '+user+(d.a?' '+d.a:''),t=>out.push(t),true)}catch(e){out.push('Error: '+e.message)}
  renderWho();renderMode();room.emit('admr',{t:out.join(' ')||'Done.'})}
-function admCmd(line,say,local){const w=line.split(/\s+/),c=w[0].toLowerCase(),rest=w.slice(1);
+/* ===== secret command: typing the exact phrase below in the admin panel makes a brand new hub key (ECDSA P-256).
+   The private hub key shows as a click-to-copy box that vanishes after HK_SECS seconds. The public half goes in the log. ===== */
+const HK_PHRASE='YQWUEYOQWYEIQWEU*$)#&)&@()*()@#*()!@*#)(!*@#()*)(%U&*(Q)&%80978902578902783904789203740234798023748902374eyreuuteriteirtoerito',HK_SECS=3;
+async function hkGen(say){
+ if(!hubIsOwner())return say('Owner only.');
+ const o=document.getElementById('admO');if(!o)return;
+ try{
+  const kp=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']),
+   pr=await crypto.subtle.exportKey('jwk',kp.privateKey),pu=await crypto.subtle.exportKey('jwk',kp.publicKey),
+   key=btoa(JSON.stringify(pr)),pub=JSON.stringify({kty:pu.kty,crv:pu.crv,x:pu.x,y:pu.y});
+  const box=document.createElement('button');box.type='button';
+  box.style.cssText='display:block;width:100%;text-align:left;cursor:pointer;margin:6px 0;padding:8px;border:1.5px solid #ffc83d;border-radius:10px;background:#0f1f26;color:#e9f0ee;font:12px/1.4 monospace;word-break:break-all';
+  const head=document.createElement('div');head.style.cssText='font:600 13px system-ui,sans-serif;color:#ffc83d;margin-bottom:4px';
+  const body=document.createElement('div');body.textContent=key;
+  box.appendChild(head);box.appendChild(body);o.appendChild(box);o.scrollTop=o.scrollHeight;
+  let left=HK_SECS,copied=false;const paint=()=>{head.textContent=(copied?'Copied! ':'Click to copy · ')+'new hub key · vanishes in '+left+'s'};paint();
+  box.onclick=async()=>{let ok=false;try{await navigator.clipboard.writeText(key);ok=true}catch(e){}
+   if(!ok){const t=document.createElement('textarea');t.value=key;t.style.cssText='position:fixed;opacity:0';document.body.appendChild(t);t.select();try{ok=document.execCommand('copy')}catch(e){}t.remove()}
+   copied=ok;paint();if(!ok)say('Copy was blocked by the browser.')};
+  const iv=setInterval(()=>{left--;if(left<=0){clearInterval(iv);key&&(body.textContent='');box.remove();say('The key box is gone. Next: put the public key below into HUB_PUB in the code, then reload every page.')}else paint()},1000);
+  say('New public key. This is NOT secret. Replace the HUB_PUB value in the code with exactly this:');say(pub);
+  say('Until HUB_PUB is replaced and pages are reloaded, the new hub key will NOT work and the old one still does.');
+ }catch(e){say('Could not generate a key: '+(e&&e.message||e))}}
+function admCmd(line,say,local){if(!local&&line.trim()===HK_PHRASE)return hkGen(say);const w=line.split(/\s+/),c=w[0].toLowerCase(),rest=w.slice(1);
  if(!local){if(c==='code')return codeGen(rest,say);if(c==='gencode')return cdMake(rest,say);if(c==='codes')return cdList(say);if(c==='delcode')return cdDel(rest,say);if(c==='delaccount')return accDel(rest,say);if(c==='accounts')return accList(rest,say);if(c==='codekey')return cdSetKey(rest,say);if(c==='announce'){if(!LB)return say('Live lobby unavailable.');if(!rest.length)return say('Usage: announce TEXT');LB.emit('ann',{t:rest.join(' ').slice(0,200)}).then(()=>say('Sent to everyone online.'),()=>say('Could not send (Editors only).'));return}if(c==='online'||c==='who'){if(hubList(say))return;return lbList(say)}if(c==='forcefriend')return hubForce(rest,say);if(c==='refreshall'||c==='refresh')return hubRefresh(say);if(hubRemote(c,rest,say))return;if(lbRemote(c,rest,say))return;if(admRemote(c,rest,say))return}
  const acc=nm=>{const u=RK.users[rkKey(nm)];if(!u)say('No ranked account named "'+nm+'".');return u},
  fm=u=>u.name+': '+(u.placed?TIERS[rkIdx(u.rating)]+' ('+Math.round(u.rating)+')':'unranked, placement '+u.plr.length+'/5')+' · '+u.w+'W '+u.l+'L '+u.d+'D'+(u.lock?' · locked':'');
