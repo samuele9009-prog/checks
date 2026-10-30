@@ -1650,7 +1650,7 @@ function nameOf(t){if(mode==='online')return t===mySide?(user||'Guest'):oppName;
 function dn(t){return mode==='online'&&room&&lcap>=3&&trio?teamName(t):nameOf(t)||NAME[t]}
 function renderWho(){const u=user?rkAcct(user):null;lbPres();const ad=document.getElementById('adm');if(ad){ad.style.display=isOwnerName(user)&&ownerOK()?'':'none';ad.onclick=adminOpen}document.getElementById('who').innerHTML=av(myPf,user)+' '+(user?'Playing as '+esc(user)+ownTag(user):'Playing as guest')+(u&&u.placed?' '+rkBadge(rkIdx(u.rating)):'');const pa=document.querySelector('#who .av');if(pa){pa.classList.add('avBtn');pa.setAttribute('role','button');pa.tabIndex=0;pa.title='Account';pa.onclick=()=>acOpen();pa.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();acOpen()}}}}
 /* owner + admin (client-side only: it can only touch data saved in this browser) */
-const OWN_H='2b13fa66b10a357d7fb591ecf223fe2f165e7a57df4553a59a019e938ff3dc21';let ownSess=false,ownRaw='';
+const OWN_H='d153f72c3cfcc9e6c9969ec7cf082e1dcfa7a98c6045a1cdd40f01641caef5da';let ownSess=false,ownRaw='';
 const isOwnerName=n=>String(n||'').replace(/\s+/g,'').toLowerCase()==='figo9009';
 const ownerOK=()=>{if(ownSess)return true;try{return localStorage.getItem('checks-owner')===OWN_H}catch(e){return false}};
 const ownTag=n=>isOwnerName(n)?' <span class="own">(OWNER)</span>':'';
