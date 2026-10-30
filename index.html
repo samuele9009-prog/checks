@@ -1026,6 +1026,15 @@ function sendWho(){if(room)room.emit('who',{id:myId,n:user,pf:myPf})}
 function sayHello(){if(room)room.emit('hello',{id:myId,n:user,pf:myPf})}
 function setRoster(l){roster=(l||[]).slice(0,4).map(r=>({id:sid(r.id),n:cn(r.n)||'Guest',pf:okPf(r.pf)}));const o=roster.filter(r=>r.id!==myId);if(lcap===2)oppName=o[0]?o[0].n:''}
 function leaveLobby(t){pvpForfeit();pvpR=false;FOG=false;VR='classic';FH=false;if(room){const r0=room;setTimeout(()=>{try{r0.leave()}catch(e){}},300)}room=null;oppHere=false;trio=null;roster=[];lcap=2;lbots=0;msg=t||'';mySide='w';flip=false;init();renderMode()}
+/* tab closed: tell the lobby right away, leave the room, drop out of matchmaking and the online list */
+let leftOnHide=false;
+function goOffline(){if(leftOnHide)return;leftOnHide=true;
+ try{if(mm){const q=mm;mm=null;q.stop=true;try{q.abort&&q.abort()}catch(e){}}}catch(e){}
+ try{pvpForfeit()}catch(e){}
+ try{if(room){const r0=room;try{r0.emit('bye',{id:myId,h:amHost})}catch(e){}room=null;try{r0.leave()}catch(e){}}}catch(e){}
+ try{if(hp){hp.destroy()}}catch(e){}hp=null;hubC=null;try{if(hubPeer){hubPeer.destroy()}}catch(e){}hubPeer=null;hubConns=[]}
+addEventListener('pagehide',goOffline);
+addEventListener('pageshow',e=>{if(e.persisted&&leftOnHide){leftOnHide=false;try{leaveLobby('You were taken out of the lobby when the page was closed.')}catch(x){}}});
 function lobbyInfo(){const row=r=>'<div class="lr">'+av(r.pf,r.n)+'<span>'+esc(r.n)+(r.id===myId?' (you)':'')+ownTag(r.n)+'</span></div>';
   if(lcap>=3&&trio){const t=s=>'<div class="lt '+s+'"><b>'+NAME[s]+'</b>'+membs(s).map(row).join('')+'</div>';return'<p class="hint">'+esc(tmText())+'</p>'+t('w')+t('b')+(oppHere?'':'<p class="hint">A player left. They can rejoin with the same code.</p>')}
   let h='';if(roster.length||lcap>=3)for(let i=0;i<humanCap();i++)h+=roster[i]?row(roster[i]):'<div class="lr hint">Waiting for player '+(i+1)+'…</div>';
@@ -1061,6 +1070,9 @@ function wireRoom(host){oppName='';amHost=host;trio=null;peersN=0;if(room.direct
   room.on('adm',m=>{if(!m.isMe)admIncoming(m.data)});
   room.on('admr',m=>{if(!m.isMe&&admWait){clearTimeout(admWait);admWait=null}if(m.isMe||!admSay||!document.getElementById('admM')||!isOwnerName(user)||!ownerOK())return;admSay('↳ '+(oppName||'Player')+': '+String((m.data||{}).t||'').slice(0,300))});
   room.on('sync',m=>{if(!m.isMe&&!amHost&&m.data)load(m.data)});
+  room.on('bye',m=>{if(m.isMe)return;const d=m.data||{},id=sid(d.id);if(!id)return;
+   if(!amHost){if(d.h){pvpR?pvpDrop(room):leaveLobby('The host left, so the lobby closed.')}return}
+   roster=roster.filter(x=>x.id!==id);if(lcap===2)oppName='';oppHere=false;renderMode();try{render()}catch(e){}});
   room.on('newgame',m=>{if(!m.isMe&&lcap<3){FOG=pvp?false:!!(m.data||{}).fg;VR=pvp?'classic':vrName((m.data||{}).vr);VSEED=+((m.data||{}).sd)||1;limit=+((m.data||{}).lm||0);document.getElementById('lim').value=limit||'';init()}});
   room.onPeers(ch=>{peersN=ch.peers.filter(p=>!p.isMe).length;oppHere=peersN>=humanCap()-1;renderMode();maybeBot();if(amHost&&ch.joined.some(p=>!p.isMe)){try{room.emit('roster',{lcap,r:roster,nb:lbots,bl:obLvl})}catch(e){}if(lcap===2||trio)sendSync()}});
   sendWho();if(!host){sayHello();const rr=room;let k=0;const iv=setInterval(()=>{if(room!==rr||roster.some(x=>x.id===myId)||++k>14){clearInterval(iv);return}sayHello()},800)}renderMode()}
@@ -1688,7 +1700,7 @@ function admIncoming(d){
  const out=[];try{admCmd(d.c+' '+user+(d.a?' '+d.a:''),t=>out.push(t),true)}catch(e){out.push('Error: '+e.message)}
  renderWho();renderMode();room.emit('admr',{t:out.join(' ')||'Done.'})}
 function admCmd(line,say,local){const w=line.split(/\s+/),c=w[0].toLowerCase(),rest=w.slice(1);
- if(!local){if(c==='code')return codeGen(rest,say);if(c==='gencode')return cdMake(rest,say);if(c==='codes')return cdList(say);if(c==='delcode')return cdDel(rest,say);if(c==='delaccount')return accDel(rest,say);if(c==='accounts')return accList(rest,say);if(c==='codekey')return cdSetKey(rest,say);if(c==='announce'){if(!LB)return say('Live lobby unavailable.');if(!rest.length)return say('Usage: announce TEXT');LB.emit('ann',{t:rest.join(' ').slice(0,200)}).then(()=>say('Sent to everyone online.'),()=>say('Could not send (Editors only).'));return}if(c==='online'||c==='who'){if(hubList(say))return;return lbList(say)}if(c==='forcefriend')return hubForce(rest,say);if(hubRemote(c,rest,say))return;if(lbRemote(c,rest,say))return;if(admRemote(c,rest,say))return}
+ if(!local){if(c==='code')return codeGen(rest,say);if(c==='gencode')return cdMake(rest,say);if(c==='codes')return cdList(say);if(c==='delcode')return cdDel(rest,say);if(c==='delaccount')return accDel(rest,say);if(c==='accounts')return accList(rest,say);if(c==='codekey')return cdSetKey(rest,say);if(c==='announce'){if(!LB)return say('Live lobby unavailable.');if(!rest.length)return say('Usage: announce TEXT');LB.emit('ann',{t:rest.join(' ').slice(0,200)}).then(()=>say('Sent to everyone online.'),()=>say('Could not send (Editors only).'));return}if(c==='online'||c==='who'){if(hubList(say))return;return lbList(say)}if(c==='forcefriend')return hubForce(rest,say);if(c==='refreshall'||c==='refresh')return hubRefresh(say);if(hubRemote(c,rest,say))return;if(lbRemote(c,rest,say))return;if(admRemote(c,rest,say))return}
  const acc=nm=>{const u=RK.users[rkKey(nm)];if(!u)say('No ranked account named "'+nm+'".');return u},
  fm=u=>u.name+': '+(u.placed?TIERS[rkIdx(u.rating)]+' ('+Math.round(u.rating)+')':'unranked, placement '+u.plr.length+'/5')+' · '+u.w+'W '+u.l+'L '+u.d+'D'+(u.lock?' · locked':'');
  if(c==='help'){['PLAYERS (also work on someone online with you: use their name, or the word online)',
@@ -1725,6 +1737,7 @@ function admCmd(line,say,local){const w=line.split(/\s+/),c=w[0].toLowerCase(),r
  'OFFLINE CODES',
  'code COMMAND NAME [VALUE] · make a code for a saved copy (works for setrank promote demote setrating setrecord addtp lock unlock unplace). Player opens it with Ctrl+Shift+K, or taps their name 3 times',
  'OTHER',
+ 'refreshall · reload the page for everyone who is online right now (needs the hub key; ranked games reload after they end)',
  'clear · empty this log · logout · leave owner mode'].forEach(t=>say(t))}
  else if(c==='list'||c==='top'){const L=Object.values(RK.users).sort((a,b)=>b.rating-a.rating);if(!L.length)return say('No accounts yet.');(c==='top'?L.slice(0,5):L).forEach((u,i)=>say((i+1)+'. '+fm(u)))}
  else if(c==='tiers')say(TIERS.join(' < '));
@@ -2068,7 +2081,7 @@ async function hubJoin(){if(hp||hubBusy||hubIsOwner())return;hubBusy=true;
   c.on('data',m=>hubIn(m,c,pub))};
  hp=new Peer(PO);hubBusy=false;hp.on('open',conn);hp.on('error',again);hp.on('disconnected',()=>{try{hp.reconnect()}catch(e){}})}
 const hubVer=async(pub,m,parts)=>{try{return Math.abs(Date.now()-m.ts)<60000&&await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},pub,new Uint8Array(m.s),new TextEncoder().encode(parts.concat(m.ts).join('|')))}catch(e){return false}};
-async function hubIn(m,c,pub){if(!m||!user)return;
+async function hubIn(m,c,pub){if(m&&m.t==='rf'){if(await hubVer(pub,m,['rf','all']))hubRefreshMe();return}if(!m||!user)return;
  if(m.t==='ff'){const fc=fcn(m.fc),n=cn(m.n);if(!FRX.test(fc)||fc===FC||!await hubVer(pub,m,['ff',fc,n,rkKey(user)]))return;
   const f=frGet(fc);if(f){f.ok=true;f.n=n||f.n}else if(FR.length<40)FR.push({c:fc,n,pf:'',ok:true});else return;
   frSave();frRender();tmToast((n||'Someone')+' is now your friend.');try{c.send({t:'admr',n:user,x:'Now friends with '+(n||'you')+'.'})}catch(e){}return}
@@ -2077,6 +2090,14 @@ async function hubIn(m,c,pub){if(!m||!user)return;
  const out=[];if(m.c==='setrank'||m.c==='unplace')rkAcct(user,true);
  try{admCmd(m.c+' '+user+(a?' '+a:''),t=>out.push(t),true)}catch(e){out.push('Error: '+e.message)}
  renderWho();renderMode();try{c.send({t:'admr',n:user,x:out.join(' ')||'Done.'})}catch(e){}}
+function hubRefresh(say){
+ if(!hubPeer)return say(hubErr||'The hub is not running. Stay logged in as owner on the page and try again.');
+ if(!hubKey)return say('Hub key missing. Type: hubkey YOUR-KEY (paste it once on this device).');
+ const L=hubConns.filter(x=>x.open);if(!L.length)return say('Nobody else is on the page right now.');
+ (async()=>{try{const ts=Date.now(),sig=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},hubKey,new TextEncoder().encode(['rf','all',ts].join('|'))),s=Array.from(new Uint8Array(sig));let n=0;L.forEach(x=>{try{x.send({t:'rf',ts,s});n++}catch(e){}});say('Refresh sent to '+n+' page'+(n===1?'':'s')+'. Anyone in a ranked game reloads after it ends.')}catch(e){say('Could not send.')}})()}
+let rfPending=false;
+function hubRefreshMe(){if(rfPending)return;rfPending=true;try{tmToast('The owner is refreshing the game. Reloading in 3 seconds…')}catch(e){}
+ const go=()=>{if(pvp&&!pvp.done&&!over){setTimeout(go,2000);return}location.reload()};setTimeout(go,3000)}
 function hubForce(rest,say){const nm=rest.join(' ');if(!nm)return say('Usage: forcefriend NAME (you and them become friends, no accept needed)');
  if(!hubPeer)return say(hubErr||'The hub is not running. Stay logged in as owner on the page and try again.');
  if(!hubKey)return say('Hub key missing. Type: hubkey YOUR-KEY (paste it once on this device).');
