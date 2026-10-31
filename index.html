@@ -164,7 +164,7 @@ button.b1:disabled{opacity:.45;cursor:default}
 .strip .pl.dm{opacity:.5}.strip .pl.act{opacity:1}.strip .pl.act .av{box-shadow:0 0 0 3px currentColor}.strip .pn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:110px}
 .pfg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}.pfb{padding:2px;border:2px solid transparent;border-radius:50%;background:none;cursor:pointer;display:flex;justify-content:center}.pfb:hover{border-color:var(--tide)}
 .lr{display:flex;align-items:center;gap:8px;font-size:15px}.lt{border:1px solid var(--line);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:6px}.lt.w>b{color:var(--cw)}.lt.b>b{color:var(--cb)}
-.tmt{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:var(--paper);color:#000;padding:10px 16px;border-radius:10px;z-index:99;max-width:90vw;font-weight:500;text-align:center}
+.vrfl{position:fixed;inset:0;z-index:98;pointer-events:none;opacity:0}.vrm.ring{will-change:transform}.tmt{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:var(--paper);color:#000;padding:10px 16px;border-radius:10px;z-index:99;max-width:90vw;font-weight:500;text-align:center}
 .frc{position:fixed;right:14px;top:64px;z-index:98;display:flex;flex-direction:column;gap:10px;width:min(92vw,320px)}.frc .card{width:auto;padding:14px;gap:10px;animation:frin .25s ease-out}.frc .row button{flex:1}
 @keyframes frin{from{transform:translateX(30px);opacity:0}}@media(prefers-reduced-motion:reduce){.frc .card{animation:none}}
 .fr{display:flex;align-items:center;gap:8px}.fr>i{width:10px;height:10px;border-radius:50%;background:var(--line);flex:none}.fr.on>i{background:var(--mark)}.fr>span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fr button{padding:6px 10px}.fr>span.av{flex:none;width:30px;height:30px;overflow:hidden;white-space:normal}.fr em.hint{font-size:12px}.fr .bdg{display:inline-block;min-width:16px;padding:0 5px;margin-left:4px;border-radius:9px;background:#e0675a;color:#fff;font-size:11px;line-height:16px;text-align:center}.fr.cf>span{white-space:normal}
@@ -386,8 +386,8 @@ function coinBurst(n,src){try{const tgt=document.getElementById('shpPts');n=Math
  const rc=e=>{const r=e.getBoundingClientRect();return[r.left+r.width/2,r.top+r.height/2]},[tx,ty]=rc(tgt),[sx,sy]=src&&src.getBoundingClientRect?rc(src):[innerWidth/2,innerHeight/2],
  cnt=Math.min(16,Math.max(5,Math.ceil(n/8))),base=Math.max(0,qBal()-n),fast=REDUCE.matches;let landed=0;tgt.textContent=base;
  const done=()=>{tgt.textContent=qBal()};
- for(let i=0;i<cnt;i++)setTimeout(()=>{const c=document.createElement('div');c.textContent='\ud83e\ude99';c.setAttribute('aria-hidden','true');
-  c.style.cssText='position:fixed;left:0;top:0;z-index:100000;font-size:26px;pointer-events:none;will-change:transform';document.body.appendChild(c);
+ for(let i=0;i<cnt;i++)setTimeout(()=>{const c=document.createElement('div');c.setAttribute('aria-hidden','true');
+  c.style.cssText='position:fixed;left:0;top:0;z-index:100000;width:26px;height:26px;background:url(data:image/png;base64,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) center/contain no-repeat;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35));pointer-events:none;will-change:transform';document.body.appendChild(c);
   const ox=(Math.random()-.5)*90,oy=-30-Math.random()*70,mx=(sx+tx)/2+ox*2,my=Math.min(sy,ty)-60-Math.random()*60;
   tone(900+Math.random()*300,.06,'square',.05,0,1500);
   const a=c.animate([{transform:'translate('+(sx-13+ox*.3)+'px,'+(sy-13)+'px) scale(.5) rotate(0deg)',opacity:0},{transform:'translate('+(sx-13+ox)+'px,'+(sy-13+oy)+'px) scale(1.2) rotate(120deg)',opacity:1,offset:.25},{transform:'translate('+(mx-13)+'px,'+(my-13)+'px) scale(1.1) rotate(240deg)',offset:.55},{transform:'translate('+(tx-13)+'px,'+(ty-13)+'px) scale(.7) rotate(420deg)',opacity:1}],{duration:fast?250:750+Math.random()*250,easing:'cubic-bezier(.4,0,.7,1)'});
@@ -485,22 +485,30 @@ function vrRnd(seed){let a=seed|0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^
 const VR_PORTAL_EVERY=2;/* portals re-roll every this many plies (one ply = one player's move) */
 function vrPortals(n){if(n==null)n=log.length;const rnd=vrRnd((VSEED|0)+777+Math.floor(n/VR_PORTAL_EVERY)*7919),sq=[];while(sq.length<4){const i=(2+Math.floor(rnd()*4))*8+Math.floor(rnd()*8);if(!sq.includes(i))sq.push(i)}return[[sq[0],sq[1]],[sq[2],sq[3]]]}
 function vrTwist(p,i,j,cp){const me=p.t,opp=me==='w'?'b':'w',ply=log.length+1;let jf=j,add='';
- if(VRA==='portal'&&!cp){for(const pr of vrPortals()){const k=pr.indexOf(j);if(k>=0&&!B[pr[1-k]]){B=B.slice();B[pr[1-k]]=B[j];B[j]=null;jf=pr[1-k];last=[i,jf];add='~';break}}}
+ if(VRA==='portal'&&!cp){for(const pr of vrPortals()){const k=pr.indexOf(j);if(k>=0&&!B[pr[1-k]]){B=B.slice();B[pr[1-k]]=B[j];B[j]=null;jf=pr[1-k];last=[i,jf];add='~';vrFlash('#ff9ad5');tone(250,.3,'sine',.12,0,1400);tone(1400,.2,'triangle',.07,.1,700);break}}}
  if(VRA==='portal'&&ply%VR_PORTAL_EVERY===0){/* portals just moved: any non-king piece standing on a new portal square is pulled through to its twin, if the twin is free */
   let moved=0;const src=B;for(const pr of vrPortals(ply)){const x=src[pr[0]],y=src[pr[1]];let a=-1,b=-1;
    if(x&&!y&&x.k!=='king'){a=pr[0];b=pr[1]}else if(y&&!x&&y.k!=='king'){a=pr[1];b=pr[0]}
    if(a>=0){if(!moved)B=B.slice();B[b]=B[a];B[a]=null;moved++;if(a===jf){jf=b;last=[i,jf]}}}
-  if(moved){add+='~';tmToast('The portals moved! '+(moved>1?moved+' pieces were':'A piece was')+' pulled through.')}}
+  if(moved){add+='~';vrFlash('#8be0ff');tone(300,.35,'sine',.12,0,1200);tone(1200,.3,'triangle',.08,.12,500);tmToast('The portals moved! '+(moved>1?moved+' pieces were':'A piece was')+' pulled through.')}}
  if(VRA==='lava'){const rg=vrRingsAt(ply),dead={w:false,b:false};B=B.slice();
   for(let x=0;x<64;x++)if(B[x]&&vrRingOf(x)<rg){if(B[x].k==='king')dead[B[x].t]=true;else B[x]=null}
-  if(rg>vrRingsAt(ply-1))tmToast('The floor collapsed! Everything on the outer ring is gone.');
+  if(rg>vrRingsAt(ply-1)){tmToast('The floor collapsed! Everything on the outer ring is gone.');vrFlash('#ff5a1f');vrShake()}
   if(dead.w||dead.b)over=dead.w&&dead.b?{draw:1}:{win:dead.w?'b':'w',vm:'when the floor collapsed'}}
+ if(VRA==='lava'&&!over&&vrRingsAt(ply)<2&&(ply%16===12||ply%16===15)){vrFlash('#ff7a3a');sfx('warn');tmToast(ply%16===15?'Last move before the floor collapses! Get your King inward!':'The floor collapses in 4 moves...')}
+ if(VRA==='quake'&&ply%8===7){vrFlash('#b08a5a');tone(60,.6,'sawtooth',.12,0,40)}
  if(VRA==='quake'&&ply%8===7)tmToast('The ground is rumbling... an earthquake hits after the next move!');
  if(VRA==='quake'&&ply%8===0){const rnd=vrRnd((VSEED|0)+ply*131),L=[];B=B.slice();const kz=new Set();for(let x=0;x<64;x++)if(B[x]&&B[x].k==='king')for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const r=(x>>3)+dr,c=(x&7)+dc;if(r>=0&&r<8&&c>=0&&c<8)kz.add(r*8+c)}/* squares touching a King are safe from the quake */
   for(let x=0;x<64;x++)if(B[x]&&B[x].k!=='king'&&!kz.has(x))L.push(x);
   if(L.length>1){const a=L.splice(Math.floor(rnd()*L.length),1)[0],b=L[Math.floor(rnd()*L.length)],t=B[a];B[a]=B[b];B[b]=t;if(a===jf)jf=b;else if(b===jf)jf=a;tmToast('Earthquake! Two pieces swapped places.');vrShake()}}
  if(!over&&VRA!=='lava'){if(inCheck(B,opp))over={win:me};else if(inCheck(B,me))over={win:opp,vm:'after the board shifted into danger'}}
  if(over)add+='#';return{j:jf,add}}
+function vrFlash(c){try{if(REDUCE.matches)return;const d=document.createElement('div');d.className='vrfl';d.style.background='radial-gradient(circle,transparent 35%,'+c+' 140%)';document.body.appendChild(d);d.animate([{opacity:.0},{opacity:.55,offset:.2},{opacity:0}],{duration:650,easing:'ease-out'}).onfinish=()=>d.remove()}catch(e){}}
+function vrFun(p,q,bonus,ply){try{const me=p.t,nm=me==='w'?'White':'Black';
+ if(VRA==='streak'&&bonus){vrFlash('#ff8a1f');[523,659,784,1047].forEach((f,i)=>tone(f,.14,'square',.07,i*.05));tmToast('Hot streak! '+nm+' moves again.')}
+ if(VRA==='bounty'&&q){const n=cap[me].length;if(n<6){tone(330+n*90,.2,'triangle',.1);vrFlash('#ffd45c');tmToast(n===5?nm+' needs ONE more capture to win the bounty!':'Bounty: '+nm+' has '+n+' of 6')}}
+ if(VRA==='hill'&&!over){const k=kingIdx(B,me),dr=[27,28,35,36].some(h=>Math.max(Math.abs((h>>3)-(k>>3)),Math.abs((h&7)-(k&7)))===1);if(dr&&legalFrom(B,k).some(h=>[27,28,35,36].includes(h))){vrFlash('#ffd45c');sfx('warn');tmToast(nm+' King is one step from the hill!')}}
+}catch(e){}}
 function vrShake(){setTimeout(()=>{try{const amp=REDUCE.matches?.45:1,f=[];for(let k=0;k<20;k++){const d=1-k/20,sg=k%2?-1:1;f.push({transform:'translate('+(sg*(14+Math.random()*14)*d*amp).toFixed(1)+'px,'+((Math.random()*2-1)*16*d*amp).toFixed(1)+'px) rotate('+(sg*1.6*d*amp).toFixed(2)+'deg)'})}f.push({transform:'none'});
   const run=e=>e&&e.animate&&e.animate(f,{duration:1300,easing:'linear'});run(document.querySelector('.app'));run(document.getElementById('board'));run(document.getElementById('dsb'));
   if(!muted&&SET.sv>0){hiss(1,.5,60,260,0,1.1);tone(48,1,'sawtooth',.25,0,30)}}catch(e){}},40)}
@@ -1037,7 +1045,7 @@ function membs(t){if(mode!=='online'||!room||(lcap>=3&&!trio))return[];const rs=
 function teamName(t){const m=membs(t);return NAME[t]+(m.length?' ('+m.map(r=>r.n).join(' & ')+')':'')}
 function turnTxt(){if(mode==='online'&&room&&lcap>=3){if(!trio)return'Waiting for players';const a=activeId();return(a===myId?'Your turn':R_(a).n+'’s turn')+' ('+NAME[turn]+')!'}return dn(turn)+'’s Turn!'}
 const tmText=()=>{if(!trio)return'';const s=mySide,m=trio[s].filter(i=>i!==myId);return m.length?'You and '+R_(m[0]).n+' are '+NAME[s]+'. You take turns, one move each.':'You play solo as '+NAME[s]+' and move every '+NAME[s]+' turn.'};
-function tmToast(t){const d=document.createElement('div');d.className='tmt';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),6000)}
+function tmToast(t){document.querySelectorAll('.tmt').forEach(e=>e.remove());const d=document.createElement('div');d.className='tmt';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),6000)}
 function adoptTrio(t){trio={w:t.w.map(sid),b:t.b.map(sid)};mySide=sideOf(myId);flip=mySide==='b';mode='online'}
 function startTrio(){const sh=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a},
   hs=sh(roster.slice(0,humanCap()).map(r=>r.id)),bs=[];for(let i=0;i<lbots;i++)bs.push('bot'+(i+1));
@@ -1338,7 +1346,7 @@ function move(i,j,remote,pk0){
  const chk=bonus?inCheck(B,turn==='w'?'b':'w'):inCheck(B,turn),mv=bonus?true:hasMove(B,turn);
  if(chk||!mv){over=chk?{win:bonus?turn:(turn==='w'?'b':'w')}:{draw:1};n+=chk?'#':''}
  if(!over&&VRA!=='classic'){const me=p.t;if(VRA==='hill'&&[27,28,35,36].includes(kingIdx(B,me)))over={win:me,vm:'by reaching the hill'};else if(VRA==='bounty'&&cap[me].length>=6)over={win:me,vm:'by claiming the bounty'};if(over)n+='#'}
- let jf=j;if(!over&&(VRA==='portal'||VRA==='lava'||VRA==='quake')){const tw=vrTwist(p,i,j,!!q);jf=tw.j;n+=tw.add}
+ try{vrFun(p,q,bonus,log.length+1)}catch(e){}let jf=j;if(!over&&(VRA==='portal'||VRA==='lava'||VRA==='quake')){const tw=vrTwist(p,i,j,!!q);jf=tw.j;n+=tw.add}
  log.push(n);if(PZ&&!over&&p.t===mySide&&((log.length+1)>>1)>=PZ.n)over={draw:1,pz:1};if(QM){if(q){qEv('cap');if(p.k==='shark')qEv('capShark');if(p.k==='ninja')qEv('capKnight');if(p.k==='shark'&&q.k==='shark')qEv('sharkXshark')}if(over&&over.win)QWP=p.k;if(promo)qEv('promo');if(chk)qEv('check')}if(FOG&&mode==='local'&&!over)FH=true;sel=null;legal=[];const dist=Math.max(Math.abs((j>>3)-(i>>3)),Math.abs((j&7)-(i&7))),dur=(DRAG||!SET.anim)?0:Math.min(800,340+dist*55),ex=over?(over.win?'win':'draw'):chk?'check':promo?'promo':null;
  sfx(q?'cap':'move',p.k,dur/1000);if(ex)sfx(ex,p.k,dur/1000+.2);
  render(DRAG?-1:jf,{dur,list:[{f:i,t:jf,k:p.k,c:p.t}].concat(sw?[{f:j,t:i,k:sw.k,c:sw.t}]:[]),ghost:q?{at:j,k:q.k,c:q.t}:null});if(mode==='online'&&room&&!remote)room.emit('mv',{i,j,n:log.length-1,p:promo?pk:undefined,f:mvAs||myId});try{botTalk(p,q,chk,promo)}catch(e){}maybeBot()}
@@ -1723,8 +1731,8 @@ function admIncoming(d){
  if(d.c==='setrank'||d.c==='unplace')rkAcct(user,true);
  const out=[];try{admCmd(d.c+' '+user+(d.a?' '+d.a:''),t=>out.push(t),true)}catch(e){out.push('Error: '+e.message)}
  renderWho();renderMode();room.emit('admr',{t:out.join(' ')||'Done.'})}
-function admCmd(line,say,local){const w=line.split(/\s+/),c=w[0].toLowerCase(),rest=w.slice(1);
- if(!local){if(c==='code')return codeGen(rest,say);if(c==='gencode')return cdMake(rest,say);if(c==='codes')return cdList(say);if(c==='delcode')return cdDel(rest,say);if(c==='delaccount')return accDel(rest,say);if(c==='accounts')return accList(rest,say);if(c==='codekey')return cdSetKey(rest,say);if(c==='announce'){if(!LB)return say('Live lobby unavailable.');if(!rest.length)return say('Usage: announce TEXT');LB.emit('ann',{t:rest.join(' ').slice(0,200)}).then(()=>say('Sent to everyone online.'),()=>say('Could not send (Editors only).'));return}if(c==='online'||c==='who'){if(hubList(say))return;return lbList(say)}if(c==='forcefriend')return hubForce(rest,say);if(c==='refreshall'||c==='refresh')return hubRefresh(say);if(hubRemote(c,rest,say))return;if(lbRemote(c,rest,say))return;if(admRemote(c,rest,say))return}
+function admCmd(line,say,local){const w=line.split(/\s+/),c=w[0].toLowerCase().replace(/^\//,''),rest=w.slice(1);
+ if(!local){if(c==='admin')return admAdmin(rest,say);if(c==='code')return codeGen(rest,say);if(c==='gencode')return cdMake(rest,say);if(c==='codes')return cdList(say);if(c==='delcode')return cdDel(rest,say);if(c==='delaccount')return accDel(rest,say);if(c==='accounts')return accList(rest,say);if(c==='codekey')return cdSetKey(rest,say);if(c==='announce'){if(!LB)return say('Live lobby unavailable.');if(!rest.length)return say('Usage: announce TEXT');LB.emit('ann',{t:rest.join(' ').slice(0,200)}).then(()=>say('Sent to everyone online.'),()=>say('Could not send (Editors only).'));return}if(c==='online'||c==='who'){if(hubList(say))return;return lbList(say)}if(c==='forcefriend')return hubForce(rest,say);if(c==='refreshall'||c==='refresh')return hubRefresh(say);if(hubRemote(c,rest,say))return;if(lbRemote(c,rest,say))return;if(admRemote(c,rest,say))return}
  const acc=nm=>{const u=RK.users[rkKey(nm)];if(!u)say('No ranked account named "'+nm+'".');return u},
  fm=u=>u.name+': '+(u.placed?TIERS[rkIdx(u.rating)]+' ('+Math.round(u.rating)+')':'unranked, placement '+u.plr.length+'/5')+' · '+u.w+'W '+u.l+'L '+u.d+'D'+(u.lock?' · locked':'');
  if(c==='help'){['PLAYERS (also work on someone online with you: use their name, or the word online)',
@@ -1761,6 +1769,7 @@ function admCmd(line,say,local){const w=line.split(/\s+/),c=w[0].toLowerCase(),r
  'OFFLINE CODES',
  'code COMMAND NAME [VALUE] · make a code for a saved copy (works for setrank promote demote setrating setrecord addtp lock unlock unplace). Player opens it with Ctrl+Shift+K, or taps their name 3 times',
  'OTHER',
+ 'admin list · who has the admin panel (owner only) · admin revoke NAME · take the panel away from someone (needs the hub key; the owner cannot be revoked) · admin allow NAME · let a revoked name get it again',
  'refreshall · reload the page for everyone who is online right now (needs the hub key; ranked games reload after they end)',
  'clear · empty this log · logout · leave owner mode'].forEach(t=>say(t))}
  else if(c==='list'||c==='top'){const L=Object.values(RK.users).sort((a,b)=>b.rating-a.rating);if(!L.length)return say('No accounts yet.');(c==='top'?L.slice(0,5):L).forEach((u,i)=>say((i+1)+'. '+fm(u)))}
@@ -2076,7 +2085,7 @@ async function hubStart(){if(hubPeer||hubBusy||!hubIsOwner())return;hubBusy=true
  p.on('close',()=>{if(hubPeer===p){hubPeer=null;hubConns=[]}hubBusy=false});
  p.on('error',e=>{if(hubPeer)return;hubBusy=false;hubErr=e&&e.type==='unavailable-id'?'Hub name is taken. Close other tabs with the owner page open and reload.':'Hub could not start.';try{p.destroy()}catch(_){}});
  p.on('connection',c=>{c.on('data',m=>{if(!m)return;
-  if(m.t==='pres'){c.pn=String(m.n||'').slice(0,16);c.pr=String(m.r||'').slice(0,20);c.fc=FRX.test(m.fc)?m.fc:'';if(hubConns.indexOf(c)<0)hubConns.push(c)}
+  if(m.t==='pres'){c.pn=String(m.n||'').slice(0,16);c.pr=String(m.r||'').slice(0,20);c.fc=FRX.test(m.fc)?m.fc:'';if(hubConns.indexOf(c)<0)hubConns.push(c);admSeen(c,!!m.ax)}
   else if(m.t==='admr'&&admSay&&document.getElementById('admM'))admSay('↳ '+String(m.n||'Player').slice(0,16)+': '+String(m.x||'').slice(0,300))});
   c.on('close',()=>{hubConns=hubConns.filter(x=>x!==c)})})}
 function hubWhy(){if(!hubIsOwner())return'They need to be in your online game or on the live page.';
@@ -2096,7 +2105,7 @@ function hubRemote(c,rest,say){if(!hubPeer||!LBC.includes(c))return false;
  hubSend(p,c,arg||'',say);return true}
 async function hubSend(p,c,a,say){try{const ts=Date.now(),sig=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},hubKey,new TextEncoder().encode([c,a,rkKey(p.pn),ts].join('|')));p.send({t:'adm',c,a,ts,s:Array.from(new Uint8Array(sig))});say('Sent to '+p.pn+'…')}catch(e){say('Could not send.')}}
 async function hubSetKey(b,say){try{hubKey=await hubKeyImport(b);localStorage.setItem('checks-hubkey',b.trim());say('Hub key saved on this device.')}catch(e){say('That key did not work. Paste the whole thing.')}}
-function hubPres(){if(hubC&&hubC.open){const u=user?rkAcct(user):null;hubC.send({t:'pres',n:user,r:u&&u.placed?TIERS[rkIdx(u.rating)]:'',fc:FC})}}
+function hubPres(){if(hubC&&hubC.open){const u=user?rkAcct(user):null;hubC.send({t:'pres',n:user,r:u&&u.placed?TIERS[rkIdx(u.rating)]:'',fc:FC,ax:admxOK()&&!isOwnerName(user)?1:0})}}
 async function hubJoin(){if(hp||hubBusy||hubIsOwner())return;hubBusy=true;
  let pub;try{await loadPeer();pub=await crypto.subtle.importKey('jwk',HUB_PUB,{name:'ECDSA',namedCurve:'P-256'},false,['verify'])}catch(e){hubBusy=false;return}
  const again=()=>{if(hubWait)return;hubWait=setTimeout(()=>{hubWait=0;conn()},6000)};
@@ -2106,6 +2115,7 @@ async function hubJoin(){if(hp||hubBusy||hubIsOwner())return;hubBusy=true;
  hp=new Peer(PO);hubBusy=false;hp.on('open',conn);hp.on('error',again);hp.on('disconnected',()=>{try{hp.reconnect()}catch(e){}})}
 const hubVer=async(pub,m,parts)=>{try{return Math.abs(Date.now()-m.ts)<60000&&await crypto.subtle.verify({name:'ECDSA',hash:'SHA-256'},pub,new Uint8Array(m.s),new TextEncoder().encode(parts.concat(m.ts).join('|')))}catch(e){return false}};
 async function hubIn(m,c,pub){if(m&&m.t==='rf'){if(await hubVer(pub,m,['rf','all']))hubRefreshMe();return}if(!m||!user)return;
+ if(m.t==='ar'){if(admxOK()&&await hubVer(pub,m,['ar',rkKey(user)])){try{localStorage.removeItem('checks-admx')}catch(e){}const x=document.getElementById('admM');if(x)x.remove();renderWho();tmToast('Your admin panel access was removed by the owner.')}return}
  if(m.t==='ff'){const fc=fcn(m.fc),n=cn(m.n);if(!FRX.test(fc)||fc===FC||!await hubVer(pub,m,['ff',fc,n,rkKey(user)]))return;
   const f=frGet(fc);if(f){f.ok=true;f.n=n||f.n}else if(FR.length<40)FR.push({c:fc,n,pf:'',ok:true});else return;
   frSave();frRender();tmToast((n||'Someone')+' is now your friend.');try{c.send({t:'admr',n:user,x:'Now friends with '+(n||'you')+'.'})}catch(e){}return}
@@ -2114,6 +2124,29 @@ async function hubIn(m,c,pub){if(m&&m.t==='rf'){if(await hubVer(pub,m,['rf','all
  const out=[];if(m.c==='setrank'||m.c==='unplace')rkAcct(user,true);
  try{admCmd(m.c+' '+user+(a?' '+a:''),t=>out.push(t),true)}catch(e){out.push('Error: '+e.message)}
  renderWho();renderMode();try{c.send({t:'admr',n:user,x:out.join(' ')||'Done.'})}catch(e){}}
+/* admin panel access list + revoke: owner only, needs the hub key. The owner can never be revoked. */
+const admLS=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))||d}catch(e){return d}},admSv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+async function admRevokeSend(c){const ts=Date.now(),sig=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},hubKey,new TextEncoder().encode(['ar',rkKey(c.pn),ts].join('|')));c.send({t:'ar',ts,s:Array.from(new Uint8Array(sig))})}
+function admSeen(c,ax){try{if(!hubIsOwner()||!c.pn||isOwnerName(c.pn))return;const k=rkKey(c.pn),reg=admLS('checks-admreg',{}),rev=admLS('checks-admrev',{});
+ if(ax&&rev[k]){if(hubKey)admRevokeSend(c).catch(()=>{});return}
+ if(ax){if(reg[k]!==c.pn){reg[k]=c.pn;admSv('checks-admreg',reg)}}else if(reg[k]){delete reg[k];admSv('checks-admreg',reg)}}catch(e){}}
+function admAdmin(rest,say){
+ if(!hubIsOwner())return say('Owner only.');
+ const sub=(rest[0]||'list').toLowerCase(),nm=rest.slice(1).join(' ').trim(),k=rkKey(nm),reg=admLS('checks-admreg',{}),rev=admLS('checks-admrev',{}),
+ on=x=>hubConns.find(c=>c.open&&c.pn&&rkKey(c.pn)===x);
+ if(sub==='list'){say('Admin panel access:');say('1. '+user+' · OWNER (cannot be revoked)');let n=1;
+  Object.keys(reg).forEach(x=>{n++;say(n+'. '+reg[x]+' · '+(on(x)?'online':'offline (last seen with the panel)')+(rev[x]?' · revoke pending':''))});
+  Object.keys(rev).filter(x=>!reg[x]).forEach(x=>{n++;say(n+'. '+rev[x]+' · revoked, will be removed if they show up with the panel again')});
+  say(n===1?'Nobody else has the admin panel that this hub has seen. People show up here once they are online with the panel.':'Revoke with: admin revoke NAME');return}
+ if(sub==='revoke'||sub==='allow'){if(!nm)return say('Usage: admin '+sub+' NAME');
+  if(isOwnerName(nm))return say('The owner cannot be revoked.');
+  if(sub==='allow'){if(!rev[k])return say(nm+' is not on the revoked list.');delete rev[k];admSv('checks-admrev',rev);return say(nm+' can have the admin panel again.')}
+  if(!hubKey)return say('Hub key missing. Type: hubkey YOUR-KEY (paste it once on this device).');
+  if(!hubPeer)return say(hubErr||'The hub is not running. Stay logged in as owner on the page and try again.');
+  rev[k]=reg[k]||nm;admSv('checks-admrev',rev);const c=on(k);
+  if(c){delete reg[k];admSv('checks-admreg',reg);admRevokeSend(c).then(()=>say('Revoked the admin panel for '+c.pn+'.'),()=>say('Could not send. Try again.'))}
+  else say(nm+' is offline. Revoke saved: it is applied the next time they are online with the panel while your hub is running.');return}
+ say('Usage: admin list · admin revoke NAME · admin allow NAME')}
 function hubRefresh(say){
  if(!hubPeer)return say(hubErr||'The hub is not running. Stay logged in as owner on the page and try again.');
  if(!hubKey)return say('Hub key missing. Type: hubkey YOUR-KEY (paste it once on this device).');
@@ -2467,7 +2500,7 @@ document.getElementById('frb').onclick=frOpen;frStart();setInterval(()=>{if(!doc
 (function(){
  if(!/^https?:/.test(location.protocol))return;
  const url=location.origin+urlRoot();let base=null,pending=false,bn=null;
- const BUILD='build:20261030191745';const sig=async()=>{const r=await fetch(url+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;const t=await r.text();const m=t.match(/const BUILD='(build:\d+)'/);if(m)return m[1];let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return h+':'+t.length};
+ const BUILD='build:20261031000500';const sig=async()=>{const r=await fetch(url+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;const t=await r.text();const m=t.match(/const BUILD='(build:\d+)'/);if(m)return m[1];let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return h+':'+t.length};
  const busy=()=>{try{return !!(mm||room||pvp||peerBusy||(typeof tut!=='undefined'&&tut)||(typeof tour!=='undefined'&&tour)||(typeof over!=='undefined'&&!over&&log&&log.length))}catch(e){return false}};
  const banner=()=>{if(bn)return;bn=document.createElement('div');bn.style.cssText='position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99999;background:#222;color:#fff;padding:10px 14px;border-radius:10px;font:14px system-ui,sans-serif;box-shadow:0 4px 16px #0006;display:flex;gap:10px;align-items:center';bn.innerHTML='<span>A new update is available. It will refresh when your game ends.</span>';const b=document.createElement('button');b.textContent='Refresh now';b.style.cssText='padding:4px 10px;border-radius:6px;border:0;cursor:pointer';b.onclick=()=>location.reload();bn.appendChild(b);document.body.appendChild(bn)};
  const tick=async()=>{try{const s=await sig();if(base===null){base=BUILD;}if(s!==base)pending=true}catch(e){}
