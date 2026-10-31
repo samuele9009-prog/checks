@@ -420,21 +420,14 @@ function fogVis(t){const v=new Set();for(let i=0;i<64;i++){const q=B[i];if(!q||q
 /* ===== game modes live in the side menu: Fog of war + variants ===== */
 const VARS=[
 ['classic','Classic','The normal Checks rules.'],
-['diag','Corner check','Flipped danger: an enemy piece on a diagonal corner of your King is check, and straight-on neighbours are safe.'],
-['full','Close quarters','Any enemy piece touching your King counts as check, even at a corner.'],
 ['hill','King of the hill','Walk your King onto one of the four glowing gold centre squares to win instantly. Check still wins too.'],
-['bounty','Bounty hunt','Capture 6 enemy pieces first and you win. Check still wins too.'],
-['shuffle','Shuffle','The back row is shuffled at random, the same for both sides.'],
-['swords','Sword storm','Every back-row piece except the King is a Sword. Promote your way to power.'],
-['sharks','Shark tank','Every back-row piece except the King is a Shark. Pure chaos.'],
 ['portal','Portals','Two pairs of glowing portals sit on the board, and they jump to new squares every two moves. A piece caught on a new portal gets pulled through to its twin. Land on one and you pop out of its twin, if the twin is free. Capturing a piece on a portal square doesn\u2019t use the portal. Check from a portal still wins.'],
-['lava','Rising lava','The edge of the board collapses into lava: first the outer ring at move 16, then the next ring at move 32. Pieces left on a fallen ring are lost, and you cannot step onto fallen squares. A King on a collapsing ring loses, so watch the flashing border!'],
-['streak','Hot streak','Capture a piece and you move again straight away. The bonus move cannot chain, so you never get more than two moves in a row.'],
-['quake','Earthquake','Every 8 moves the ground shakes (you get a warning one move before) and two random pieces swap places. Pieces right next to a King are never moved. If the swap puts a King in danger, the shaken side pays for it.']];
+['lava','Rising lava','The edge of the board collapses into lava: the outer ring at move 14, then the next ring at move 28. Pieces left on a fallen ring are lost, you cannot step onto fallen squares, and a King on a collapsing ring loses. Watch the flashing border and run for the middle!'],
+['streak','Hot streak','Capture a piece and you move again straight away. The bonus move cannot chain, so you never get more than two moves in a row.']];
 const vrName=v=>VARS.some(x=>x[0]===v)?v:'classic';
 
 /* ===== address bar follows the game mode: /portals, /rising-lava, /portals+fog-of-war ===== */
-const VR_SLUG={diag:'corner-check',full:'close-quarters',hill:'king-of-the-hill',bounty:'bounty-hunt',shuffle:'shuffle',swords:'sword-storm',sharks:'shark-tank',portal:'portals',lava:'rising-lava',streak:'hot-streak',quake:'earthquake'};
+const VR_SLUG={hill:'king-of-the-hill',portal:'portals',lava:'rising-lava',streak:'hot-streak'};
 const FOG_SLUG='fog-of-war';
 const URL_HASHMODE=!/^https?:$/.test(location.protocol);/* file:// and similar cannot change the path, so use #/portals there */
 function urlParseSegs(segs){let vr='classic',fog=false;for(const g of segs.flatMap(x=>x.split('+'))){const k=Object.keys(VR_SLUG).find(x=>VR_SLUG[x]===g);if(k)vr=k;else if(g===FOG_SLUG)fog=true}return{vr,fog}}
@@ -483,7 +476,7 @@ function vrSet(v){if(!mnOK())return;if(!mnGuard('the variant')){menuSync();retur
  VR=vrName(v);FH=false;if(VR!=='classic')FOG=false;if(VR!=='classic'&&ranked){ranked=false;rkMsg='Ranked turned off. It cannot be played with game variants.'}
  urlPushNext=true;VSEED=vrSeed();init();if(mode==='online'&&room)room.emit('newgame',{lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED});renderMode();menuSync();urlSync();urlPushNext=false}
 const vrRingOf=j=>Math.min(j>>3,j&7,7-(j>>3),7-(j&7));
-const vrRingsAt=n=>VRA==='lava'?Math.min(2,Math.floor(n/16)):0;
+const vrRingsAt=n=>VRA==='lava'?Math.min(2,Math.floor(n/14)):0;
 function vrRnd(seed){let a=seed|0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const VR_PORTAL_EVERY=2;/* portals re-roll every this many plies (one ply = one player's move) */
 function vrPortals(n){if(n==null)n=log.length;const rnd=vrRnd((VSEED|0)+777+Math.floor(n/VR_PORTAL_EVERY)*7919),sq=[];while(sq.length<4){const i=(2+Math.floor(rnd()*4))*8+Math.floor(rnd()*8);if(!sq.includes(i))sq.push(i)}return[[sq[0],sq[1]],[sq[2],sq[3]]]}
@@ -498,7 +491,7 @@ function vrTwist(p,i,j,cp){const me=p.t,opp=me==='w'?'b':'w',ply=log.length+1;le
   for(let x=0;x<64;x++)if(B[x]&&vrRingOf(x)<rg){if(B[x].k==='king')dead[B[x].t]=true;else B[x]=null}
   if(rg>vrRingsAt(ply-1)){tmToast('The floor collapsed! Everything on the outer ring is gone.');vrFlash('#ff5a1f');vrShake()}
   if(dead.w||dead.b)over=dead.w&&dead.b?{draw:1}:{win:dead.w?'b':'w',vm:'when the floor collapsed'}}
- if(VRA==='lava'&&!over&&vrRingsAt(ply)<2&&(ply%16===12||ply%16===15)){vrFlash('#ff7a3a');sfx('warn');tmToast(ply%16===15?'Last move before the floor collapses! Get your King inward!':'The floor collapses in 4 moves...')}
+ if(VRA==='lava'&&!over&&vrRingsAt(ply)<2&&(ply%14===10||ply%14===13)){vrFlash('#ff7a3a');sfx('warn');tmToast(ply%14===13?'Last move before the floor collapses! Get your King inward!':'The floor collapses in 4 moves...')}
  if(VRA==='quake'&&ply%8===7){vrFlash('#b08a5a');tone(60,.6,'sawtooth',.12,0,40)}
  if(VRA==='quake'&&ply%8===7)tmToast('The ground is rumbling... an earthquake hits after the next move!');
  if(VRA==='quake'&&ply%8===0){const rnd=vrRnd((VSEED|0)+ply*131),L=[];B=B.slice();const kz=new Set();for(let x=0;x<64;x++)if(B[x]&&B[x].k==='king')for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const r=(x>>3)+dr,c=(x&7)+dc;if(r>=0&&r<8&&c>=0&&c<8)kz.add(r*8+c)}/* squares touching a King are safe from the quake */
@@ -510,7 +503,7 @@ function vrFlash(c){try{if(REDUCE.matches)return;const d=document.createElement(
 function vrFun(p,q,bonus,ply){try{const me=p.t,nm=me==='w'?'White':'Black';
  if(VRA==='streak'&&bonus){vrFlash('#ff8a1f');[523,659,784,1047].forEach((f,i)=>tone(f,.14,'square',.07,i*.05));tmToast('Hot streak! '+nm+' moves again.')}
  if(VRA==='bounty'&&q){const n=cap[me].length;if(n<6){tone(330+n*90,.2,'triangle',.1);vrFlash('#ffd45c');tmToast(n===5?nm+' needs ONE more capture to win the bounty!':'Bounty: '+nm+' has '+n+' of 6')}}
- if(VRA==='hill'&&!over){const k=kingIdx(B,me),dr=[27,28,35,36].some(h=>Math.max(Math.abs((h>>3)-(k>>3)),Math.abs((h&7)-(k&7)))===1);if(dr&&legalFrom(B,k).some(h=>[27,28,35,36].includes(h))){vrFlash('#ffd45c');sfx('warn');tmToast(nm+' King is one step from the hill!')}}
+ if(VRA==='hill'&&!over){const k=kingIdx(B,me),dr=[27,28,35,36].some(h=>Math.max(Math.abs((h>>3)-(k>>3)),Math.abs((h&7)-(k&7)))===1);if(dr&&legalFrom(B,k).some(h=>[27,28,35,36].includes(h))){vrFlash('#ffd45c');sfx('warn');tmToast(nm+' King is one step from the hill! '+(me==='w'?'Black':'White')+' must block it or give check!')}}
 }catch(e){}}
 function vrShake(){setTimeout(()=>{try{const amp=REDUCE.matches?.45:1,f=[];for(let k=0;k<20;k++){const d=1-k/20,sg=k%2?-1:1;f.push({transform:'translate('+(sg*(14+Math.random()*14)*d*amp).toFixed(1)+'px,'+((Math.random()*2-1)*16*d*amp).toFixed(1)+'px) rotate('+(sg*1.6*d*amp).toFixed(2)+'deg)'})}f.push({transform:'none'});
   const run=e=>e&&e.animate&&e.animate(f,{duration:1300,easing:'linear'});run(document.querySelector('.app'));run(document.getElementById('board'));run(document.getElementById('dsb'));
@@ -539,7 +532,7 @@ function lavaLayer(bd,ks){let f=document.getElementById('lavaL');if(!ks||!ks.len
  const d=ks.map(k=>'M'+((k&7)-.004)+' '+((k>>3)-.004)+'h1.008v1.008h-1.008z').join(''),u='url("data:image/svg+xml,'+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' preserveAspectRatio='none'><path d='"+d+"'/></svg>")+'")';
  if(f.dataset.m!==u){f.dataset.m=u;f.style.webkitMaskImage=u;f.style.maskImage=u}}
 function vrMark(bd){if(VRA!=='lava')lavaLayer(bd,null);if(VRA!=='portal'&&VRA!=='lava'&&VRA!=='hill')return;
- const pr=VRA==='portal'?vrPortals():null,rg=vrRingsAt(log.length),nx=VRA==='lava'&&rg<2&&(log.length%16)>=12;
+ const pr=VRA==='portal'?vrPortals():null,rg=vrRingsAt(log.length),nx=VRA==='lava'&&rg<2&&(log.length%14)>=10;
  const lk=[];bd.querySelectorAll('.sq').forEach((e,k)=>{const i=+e.dataset.i;let h='';
   if(pr){const k=pr.findIndex(x=>x.includes(i));if(k>=0)h='<span class="vrm ring" style="--c:'+(k?'#ff9ad5':'#8be0ff')+'"></span>'}
   else{const r=vrRingOf(i);if(r<rg){e.classList.add('lavaT');lk.push(k)}else if(nx&&r===rg)h='<span class="vrm lw"></span>'}
