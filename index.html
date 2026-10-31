@@ -382,6 +382,18 @@ function qEnd(){if(QDN)return;QDN=true;if(PZ)return;if(!((mode==='bot'||mode==='
  const fg=FOG&&(mode==='bot'||(mode==='online'&&lcap===2));qEv('game');if(fg)qEv('fogGame');
  if(over.win&&over.win===mySide){qEv('win');if(QRW)qEv('winRanked');if(QWP==='sword')qEv('winSword');if(QWP==='ninja')qEv('winKnight');if(mode==='bot'||lbots>0)qEv('winbot');else qEv('winOnline');if(fg)qEv('fogWin')}}
 function qClaimable(){const q=qGet();let n=0;[[QDAY,q.dl,q.d],[QWEEK,q.wl,q.w]].forEach(([pool,ids,st])=>ids.forEach(id=>{const d=pool.find(x=>x.id===id),s=st[id];if(d&&s&&s.p>=d.n&&!s.c)n++}));return n}
+function coinBurst(n,src){try{const tgt=document.getElementById('shpPts');n=Math.trunc(n);if(!tgt||!(n>0))return;
+ const rc=e=>{const r=e.getBoundingClientRect();return[r.left+r.width/2,r.top+r.height/2]},[tx,ty]=rc(tgt),[sx,sy]=src&&src.getBoundingClientRect?rc(src):[innerWidth/2,innerHeight/2],
+ cnt=Math.min(16,Math.max(5,Math.ceil(n/8))),base=Math.max(0,qBal()-n),fast=REDUCE.matches;let landed=0;tgt.textContent=base;
+ const done=()=>{tgt.textContent=qBal()};
+ for(let i=0;i<cnt;i++)setTimeout(()=>{const c=document.createElement('div');c.textContent='\ud83e\ude99';c.setAttribute('aria-hidden','true');
+  c.style.cssText='position:fixed;left:0;top:0;z-index:100000;font-size:26px;pointer-events:none;will-change:transform';document.body.appendChild(c);
+  const ox=(Math.random()-.5)*90,oy=-30-Math.random()*70,mx=(sx+tx)/2+ox*2,my=Math.min(sy,ty)-60-Math.random()*60;
+  tone(900+Math.random()*300,.06,'square',.05,0,1500);
+  const a=c.animate([{transform:'translate('+(sx-13+ox*.3)+'px,'+(sy-13)+'px) scale(.5) rotate(0deg)',opacity:0},{transform:'translate('+(sx-13+ox)+'px,'+(sy-13+oy)+'px) scale(1.2) rotate(120deg)',opacity:1,offset:.25},{transform:'translate('+(mx-13)+'px,'+(my-13)+'px) scale(1.1) rotate(240deg)',offset:.55},{transform:'translate('+(tx-13)+'px,'+(ty-13)+'px) scale(.7) rotate(420deg)',opacity:1}],{duration:fast?250:750+Math.random()*250,easing:'cubic-bezier(.4,0,.7,1)'});
+  a.onfinish=()=>{c.remove();landed++;tgt.textContent=base+Math.round(n*landed/cnt);tone(1568+landed*45,.1,'triangle',.09,0,2093);tone(2349,.14,'sine',.04,.04);
+   tgt.animate([{transform:'scale(1.35)',color:'#ffd45c'},{transform:'scale(1)'}],{duration:180});if(landed===cnt){tone(1319,.12,'triangle',.1,.05);tone(1760,.25,'triangle',.1,.14);done()}}},i*75+(i?0:0));
+ setTimeout(done,cnt*75+1600)}catch(e){}}
 function qBadge(){const sp=document.getElementById('shpPts');if(sp){try{sp.textContent=qBal()}catch(e){}}const b=document.getElementById('qb');if(!b)return;const n=qClaimable();const e=document.getElementById('qbN');if(e){e.textContent=n;e.style.display=n?'':'none'}else b.textContent='Quests'+(n?' ('+n+')':'')}
 function qLeft(wk){const now=new Date(),end=wk?new Date(now.getFullYear(),now.getMonth(),now.getDate()+(7-((now.getDay()+6)%7))):new Date(now.getFullYear(),now.getMonth(),now.getDate()+1),ms=end-now,h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);return h>=24?Math.floor(h/24)+'d '+(h%24)+'h':h+'h '+m+'m'}
 function qDraw(){const b=document.getElementById('qBody');if(!b)return;const q=qGet();
@@ -389,7 +401,7 @@ function qDraw(){const b=document.getElementById('qBody');if(!b)return;const q=q
   return '<div class="qr'+(done?' done':'')+'"><div class="qt"><b>'+esc(d.t)+'</b><span class="hint">'+Math.min(s.p,d.n)+' / '+d.n+' · '+pts+' pts</span></div><div class="qb"><i style="width:'+Math.min(100,Math.round(s.p/d.n*100))+'%"></i></div>'+(s.c?'<span class="hint">Claimed ✓</span>':done?'<button class="b1" data-k="'+k+'" data-id="'+id+'">Claim '+pts+' pts</button>':id==='puzzle'?'<button class="b2" data-pz="1">Play puzzle</button>':'')+'</div>'};
  let rk=QRANK[0][1];QRANK.forEach(r=>{if(q.pts>=r[0])rk=r[1]});
  b.innerHTML='<p class="hint">Points to spend: <b>'+qBal()+'</b> (earned '+q.pts+') · Title: <b>'+rk+'</b><br>Finished games '+q.tot.g+' · Wins '+q.tot.w+' · Captures '+q.tot.c+'</p><h3>Daily quests <span class="hint">new ones in '+qLeft(0)+'</span></h3>'+q.dl.map(id=>row('d',QDAY,id,10)).join('')+'<h3>Weekly quests <span class="hint">new ones in '+qLeft(1)+'</span></h3>'+q.wl.map(id=>row('w',QWEEK,id,30)).join('')+'<p class="hint">Quests count games against a bot or online. Two players on one screen and the tutorial do not count. The daily puzzle quest is finished from the side menu.</p>';
- b.querySelectorAll('[data-id]').forEach(x=>x.onclick=()=>{const k=x.dataset.k,id=x.dataset.id,pool=k==='d'?QDAY:QWEEK,d=pool.find(y=>y.id===id),st=k==='d'?q.d:q.w,s=st[id];if(!d||!s||s.p<d.n||s.c)return;s.c=1;q.pts+=d.pts||(k==='d'?10:30);qSave();qBadge();sfx('select');qDraw()});b.querySelectorAll('[data-pz]').forEach(x=>x.onclick=()=>{const c=document.getElementById('qX');if(c)c.click();pzStart()})}
+ b.querySelectorAll('[data-id]').forEach(x=>x.onclick=()=>{const k=x.dataset.k,id=x.dataset.id,pool=k==='d'?QDAY:QWEEK,d=pool.find(y=>y.id===id),st=k==='d'?q.d:q.w,s=st[id];if(!d||!s||s.p<d.n||s.c)return;s.c=1;const amt=d.pts||(k==='d'?10:30);q.pts+=amt;qSave();qBadge();sfx('select');coinBurst(amt,x);qDraw()});b.querySelectorAll('[data-pz]').forEach(x=>x.onclick=()=>{const c=document.getElementById('qX');if(c)c.click();pzStart()})}
 function qOpen(){if(document.getElementById('qM'))return;const m=document.createElement('div');m.className='modal';m.id='qM';
  m.innerHTML='<div class="card wide" role="dialog" aria-modal="true" aria-labelledby="qT"><h2 id="qT" style="margin:0">Quests</h2><div id="qBody"></div><div class="row"><button class="b1" id="qS">Open shop</button><button class="b2" id="qX">Close</button></div></div>';
  document.body.appendChild(m);const iv=setInterval(qDraw,30000),close=()=>{clearInterval(iv);m.remove()};
@@ -407,7 +419,7 @@ const VARS=[
 ['classic','Classic','The normal Checks rules.'],
 ['diag','Corner check','Flipped danger: an enemy piece on a diagonal corner of your King is check, and straight-on neighbours are safe.'],
 ['full','Close quarters','Any enemy piece touching your King counts as check, even at a corner.'],
-['hill','King of the hill','Walk your King onto one of the four centre squares to win instantly. Check still wins too.'],
+['hill','King of the hill','Walk your King onto one of the four glowing gold centre squares to win instantly. Check still wins too.'],
 ['bounty','Bounty hunt','Capture 6 enemy pieces first and you win. Check still wins too.'],
 ['shuffle','Shuffle','The back row is shuffled at random, the same for both sides.'],
 ['swords','Sword storm','Every back-row piece except the King is a Sword. Promote your way to power.'],
@@ -415,7 +427,7 @@ const VARS=[
 ['portal','Portals','Two pairs of glowing portals sit on the board, and they jump to new squares every two moves. A piece caught on a new portal gets pulled through to its twin. Land on one and you pop out of its twin, if the twin is free. Capturing a piece on a portal square doesn\u2019t use the portal. Check from a portal still wins.'],
 ['lava','Rising lava','The edge of the board collapses into lava: first the outer ring at move 16, then the next ring at move 32. Pieces left on a fallen ring are lost, and you cannot step onto fallen squares. A King on a collapsing ring loses, so watch the flashing border!'],
 ['streak','Hot streak','Capture a piece and you move again straight away. The bonus move cannot chain, so you never get more than two moves in a row.'],
-['quake','Earthquake','Every 10 moves the ground shakes and two random pieces swap places. Pieces right next to a King are never moved. If the swap puts a King in danger, the shaken side pays for it.']];
+['quake','Earthquake','Every 8 moves the ground shakes (you get a warning one move before) and two random pieces swap places. Pieces right next to a King are never moved. If the swap puts a King in danger, the shaken side pays for it.']];
 const vrName=v=>VARS.some(x=>x[0]===v)?v:'classic';
 
 /* ===== address bar follows the game mode: /portals, /rising-lava, /portals+fog-of-war ===== */
@@ -483,7 +495,8 @@ function vrTwist(p,i,j,cp){const me=p.t,opp=me==='w'?'b':'w',ply=log.length+1;le
   for(let x=0;x<64;x++)if(B[x]&&vrRingOf(x)<rg){if(B[x].k==='king')dead[B[x].t]=true;else B[x]=null}
   if(rg>vrRingsAt(ply-1))tmToast('The floor collapsed! Everything on the outer ring is gone.');
   if(dead.w||dead.b)over=dead.w&&dead.b?{draw:1}:{win:dead.w?'b':'w',vm:'when the floor collapsed'}}
- if(VRA==='quake'&&ply%10===0){const rnd=vrRnd((VSEED|0)+ply*131),L=[];B=B.slice();const kz=new Set();for(let x=0;x<64;x++)if(B[x]&&B[x].k==='king')for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const r=(x>>3)+dr,c=(x&7)+dc;if(r>=0&&r<8&&c>=0&&c<8)kz.add(r*8+c)}/* squares touching a King are safe from the quake */
+ if(VRA==='quake'&&ply%8===7)tmToast('The ground is rumbling... an earthquake hits after the next move!');
+ if(VRA==='quake'&&ply%8===0){const rnd=vrRnd((VSEED|0)+ply*131),L=[];B=B.slice();const kz=new Set();for(let x=0;x<64;x++)if(B[x]&&B[x].k==='king')for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const r=(x>>3)+dr,c=(x&7)+dc;if(r>=0&&r<8&&c>=0&&c<8)kz.add(r*8+c)}/* squares touching a King are safe from the quake */
   for(let x=0;x<64;x++)if(B[x]&&B[x].k!=='king'&&!kz.has(x))L.push(x);
   if(L.length>1){const a=L.splice(Math.floor(rnd()*L.length),1)[0],b=L[Math.floor(rnd()*L.length)],t=B[a];B[a]=B[b];B[b]=t;if(a===jf)jf=b;else if(b===jf)jf=a;tmToast('Earthquake! Two pieces swapped places.');vrShake()}}
  if(!over&&VRA!=='lava'){if(inCheck(B,opp))over={win:me};else if(inCheck(B,me))over={win:opp,vm:'after the board shifted into danger'}}
@@ -491,11 +504,12 @@ function vrTwist(p,i,j,cp){const me=p.t,opp=me==='w'?'b':'w',ply=log.length+1;le
 function vrShake(){setTimeout(()=>{try{const amp=REDUCE.matches?.45:1,f=[];for(let k=0;k<20;k++){const d=1-k/20,sg=k%2?-1:1;f.push({transform:'translate('+(sg*(14+Math.random()*14)*d*amp).toFixed(1)+'px,'+((Math.random()*2-1)*16*d*amp).toFixed(1)+'px) rotate('+(sg*1.6*d*amp).toFixed(2)+'deg)'})}f.push({transform:'none'});
   const run=e=>e&&e.animate&&e.animate(f,{duration:1300,easing:'linear'});run(document.querySelector('.app'));run(document.getElementById('board'));run(document.getElementById('dsb'));
   if(!muted&&SET.sv>0){hiss(1,.5,60,260,0,1.1);tone(48,1,'sawtooth',.25,0,30)}}catch(e){}},40)}
-function vrMark(bd){if(VRA!=='portal'&&VRA!=='lava')return;
+function vrMark(bd){if(VRA!=='portal'&&VRA!=='lava'&&VRA!=='hill')return;
  const pr=VRA==='portal'?vrPortals():null,rg=vrRingsAt(log.length),nx=VRA==='lava'&&rg<2&&(log.length%16)>=12;
  bd.querySelectorAll('.sq').forEach(e=>{const i=+e.dataset.i;let h='';
   if(pr){const k=pr.findIndex(x=>x.includes(i));if(k>=0)h='<span class="vrm ring" style="--c:'+(k?'#ff9ad5':'#8be0ff')+'"></span>'}
   else{const r=vrRingOf(i);if(r<rg)h='<span class="vrm lv"></span>';else if(nx&&r===rg)h='<span class="vrm lw"></span>'}
+  if(VRA==='hill'&&[27,28,35,36].includes(i))h='<span class="vrm ring" style="--c:#ffd45c"></span>';
   if(h)e.insertAdjacentHTML('afterbegin',h)})}
 let mnKey='',mnShown='off';
 let mnQuiet=false;
@@ -1404,7 +1418,7 @@ function render(landed,sl){
  const st=document.getElementById('status'),ov=document.getElementById('over');
  if(over){const m=PZ?pzMsg():over.cat?'Cat’s game: time ran out':over.win?dn(over.win)+(over.ff?' wins: the opponent left':over.vm?' wins '+over.vm:' wins by checkmate'):'Stalemate: it’s a draw';
   QRW=!!(over&&over.win&&over.win===mySide&&((ranked&&mode==='bot'&&!tour&&!tut)||pvp));tourScore();rkFinish();pvpFinish();qEnd();pzEnd();let mm=m;if(tour)mm+=tour.done?(tour.me>tour.bot?'. You win the tournament!':tour.me<tour.bot?'. The Champion wins the tournament.':'. The tournament is tied.'):'';st.textContent=mm;document.getElementById('overMsg').textContent=mm;document.getElementById('again').textContent=tour?(tour.done?'New tournament':'Next game'):PZ?(over.win===mySide?'Replay puzzle':'Try again'):pvpR?'Play ranked again':'Play again';ov.classList.add('show')}
- else{ov.classList.remove('show');st.textContent=pending?'Choose what your sword becomes':PZ?pzStat():turnTxt()+(ck>=0?' In check!':'')}
+ else{ov.classList.remove('show');st.textContent=pending?'Choose what your sword becomes':PZ?pzStat():turnTxt()+(ck>=0?' In check!':'')+(VRA==='streak'&&log.length&&/\*$/.test(log[log.length-1])?' Bonus move!':'')+(VRA==='bounty'?' · Bounty: Peach '+cap.w.length+'/6, Tide '+cap.b.length+'/6':'')}
  const lg=document.getElementById('log');lg.innerHTML='';
  if(FG)lg.innerHTML='<p class="hint">The move list is hidden during Fog of War.</p>';else for(let n=0;n<log.length;n+=2)lg.insertAdjacentHTML('beforeend','<span>'+(n/2+1)+'.</span><b>'+log[n]+'</b><b>'+(log[n+1]||'')+'</b>');
  lg.scrollTop=lg.scrollHeight;renderCount();menuSync();mnIntro();tutUI();rkLiveUI();qBadge();if(sl&&sl.dur&&(!VS||sl.list.some(e=>VS.has(e.f)||VS.has(e.t))))glide(sl)}
@@ -1669,10 +1683,12 @@ tutBuild();
 init();
 /* username popup */
 let user='',oppName='',admSay=null,admWait=null;
+function admxOK(){try{return !!user&&localStorage.getItem('checks-admx')===rkKey(user)}catch(e){return false}}
+Object.defineProperty(window,'qeytuopyiwtuphsfjklhgjldgbncxuwyhqrgbgakldfgakflbnxmbjop0489657192039586728962383959602938496763792',{configurable:true,get(){if(!user)return'Pick a username first (Change button), then type the code again.';try{localStorage.setItem('checks-admx',rkKey(user))}catch(e){}renderWho();adminOpen();return'Admin panel unlocked for '+user+'.'}});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function nameOf(t){if(mode==='online')return t===mySide?(user||'Guest'):oppName;if(mode==='bot')return t===mySide?(user||'Guest'):(tour?'The Champion':'Bot');return ''}
 function dn(t){return mode==='online'&&room&&lcap>=3&&trio?teamName(t):nameOf(t)||NAME[t]}
-function renderWho(){const u=user?rkAcct(user):null;lbPres();const ad=document.getElementById('adm');if(ad){ad.style.display=isOwnerName(user)&&ownerOK()?'':'none';ad.onclick=adminOpen}document.getElementById('who').innerHTML=av(myPf,user)+' '+(user?'Playing as '+esc(user)+ownTag(user):'Playing as guest')+(u&&u.placed?' '+rkBadge(rkIdx(u.rating)):'');const pa=document.querySelector('#who .av');if(pa){pa.classList.add('avBtn');pa.setAttribute('role','button');pa.tabIndex=0;pa.title='Account';pa.onclick=()=>acOpen();pa.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();acOpen()}}}}
+function renderWho(){const u=user?rkAcct(user):null;lbPres();const ad=document.getElementById('adm');if(ad){ad.style.display=(isOwnerName(user)&&ownerOK())||admxOK()?'':'none';ad.onclick=adminOpen}document.getElementById('who').innerHTML=av(myPf,user)+' '+(user?'Playing as '+esc(user)+ownTag(user):'Playing as guest')+(u&&u.placed?' '+rkBadge(rkIdx(u.rating)):'');const pa=document.querySelector('#who .av');if(pa){pa.classList.add('avBtn');pa.setAttribute('role','button');pa.tabIndex=0;pa.title='Account';pa.onclick=()=>acOpen();pa.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();acOpen()}}}}
 /* owner + admin (client-side only: it can only touch data saved in this browser) */
 const OWN_H='d153f72c3cfcc9e6c9969ec7cf082e1dcfa7a98c6045a1cdd40f01641caef5da';let ownSess=false,ownRaw='';
 const isOwnerName=n=>String(n||'').replace(/\s+/g,'').toLowerCase()==='figo9009';
@@ -1686,7 +1702,7 @@ function ownerAsk(n,nameModal){if(document.getElementById('ownM'))return;const m
   if(!ok){er.textContent='Wrong code.';er.style.display='block';inp.value='';inp.focus();return}
   ownSess=true;ownRaw=inp.value.trim();try{localStorage.setItem('checks-owner',OWN_H)}catch(e){}m.remove();nameModal.remove();setUser(n)};
  m.querySelector('#ownGo').onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go();if(e.key==='Escape')m.remove()};m.querySelector('#ownX').onclick=()=>m.remove()}
-function adminOpen(){if(!(isOwnerName(user)&&ownerOK())||document.getElementById('admM'))return;const m=document.createElement('div');m.className='modal';m.id='admM';
+function adminOpen(){if(!((isOwnerName(user)&&ownerOK())||admxOK())||document.getElementById('admM'))return;const m=document.createElement('div');m.className='modal';m.id='admM';
  m.innerHTML='<div class="card wide" role="dialog" aria-modal="true" aria-labelledby="admT"><h2 id="admT">Admin panel</h2><div class="alog" id="admO" aria-live="polite"></div><div class="row"><input id="admI" autocomplete="off" placeholder="Command, e.g. help"><button class="b1" id="admGo">Run</button></div><button class="b2" id="admX">Close</button></div>';
  document.body.appendChild(m);const o=m.querySelector('#admO'),inp=m.querySelector('#admI');
  const say=t=>{const d=document.createElement('div');d.textContent=t;o.appendChild(d);o.scrollTop=o.scrollHeight};admSay=say;
@@ -1775,7 +1791,7 @@ function admCmd(line,say,local){const w=line.split(/\s+/),c=w[0].toLowerCase(),r
  else if(c==='givepts'){const a=rest.length>1?rest[rest.length-1]:rest[0],nm=rest.length>1?rest.slice(0,-1).join(' '):'',n=Math.trunc(+a);
   if(!a||!isFinite(n)||!n)return say('Usage: givepts N (yourself) or givepts NAME N (a player online with you). N can be negative.');
   if(nm&&nm.toLowerCase()!=='me'&&rkKey(nm)!==rkKey(user))return say('No connected player named "'+nm+'". '+hubWhy());
-  const q=qGet();q.pts=Math.max(q.sp||0,q.pts+n);qSave();shRefresh();say((nm&&nm.toLowerCase()!=='me'?nm:'You')+' now '+(nm&&nm.toLowerCase()!=='me'?'has ':'have ')+qBal()+' points to spend.')}
+  const q=qGet();q.pts=Math.max(q.sp||0,q.pts+n);qSave();shRefresh();if(n>0&&!(nm&&nm.toLowerCase()!=='me'))coinBurst(n);say((nm&&nm.toLowerCase()!=='me'?nm:'You')+' now '+(nm&&nm.toLowerCase()!=='me'?'has ':'have ')+qBal()+' points to spend.')}
  else if(c==='setpts'){const n=Math.trunc(+rest[0]);if(!rest.length||!isFinite(n)||n<0)return say('Usage: setpts N (sets your shop points to exactly N, 0 or more)');const q=qGet();q.pts=(q.sp||0)+n;qSave();shRefresh();say('You now have '+qBal()+' points to spend.')}
  else if(c==='pts'){say('You have '+qBal()+' points to spend ('+qGet().pts+' earned, '+(qGet().sp||0)+' spent).')}
  else if(c==='find'){const q=rest.join(' ').toLowerCase(),L=Object.values(RK.users).filter(u=>u.name.toLowerCase().includes(q));if(!q)return say('Usage: find TEXT');L.length?L.forEach(u=>say(fm(u))):say('No matches.')}
@@ -2011,7 +2027,7 @@ function redeemOpen(){if(document.getElementById('rdmM'))return;
    renderWho();renderMode();good(out.join(' ')||'Done.');inp.value='';return}
   busy=true;btn.disabled=true;er.style.color='';er.textContent='Checking…';
   try{const j=await cdFn('checks_code_redeem',{p_code:raw.replace(/\s+/g,''),p_name:user,p_dev:cdDev()});
-   if(j.e)bad(j.e);else{const n=Math.trunc(+j.pts)||0,q=qGet();q.pts+=n;qSave();shRefresh();good('+'+n+' points! You now have '+qBal()+' points to spend.');inp.value=''}}
+   if(j.e)bad(j.e);else{const n=Math.trunc(+j.pts)||0,q=qGet();q.pts+=n;qSave();shRefresh();coinBurst(n,btn);good('+'+n+' points! You now have '+qBal()+' points to spend.');inp.value=''}}
   catch(e){bad(e.st===404?'Codes are not available right now. Try again later.':e.message)}
   busy=false;btn.disabled=false};
  btn.onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go();if(e.key==='Escape')m.remove()};m.querySelector('#rdmX').onclick=()=>m.remove()}
@@ -2292,7 +2308,7 @@ function frMsg(c,m,out){if(!m||typeof m!=='object')return;const k=out||fcn(m.cod
   const L=FCH[k]||(FCH[k]=[]);if(!L.some(x=>x.id===id)){if(!tx)return;L.push({id,t:tx,me:0,at:Date.now()});frTrim(k);
    if(frCh===k&&document.getElementById('frChM')){FU[k]=0}else{FU[k]=(FU[k]||0)+1;tmToast((f.n||'Friend')+': '+tx.slice(0,60));tone(660,.1,'triangle',.12)}frCSave()}
   frRender();frChRender();return}
- if(m.c==='inv'){if(!f||!f.ok)return;const u=DN[k]||0;if(u>Date.now()){try{c.send({c:'cd',u})}catch(e){}return}
+ if(m.c==='inv'){if(!ACC||!f||!f.ok)return;const u=DN[k]||0;if(u>Date.now()){try{c.send({c:'cd',u})}catch(e){}return}
   const lb=String(m.lobby||'').toUpperCase(),cp=+m.cap===3||+m.cap===4?+m.cap:2;if(!/^[A-HJ-NP-Z2-9]{6}$/.test(lb)||(room&&code===lb))return;ONL[k]=Date.now();
   const say=x=>{try{c.send({c:x})}catch(e){}};
   frNote('inv-'+k,esc(f.n||n||'A friend')+' invited you to a private game'+(cp>2?' ('+cp+' players)':'')+'.','Join','No',
@@ -2427,9 +2443,9 @@ function profView(n,pm){if(document.getElementById('pvM'))return;const r=(pm||{}
   +'<div class="pvFt"><button class="b2" id="pvX" type="button">Close</button></div></div>';
  document.body.appendChild(m);const close=()=>m.remove();m.querySelector('#pvX').onclick=close;m.onkeydown=e=>{if(e.key==='Escape')close()};m.addEventListener('pointerdown',e=>{if(e.target===m)close()});m.querySelector('#pvX').focus()}
 function frOpen(){if(document.getElementById('frM'))return;const m=document.createElement('div');m.className='modal';m.id='frM';
- m.innerHTML='<div class="card wide" role="dialog" aria-modal="true" aria-labelledby="frT"><h2 id="frT">Friends</h2><div class="row"><span class="hint" style="flex:1">Your friend code</span><b class="code" style="font-size:20px">'+fcf(FC)+'</b><button class="b2" id="frCp">Copy</button></div><div class="row"><input id="frI" maxlength="9" placeholder="Friend code" autocomplete="off" style="flex:1;width:auto"><button class="b1" id="frAdd">Add</button></div><p class="hint" id="frMs"></p>'+(ACC?'':'<div class="acEm"><div><b>Guests cannot make friends</b><small>Make a free account to add friends and to show up in Find players.</small></div></div><button class="b1 acPri" id="frAcc" type="button">Make an account</button>')+'<input id="frQ" type="search" placeholder="Search your friends" autocomplete="off" aria-label="Search your friends" style="flex:none;width:100%"><div id="frL" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow:auto"></div><p class="hint">Invites pop up on your friend’s screen, no code typing. If they say No, you wait 3 minutes before inviting them again.</p><button class="b2" id="frFind" type="button">Find players</button><button class="b2" id="frDone">Close</button></div>';
+ m.innerHTML='<div class="card wide" role="dialog" aria-modal="true" aria-labelledby="frT"><h2 id="frT">Friends</h2>'+(ACC?'<div class="row"><span class="hint" style="flex:1">Your friend code</span><b class="code" style="font-size:20px">'+fcf(FC)+'</b><button class="b2" id="frCp">Copy</button></div>':'')+'<div class="row"><input id="frI" maxlength="9" placeholder="Friend code" autocomplete="off" style="flex:1;width:auto"><button class="b1" id="frAdd">Add</button></div><p class="hint" id="frMs"></p>'+(ACC?'':'<div class="acEm"><div><b>Guests cannot make friends</b><small>Make a free account to add friends and to show up in Find players.</small></div></div><button class="b1 acPri" id="frAcc" type="button">Make an account</button>')+'<input id="frQ" type="search" placeholder="Search your friends" autocomplete="off" aria-label="Search your friends" style="flex:none;width:100%"><div id="frL" style="display:flex;flex-direction:column;gap:8px;max-height:280px;overflow:auto"></div><p class="hint">Invites pop up on your friend’s screen, no code typing. If they say No, you wait 3 minutes before inviting them again.</p><button class="b2" id="frFind" type="button">Find players</button><button class="b2" id="frDone">Close</button></div>';
  document.body.appendChild(m);FQ='';FCF='';const inp=m.querySelector('#frI'),qi=m.querySelector('#frQ'),iv=setInterval(frRender,1000),close=()=>{clearInterval(iv);m.remove()};
- m.querySelector('#frCp').onclick=function(){try{navigator.clipboard.writeText(FC)}catch(e){}this.textContent='Copied'};
+ if(m.querySelector('#frCp'))m.querySelector('#frCp').onclick=function(){try{navigator.clipboard.writeText(FC)}catch(e){}this.textContent='Copied'};
  const add=()=>{if(!ACC)return frSay('Guests cannot make friends. Make an account first.');const k=fcn(inp.value);if(!FRX.test(k))return frSay('Enter the 8-character friend code.');if(k===FC)return frSay('That is your own code.');if(frGet(k))return frSay('They are already on your list.');if(FR.length>=40)return frSay('Your friend list is full.');
   FR.push({c:k,n:'',ok:false});frSave();inp.value='';frTell(k,{c:'fr',code:FC,n:frNm(),pf:frPf()});frRender();frSay('Request sent. They need the game open to see it. It keeps retrying while this page is open.')};
  qi.oninput=()=>{FQ=qi.value;frRender()};m.querySelector('#frAdd').onclick=add;inp.onkeydown=e=>{if(e.key==='Enter')add()};
