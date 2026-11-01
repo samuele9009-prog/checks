@@ -157,7 +157,7 @@ button.b1:disabled{opacity:.45;cursor:default}
 .rkres:empty{display:none}.rkres p{margin:0}.rkres>b{color:#ffc83d;letter-spacing:1px;font-weight:600}
 .rkrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;color:var(--text)}.rkrow span{color:var(--peach);font-size:13px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.stats div{background:#0f1f26;border-radius:8px;padding:6px 4px;text-align:center}.stats b{display:block;color:var(--text);font-size:17px;font-weight:600}.stats span{font-size:11px}
-.sty-prev{display:grid;grid-template-columns:repeat(4,64px);grid-auto-rows:64px;padding:8px;background:var(--frame);background-size:var(--fsz,auto);border-radius:10px;width:max-content;margin:0 auto 4px}.sty-pre{display:flex;gap:6px;flex-wrap:wrap}.sty-pre button{flex:none;padding:6px 10px}.sty-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0;color:var(--text)}.sty-row input{width:54px;height:34px;border:1.5px solid var(--line);border-radius:8px;background:transparent;padding:2px;cursor:pointer;flex:none}
+.sty-prev{display:grid;grid-template-columns:repeat(4,64px);grid-auto-rows:64px;padding:8px;background:var(--frame);background-size:var(--fsz,auto);border-radius:10px;width:max-content;margin:0 auto 4px}.sty-pre{display:flex;gap:6px;flex-wrap:wrap}#styM .card{max-height:92vh;overflow-y:auto}.sty-sv{border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:8px}.sty-svh{font-weight:600;color:var(--text)}.sty-svn{display:flex;gap:8px}.sty-svn input{flex:1;min-width:0;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:transparent;color:var(--text);font:inherit}.sty-svi{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:10px}.sty-svi .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text)}.sty-svi .dots{display:flex;flex:none}.sty-svi .dots i{width:14px;height:14px;border-radius:50%;margin-left:-4px;border:1.5px solid var(--panel)}.sty-svi .dots i:first-child{margin-left:0}.sty-svi button{flex:none;padding:5px 10px}.sty-svl{display:flex;flex-direction:column;gap:6px}.sty-pre button{flex:none;padding:6px 10px}.sty-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0;color:var(--text)}.sty-row input{width:54px;height:34px;border:1.5px solid var(--line);border-radius:8px;background:transparent;padding:2px;cursor:pointer;flex:none}
 .av{width:26px;height:26px;border-radius:50%;overflow:hidden;display:inline-flex;align-items:flex-end;justify-content:center;flex:none;background:#2a4551;border:2px solid rgba(255,255,255,.22)}
 .av img{width:100%;height:100%;object-fit:contain;object-position:bottom;display:block}.av img.ph{object-fit:cover}.av.big{width:56px;height:56px}
 .strip{overflow:hidden}.strip .pls{display:flex;gap:12px;align-items:center;min-width:0}.strip .pl{display:inline-flex;align-items:center;gap:6px;min-width:0}
@@ -175,9 +175,6 @@ button.b1:disabled{opacity:.45;cursor:default}
 #fogL .b{left:-150%;top:0;width:250%;height:150%;background-size:60% 100%;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='640'><filter id='f' x='0' y='0' width='100%25' height='100%25'><feTurbulence type='fractalNoise' baseFrequency='0.011 0.016' numOctaves='4' seed='23' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 .86  0 0 0 0 .89  0 0 0 0 .93  0 0 0 3.4 -1.2'/></filter><rect width='640' height='640' filter='url(%23f)'/></svg>");animation:fgB 44s linear infinite}
 #fogL .c{inset:0;background:conic-gradient(rgba(0,0,0,.07) 0 25%,rgba(0,0,0,.26) 0 50%,rgba(0,0,0,.07) 0 75%,rgba(0,0,0,.26) 0);background-size:25% 25%}
 @keyframes fgA{to{transform:translate(-50%,-50%)}}@keyframes fgB{to{transform:translateX(60%)}}
-#lavaL{position:absolute;inset:10px;overflow:hidden;pointer-events:none;background:#3a0a02;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
-#lavaL canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-.sq.lavaT{background:transparent!important;box-shadow:none!important}.sq.lavaT .co{color:#ffe2b0!important;text-shadow:0 1px 2px #000}
 .sq.fog{background:transparent!important;box-shadow:none!important}.sq.fog .co{color:#e9ecef!important}.sq.rmk::before{background:rgba(235,64,52,.72)!important}
 .fogcv{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;gap:12px;align-items:center;justify-content:center;text-align:center;background:rgba(6,9,16,.97);color:#fff;padding:20px}
 .qr{display:flex;flex-direction:column;gap:6px;padding:10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px}.qr.done{border-color:var(--mark)}.qt{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}.qb{height:8px;border-radius:5px;background:var(--line);overflow:hidden}.qb i{display:block;height:100%;background:var(--mark)}#qBody h3{margin:12px 0 6px;font-size:16px}#qBody{max-height:60vh;overflow:auto;margin:8px 0}
@@ -467,14 +464,14 @@ function fogVis(t){const v=new Set();for(let i=0;i<64;i++){const q=B[i];if(!q||q
 const VARS=[
 ['classic','Classic','The normal Checks rules.'],
 ['ctf','Capture the flag','Your King is replaced by a Flag piece that cannot move or be captured. Move any piece right next to the enemy flag (up, down, left or right) to steal it, then carry it back to your two home rows to win. Capture the carrier and the flag jumps back home.',{ic:'flag',tag:'Steal the flag and carry it home',r:[['Your flag','Your King is replaced by a Flag that cannot move or be captured.'],['Steal','Move any piece right next to the enemy flag (up, down, left or right) to pick it up.'],['Carry it home','Bring it back to your two home rows to win. Capture the carrier and the flag jumps back.']]}],
-['lava','Rising lava','The edge of the board collapses into lava: the outer ring at move 14, then the next ring at move 28. Pieces left on a fallen ring are lost, you cannot step onto fallen squares, and a King on a collapsing ring loses. Watch the flashing border and run for the middle!',{ic:'king',tag:'The floor is collapsing',r:[['Move 14','The outer ring of the board falls into lava.'],['Move 28','The next ring falls too.'],['Stay alive','Pieces on a fallen ring are lost, you cannot step onto fallen squares, and a King on a collapsing ring loses.'],['Tip','Watch the flashing border and run for the middle.']]}],
+['last','Last Piece Standing','No Crown protection rules. There is no check and no checkmate, and the King can be captured like any other piece. The objective is to eliminate every enemy piece.',{ic:'king',tag:'Wipe out every enemy piece',r:[['No protection','There is no check and no checkmate. Your King has no special protection.'],['Capture anything','Every piece can be captured, including the King.'],['The goal','Eliminate every enemy piece to win. The last side with a piece standing wins.'],['Tip','Your King is just another piece now, so use it, but do not leave it hanging.']]}],
 ['twostep','2 Step','Every turn you take two steps, and both must be made by the same piece: the piece you move first is the one that takes the second step. You can also stop after one step. Your King is replaced by a Queen who glides up to three squares in any direction (she cannot jump), and captures or swaps places with a friendly piece at the end of her line. Any enemy piece directly above, below or beside the Queen is checkmate, and she can never be captured.',{ic:'queen',tag:'Two steps, one piece',r:[['Step 1','Move any piece, as usual.'],['Step 2','Move that same piece again. You cannot switch pieces, but you can press End turn to stop after one step.'],['The Queen','Replaces your King. She glides up to 3 squares in any direction (no jumping) and captures or swaps with a friendly piece at the end of her line.'],['Checkmate','An enemy piece directly above, below or beside the Queen wins. She can never be captured.']]}],
 ['roll','Roll','Before every turn, both players roll a die. Whoever rolls the higher number gets to move, and a tie is rolled again. You can win the roll several times in a row, so nobody is safe!',{ic:'dice',tag:'Roll high to move',r:[['The roll','Before every turn, both players roll a die.'],['Higher goes','The player with the higher number gets to move. A tie is rolled again.'],['Streaks','You can win the roll again and again, so you might get several moves in a row. Keep your King safe!'],['Win','The same as Classic: any enemy piece directly above, below or beside the King is checkmate.']]}]];
 function flInit(){return{w:{h:60,p:60,c:-1},b:{h:4,p:4,c:-1}}}let FL=flInit();
 const vrName=v=>VARS.some(x=>x[0]===v)?v:'classic';
 
-/* ===== address bar follows the game mode: /portals, /rising-lava, /portals+fog-of-war ===== */
-const VR_SLUG={ctf:'capture-the-flag',lava:'rising-lava',twostep:'2-step',roll:'roll'};
+/* ===== address bar follows the game mode: /portals, /last-piece-standing, /portals+fog-of-war ===== */
+const VR_SLUG={ctf:'capture-the-flag',last:'last-piece-standing',twostep:'2-step',roll:'roll'};
 const FOG_SLUG='fog-of-war';
 const URL_HASHMODE=!/^https?:$/.test(location.protocol);/* file:// and similar cannot change the path, so use #/portals there */
 function urlParseSegs(segs){let vr='classic',fog=false;for(const g of segs.flatMap(x=>x.split('+'))){const k=Object.keys(VR_SLUG).find(x=>VR_SLUG[x]===g);if(k)vr=k;else if(g===FOG_SLUG)fog=true}return{vr,fog}}
@@ -540,7 +537,6 @@ function fogToggle(){if(!mnOK())return;if(!mnGuard('Fog of war'))return;
 function vrSet(v){if(!mnOK())return;if(!mnGuard('the variant')){menuSync();return}
  VR=vrName(v);FH=false;if(VR!=='classic')FOG=false;if(VR!=='classic'&&ranked){ranked=false;rkMsg='Ranked turned off. It cannot be played with game variants.'}
  urlPushNext=true;VSEED=vrSeed();init();if(mode==='online'&&room)room.emit('newgame',{lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED});renderMode();menuSync();urlSync();urlPushNext=false}
-const vrRingOf=j=>Math.min(j>>3,j&7,7-(j>>3),7-(j&7));
 /* ===== Roll: before every turn both players roll a die, the higher number moves (same seed + move number = same dice on every screen) ===== */
 S.dice='data:image/svg+xml,'+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect x='6' y='6' width='52' height='52' rx='11' fill='#f7efdc'/><g fill='#14506b'><circle cx='20' cy='20' r='5'/><circle cx='44' cy='20' r='5'/><circle cx='32' cy='32' r='5'/><circle cx='20' cy='44' r='5'/><circle cx='44' cy='44' r='5'/></g></svg>");
 const RL_PIPS=[[],[4],[0,8],[0,4,8],[0,2,6,8],[0,2,4,6,8],[0,2,3,5,6,8]];
@@ -598,7 +594,6 @@ const doRoll=async(a,b,txt)=>{res.className='rlR'+(a===b?' tie':'');res.textCont
    o.classList.add('out');setTimeout(()=>o.remove(),380);fin()
   }catch(e){o.remove();fin()}};
  setTimeout(go,380)}
-const vrRingsAt=n=>VRA==='lava'?Math.min(2,Math.floor(n/14)):0;
 function vrRnd(seed){let a=seed|0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const VR_PORTAL_EVERY=2;/* portals re-roll every this many plies (one ply = one player's move) */
 function vrPortals(n){if(n==null)n=log.length;const rnd=vrRnd((VSEED|0)+777+Math.floor(n/VR_PORTAL_EVERY)*7919),sq=[];while(sq.length<4){const i=(2+Math.floor(rnd()*4))*8+Math.floor(rnd()*8);if(!sq.includes(i))sq.push(i)}return[[sq[0],sq[1]],[sq[2],sq[3]]]}
@@ -609,17 +604,12 @@ function vrTwist(p,i,j,cp){const me=p.t,opp=me==='w'?'b':'w',ply=log.length+1;le
    if(x&&!y&&x.k!=='king'){a=pr[0];b=pr[1]}else if(y&&!x&&y.k!=='king'){a=pr[1];b=pr[0]}
    if(a>=0){if(!moved)B=B.slice();B[b]=B[a];B[a]=null;moved++;if(a===jf){jf=b;last=[i,jf]}}}
   if(moved){add+='~';vrFlash('#8be0ff');tone(300,.35,'sine',.12,0,1200);tone(1200,.3,'triangle',.08,.12,500);tmToast('The portals moved! '+(moved>1?moved+' pieces were':'A piece was')+' pulled through.')}}
- if(VRA==='lava'){const rg=vrRingsAt(ply),dead={w:false,b:false};B=B.slice();
-  for(let x=0;x<64;x++)if(B[x]&&vrRingOf(x)<rg){if(B[x].k==='king')dead[B[x].t]=true;else B[x]=null}
-  if(rg>vrRingsAt(ply-1)){tmToast('The floor collapsed! Everything on the outer ring is gone.');vrFlash('#ff5a1f');vrShake()}
-  if(dead.w||dead.b)over=dead.w&&dead.b?{draw:1}:{win:dead.w?'b':'w',vm:'when the floor collapsed'}}
- if(VRA==='lava'&&!over&&vrRingsAt(ply)<2&&(ply%14===10||ply%14===13)){vrFlash('#ff7a3a');sfx('warn');tmToast(ply%14===13?'Last move before the floor collapses! Get your King inward!':'The floor collapses in 4 moves...')}
  if(VRA==='quake'&&ply%8===7){vrFlash('#b08a5a');tone(60,.6,'sawtooth',.12,0,40)}
  if(VRA==='quake'&&ply%8===7)tmToast('The ground is rumbling... an earthquake hits after the next move!');
  if(VRA==='quake'&&ply%8===0){const rnd=vrRnd((VSEED|0)+ply*131),L=[];B=B.slice();const kz=new Set();for(let x=0;x<64;x++)if(B[x]&&B[x].k==='king')for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const r=(x>>3)+dr,c=(x&7)+dc;if(r>=0&&r<8&&c>=0&&c<8)kz.add(r*8+c)}/* squares touching a King are safe from the quake */
   for(let x=0;x<64;x++)if(B[x]&&B[x].k!=='king'&&!kz.has(x))L.push(x);
   if(L.length>1){const a=L.splice(Math.floor(rnd()*L.length),1)[0],b=L[Math.floor(rnd()*L.length)],t=B[a];B[a]=B[b];B[b]=t;if(a===jf)jf=b;else if(b===jf)jf=a;tmToast('Earthquake! Two pieces swapped places.');vrShake()}}
- if(!over&&VRA!=='lava'){if(inCheck(B,opp))over={win:me};else if(inCheck(B,me))over={win:opp,vm:'after the board shifted into danger'}}
+ if(!over){if(inCheck(B,opp))over={win:me};else if(inCheck(B,me))over={win:opp,vm:'after the board shifted into danger'}}
  if(over)add+='#';return{j:jf,add}}
 function vrFlash(c){try{if(REDUCE.matches)return;const d=document.createElement('div');d.className='vrfl';d.style.background='radial-gradient(circle,transparent 35%,'+c+' 140%)';document.body.appendChild(d);d.animate([{opacity:.0},{opacity:.55,offset:.2},{opacity:0}],{duration:650,easing:'ease-out'}).onfinish=()=>d.remove()}catch(e){}}
 function vrFun(p,q,bonus,ply){try{const me=p.t,nm=me==='w'?'White':'Black';
@@ -636,38 +626,11 @@ function flStep(p,i,j,q){const me=p.t,o=me==='w'?'b':'w',F=FL[o],G=FL[me];
 function vrShake(){setTimeout(()=>{try{const amp=REDUCE.matches?.45:1,f=[];for(let k=0;k<20;k++){const d=1-k/20,sg=k%2?-1:1;f.push({transform:'translate('+(sg*(14+Math.random()*14)*d*amp).toFixed(1)+'px,'+((Math.random()*2-1)*16*d*amp).toFixed(1)+'px) rotate('+(sg*1.6*d*amp).toFixed(2)+'deg)'})}f.push({transform:'none'});
   const run=e=>e&&e.animate&&e.animate(f,{duration:1300,easing:'linear'});run(document.querySelector('.app'));run(document.getElementById('board'));run(document.getElementById('dsb'));
   if(!muted&&SET.sv>0){hiss(1,.5,60,260,0,1.1);tone(48,1,'sawtooth',.25,0,30)}}catch(e){}},40)}
-const LV={run:false,last:0,N:150};
-const lvH=(x,y)=>{let n=(Math.imul(x,374761393)+Math.imul(y,668265263))|0;n=Math.imul(n^(n>>>13),1274126177);return((n^(n>>>16))>>>0)/4294967296};
-function lvN(x,y){const ix=Math.floor(x),iy=Math.floor(y),fx=x-ix,fy=y-iy,u=fx*fx*(3-2*fx),v=fy*fy*(3-2*fy);
- const a=lvH(ix,iy),b=lvH(ix+1,iy),c=lvH(ix,iy+1),d=lvH(ix+1,iy+1);return a+(b-a)*u+(c-a)*v+(a-b-c+d)*u*v}
-function lvF(x,y){let s=0,a=.5;for(let o=0;o<4;o++){s+=a*lvN(x,y);x=x*2.03+17.1;y=y*2.03+9.7;a*=.5}return s/.9375}
-const LVP=[[0,40,6,2],[.28,120,16,3],[.5,205,48,4],[.72,255,105,12],[.9,255,170,40],[1,255,215,100]];
-function lvCol(t){t=t<0?0:t>1?1:t;for(let i=1;i<LVP.length;i++)if(t<=LVP[i][0]){const a=LVP[i-1],b=LVP[i],k=(t-a[0])/(b[0]-a[0]);return[a[1]+(b[1]-a[1])*k,a[2]+(b[2]-a[2])*k,a[3]+(b[3]-a[3])*k]}return[255,240,150]}
-const LVL=(()=>{const L=new Array(256);for(let i=0;i<256;i++)L[i]=lvCol(i/255);return L})();
-function lavaDraw(cv,sec){const N=LV.N,g=cv.getContext('2d'),im=g.createImageData(N,N),px=new Uint32Array(im.data.buffer),t=sec*.22,sc=3.4;
- for(let y=0;y<N;y++)for(let x=0;x<N;x++){const u=x/N*sc,v=y/N*sc;
-  const qx=lvF(u+t*.6,v-t*.3),qy=lvF(u+5.2-t*.4,v+1.3+t*.5),
-   w=lvF(u+2.6*qx+t*.25,v+2.6*qy-t*.2),
-   r=1-Math.abs(2*lvF(u*1.7-2.2*qy+t*.35,v*1.7+2.2*qx+t*.3)-1),
-   heat=Math.pow(r,4)*.8+Math.max(0,w-.36)*1.5;
-  const c=LVL[Math.max(0,Math.min(255,(heat*255)|0))];
-  px[y*N+x]=0xff000000|(c[2]<<16)|(c[1]<<8)|c[0]}
- g.putImageData(im,0,0)}
-function lavaLoop(ts){const f=document.getElementById('lavaL');if(!f){LV.run=false;return}if(ts-LV.last>=40){LV.last=ts;try{lavaDraw(f.firstChild,ts/1000)}catch(e){}}requestAnimationFrame(lavaLoop)}
-function lavaLayer(bd,ks){let f=document.getElementById('lavaL');if(!ks||!ks.length){if(f)f.remove();return}
- if(!f){f=document.createElement('div');f.id='lavaL';f.innerHTML='<canvas width="'+LV.N+'" height="'+LV.N+'"></canvas>';bd.insertBefore(f,bd.firstChild);try{lavaDraw(f.firstChild,performance.now()/1000)}catch(e){}}
- if(!LV.run){LV.run=true;requestAnimationFrame(lavaLoop)}
- const d=ks.map(k=>'M'+((k&7)-.004)+' '+((k>>3)-.004)+'h1.008v1.008h-1.008z').join(''),u='url("data:image/svg+xml,'+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' preserveAspectRatio='none'><path d='"+d+"'/></svg>")+'")';
- if(f.dataset.m!==u){f.dataset.m=u;f.style.webkitMaskImage=u;f.style.maskImage=u}}
-function vrMark(bd){if(VRA!=='lava')lavaLayer(bd,null);if(VRA!=='ctf'&&VRA!=='lava'&&VRA!=='hill')return;
- const pr=VRA==='portal'?vrPortals():null,rg=vrRingsAt(log.length),nx=VRA==='lava'&&rg<2&&(log.length%14)>=10;
- const lk=[];bd.querySelectorAll('.sq').forEach((e,k)=>{const i=+e.dataset.i;let h='';
-  if(pr){const k=pr.findIndex(x=>x.includes(i));if(k>=0)h='<span class="vrm ring" style="--c:'+(k?'#ff9ad5':'#8be0ff')+'"></span>'}
-  else{const r=vrRingOf(i);if(r<rg){e.classList.add('lavaT');lk.push(k)}else if(nx&&r===rg)h='<span class="vrm lw"></span>'}
+function vrMark(bd){if(VRA!=='ctf'&&VRA!=='hill')return;
+ bd.querySelectorAll('.sq').forEach(e=>{const i=+e.dataset.i;let h='';
   if(VRA==='hill'&&[27,28,35,36].includes(i))h='<span class="vrm ring" style="--c:#ffd45c"></span>';
   if(VRA==='ctf')for(const sd of['w','b'])if(FL[sd].c===i)setTimeout(()=>e.insertAdjacentHTML('beforeend','<img alt="" class="fcar '+sd+'" src="'+S.flag+'" style="position:absolute;left:auto;bottom:auto;top:-3px;right:-3px;width:48%;height:48%;z-index:6;pointer-events:none;filter:var(--f'+sd+') drop-shadow(0 0 6px #ffd45c)">'),0)
-  if(h)e.insertAdjacentHTML('afterbegin',h)});
- if(VRA==='lava')lavaLayer(bd,lk)}
+  if(h)e.insertAdjacentHTML('afterbegin',h)})}
 let mnKey='',mnShown='off';
 let mnQuiet=false;
 function mnIntro(force){if(mnQuiet||PZ||!mnOK())return;const on=[];if(FOG)on.push(['Fog of war','You only see your own pieces and the squares they can move to. The move list is hidden.',{ic:'king',tag:'You can only see what your pieces can reach',r:[['Your view','You see your own pieces and every square they can move to. Everything else is hidden in fog.'],['Hidden enemies','Enemy pieces outside your view are invisible, so an enemy can be sitting right next to your King without you knowing.'],['The Knight','A Knight only lights up the 8 squares around it, even though it can teleport.'],['Captures','You can see an enemy piece only if one of your pieces could move onto its square, so you can always see what you can capture.'],['No move list','The move list is hidden, and Undo is turned off, so remember what you saw.'],['Pass and play','On one screen, hand the device over and tap reveal so the next player only sees their own side.'],['Win','The win rule of the game mode you picked still applies. In Classic, any enemy piece directly above, below or beside the King is checkmate.']]}]);
@@ -677,7 +640,7 @@ function mnIntro(force){if(mnQuiet||PZ||!mnOK())return;const on=[];if(FOG)on.pus
  const d=document.createElement('div');d.id='mnI';d.className='mnI';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');
  d.innerHTML='<div class="mnIc"><p class="mnIk">Game mode</p>'+on.map(x=>{const f=x[2];if(!f)return'<h1>'+x[0]+'</h1><p>'+x[1]+'</p>';return'<div class="mnIh">'+(S[f.ic]?'<img class="mnIi" src="'+S[f.ic]+'" alt="">':'')+'<h1>'+x[0]+'</h1><p class="mnIt">'+f.tag+'</p></div><ol class="mnIr">'+f.r.map((r,n)=>'<li style="--d:'+(n*70+120)+'ms"><b class="mnIn">'+(n+1)+'</b><div><strong>'+r[0]+'</strong><span>'+r[1]+'</span></div></li>').join('')+'</ol>'}).join('')+'<button class="b1" id="mnIgo" type="button">Let\u2019s play</button></div>';
  document.body.appendChild(d);const go=()=>d.remove();d.querySelector('#mnIgo').onclick=go;d.onkeydown=e=>{if(e.key==='Escape'||e.key==='Enter')go()};d.querySelector('#mnIgo').focus({preventScroll:true})}
-const MNQ=['ctf','lava','twostep','roll'];
+const MNQ=['ctf','last','twostep','roll'];
 const mnIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.4 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>';
 function mnPick(v){if(VR===v)v='classic';vrSet(v)}
 function menuSync(){const b=document.getElementById('mnFog');if(!b)return;
@@ -876,24 +839,25 @@ function startMusic(){if(!mOn||mT||!ctx())return;if(!mG){const n=AC.sampleRate;m
 function stopMusic(){clearInterval(mT);mT=null}
 function musicDuck(on){mDk=on;try{if(mM&&AC)mM.gain.setTargetAtTime(SET.mv*(on?.3:1),AC.currentTime,.25)}catch(e){}}
 const VAL={sword:100,ninja:320,fish:300,shark:600,king:10000,flag:10000};
-function ev(b){let s=0;for(let i=0;i<64;i++){const p=b[i];if(!p)continue;let v=VAL[p.k];if(p.k==='sword'){const r=i>>3;v+=(p.t==='w'?6-r:r-1)*6}s+=p.t==='w'?v:-v}for(const t of['w','b']){const k=kingIdx(b,t);if(k<0)continue;for(let i=0;i<64;i++){const p=b[i];if(p&&p.t!==t&&Math.abs((i>>3)-(k>>3))+Math.abs((i&7)-(k&7))===1)s+=t==='w'?-30:30}}return s}
+function ev(b){let s=0;for(let i=0;i<64;i++){const p=b[i];if(!p)continue;let v=VAL[p.k];if(VRA==='last'&&p.k==='king')v=450;if(p.k==='sword'){const r=i>>3;v+=(p.t==='w'?6-r:r-1)*6}s+=p.t==='w'?v:-v}if(VRA!=='last')for(const t of['w','b']){const k=kingIdx(b,t);if(k<0)continue;for(let i=0;i<64;i++){const p=b[i];if(p&&p.t!==t&&Math.abs((i>>3)-(k>>3))+Math.abs((i&7)-(k&7))===1)s+=t==='w'?-30:30}}return s}
 function thin(b,i,j,t){const p=b[i];if(p.k!=='ninja'||b[j])return true;const k=kingIdx(b,t==='w'?'b':'w');if(k>=0&&Math.abs((j>>3)-(k>>3))+Math.abs((j&7)-(k&7))===1)return true;if(Math.max(Math.abs((j>>3)-(i>>3)),Math.abs((j&7)-(i&7)))<=1)return true;const o=kingIdx(b,t);if(o>=0&&Math.abs((j>>3)-(o>>3))+Math.abs((j&7)-(o&7))===1)return true;return (j+i)%11===0}
 function pseudo(b,t){const o=[];for(let i=0;i<64;i++)if(b[i]&&b[i].t===t)for(const j of gen(b,i,false))if(thin(b,i,j,t))o.push([i,j]);return o}
 function pseudoOld(b,t){const o=[];for(let i=0;i<64;i++)if(b[i]&&b[i].t===t)for(const j of gen(b,i,false))o.push([i,j]);return o}
 let EV=ev,dl=0,stop=false,nodes=0;
+function lastWin(b,t){return VRA==='last'&&!b.some(x=>x&&x.t!==t)}
 function nm(b,t,d,a,be){if(dl&&(++nodes&511)===0&&performance.now()>dl)stop=true;if(stop)return 0;if(d===0)return(t==='w'?1:-1)*EV(b);let best=-1e9;const o=pseudo(b,t);
  o.sort((x,y)=>(b[y[1]]?VAL[b[y[1]].k]:0)-(b[x[1]]?VAL[b[x[1]].k]:0));
- for(const[i,j]of o){const q=b[j];const nb=apply(b,i,j),op=t==='w'?'b':'w';if(inCheck(nb,t))continue;const s=inCheck(nb,op)?1e5+d:tsWin2(nb,j,t)?1e5+d-.5:-nm(nb,op,d-1,-be,-a);if(s>best)best=s;if(best>a)a=best;if(a>=be)break}
+ for(const[i,j]of o){const q=b[j];const nb=apply(b,i,j),op=t==='w'?'b':'w';if(inCheck(nb,t))continue;const s=inCheck(nb,op)||lastWin(nb,t)?1e5+d:tsWin2(nb,j,t)?1e5+d-.5:-nm(nb,op,d-1,-be,-a);if(s>best)best=s;if(best>a)a=best;if(a>=be)break}
  return best===-1e9?0:best}
 const OR=[[1,0],[-1,0],[0,1],[0,-1]];
 function freeNinja(b,i){const p=b[i],r=i>>3,c=i&7;for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++)if((dr||dc)&&inb(r+dr,c+dc)){const q=b[(r+dr)*8+c+dc];if(q&&q.t!==p.t)return false}return true}
-function ev2(b){let s=ev(b);const K={w:kingIdx(b,'w'),b:kingIdx(b,'b')};if(K.w<0||K.b<0)return s;const fn={w:0,b:0};
+function ev2(b){let s=ev(b);if(VRA==='last')return s;const K={w:kingIdx(b,'w'),b:kingIdx(b,'b')};if(K.w<0||K.b<0)return s;const fn={w:0,b:0};
  for(let i=0;i<64;i++){const p=b[i];if(!p||p.k==='king')continue;const k=K[p.t==='w'?'b':'w'],d=Math.abs((i>>3)-(k>>3))+Math.abs((i&7)-(k&7)),v=(14-d)*(p.k==='ninja'?1:3);s+=p.t==='w'?v:-v;if(p.k==='ninja'&&freeNinja(b,i))fn[p.t]++}
  for(const t of['w','b']){const k=K[t],o=t==='w'?'b':'w';let e=0,g=0;for(const[dr,dc]of OR){const rr=(k>>3)+dr,cc=(k&7)+dc;if(!inb(rr,cc))continue;const q=b[rr*8+cc];if(!q)e++;else if(q.t===t)g++}
   const sf=g*25-e*Math.min(fn[o],2)*45;s+=t==='w'?sf:-sf}
  return s}
 function legendMove(ms,t){EV=ev2;const op=t==='w'?'b':'w';let best=ms[Math.floor(Math.random()*ms.length)];
- for(const m of ms){const nb=apply(B,m[0],m[1]);if(inCheck(nb,op)||tsWin2(nb,m[1],t)){EV=ev;return m}}
+ for(const m of ms){const nb=apply(B,m[0],m[1]);if(inCheck(nb,op)||lastWin(nb,t)||tsWin2(nb,m[1],t)){EV=ev;return m}}
  ms.sort((x,y)=>(B[y[1]]?VAL[B[y[1]].k]:0)-(B[x[1]]?VAL[B[x[1]].k]:0));
  dl=performance.now()+1500;nodes=0;
  for(let d=2;d<=7;d++){stop=false;let bs=-1e9,bm=null;
@@ -933,7 +897,7 @@ function botPick(t){if(PZ&&t!==mySide){const pm=pzDefend(t);if(pm)return pm}
   const out=K>=0&&Math.abs((K>>3)-(op==='w'?7:0))>=2,home=t==='w'?7:0,early=log.length<12,mid=log.length>=14,tw=out?60:20;
   /* Easy plays a real plan: develop swords and the centre first, keep Knights and the King home early, then start hunting. */
   const thr=nb=>{let n=0;for(let x=0;x<64;x++){const q=nb[x];if(!q||q.t!==t||q.k==='king'||(q.k==='ninja'&&!mid))continue;if(gen(nb,x,false).some(j=>Math.abs((j>>3)-(K>>3))+Math.abs((j&7)-(K&7))===1))n++}return n};
-  for(const m of ms){const nb=vrSim(B,m[0],m[1]).b;if(inCheck(nb,op)||tsWin2(nb,m[1],t)){chk.push(m);continue}const p=B[m[0]],cp=!!B[m[1]],r0=m[0]>>3,c1=m[1]&7;let sc=Math.random()*10;
+  for(const m of ms){const nb=vrSim(B,m[0],m[1]).b;if(inCheck(nb,op)||lastWin(nb,t)||tsWin2(nb,m[1],t)){chk.push(m);continue}const p=B[m[0]],cp=!!B[m[1]],r0=m[0]>>3,c1=m[1]&7;let sc=Math.random()*10;
    if(cp)sc+=(VAL[B[m[1]].k]||0)/25;
    if(p.k==='sword'&&!cp){sc+=8;if(c1>=2&&c1<=5)sc+=6}
    if(p.k==='shark'||p.k==='fish'){if(r0===home)sc+=10}
@@ -944,7 +908,7 @@ function botPick(t){if(PZ&&t!==mySide){const pm=pzDefend(t);if(pm)return pm}
    if(sc>bs1){bs1=sc;pick=m}}
   if(chk.length&&(!pick||Math.random()<.8))pick=chk[Math.floor(Math.random()*chk.length)]}
  else if(lvl===4)pick=legendMove(ms,t);else{/* Medium sometimes (about 1 move in 5) forgets to check your replies, and is a bit less precise overall. Hard is unchanged. */
-  const lazy=lvl===2&&Math.random()<.22,nz=lvl===2?22:8;let bs=-1e9;for(const m of ms){const nb=vrSim(B,m[0],m[1]).b,op=t==='w'?'b':'w';const s=(inCheck(nb,op)||tsWin2(nb,m[1],t)?1e5:-nm(nb,op,lvl===2?(lazy?0:1):2,-1e9,1e9))+Math.random()*nz;if(s>bs){bs=s;pick=m}}}
+  const lazy=lvl===2&&Math.random()<.22,nz=lvl===2?22:8;let bs=-1e9;for(const m of ms){const nb=vrSim(B,m[0],m[1]).b,op=t==='w'?'b':'w';const s=(inCheck(nb,op)||lastWin(nb,t)||tsWin2(nb,m[1],t)?1e5:-nm(nb,op,lvl===2?(lazy?0:1):2,-1e9,1e9))+Math.random()*nz;if(s>bs){bs=s;pick=m}}}
  return pick}
 const PC={sword:'s',ninja:'n',fish:'f',shark:'h',king:'k',flag:'g'},RP={s:'sword',n:'ninja',f:'fish',h:'shark',k:'king',g:'flag'};
 function sendSync(){room.emit('sync',{b:B.map(p=>p?p.t+(p.k==='king'&&p.used?'u':PC[p.k]):'--').join(''),t:turn,c:[cap.w.map(p=>PC[p.k]).join(''),cap.b.map(p=>PC[p.k]).join('')],l:log.join(','),m:last,o:over,e:tStart?Date.now()-tStart:null,lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED,tr:trio})}
@@ -1361,7 +1325,7 @@ function glide(sl){const bd=document.getElementById('board'),q=[...bd.querySelec
   m.animate([{transform:'translate('+dx+'px,'+dy+'px) scale(1.1)'},{transform:'translate(0,0) scale(1)'}],{duration:sl.dur,easing:'cubic-bezier(.35,.1,.25,1)'}).onfinish=()=>{m.remove();if(real){real.style.visibility='';real.classList.add('settle')}}});
  if(sl.ghost){const m=mk(sq(sl.ghost.at),sl.ghost.k,sl.ghost.c,2);m.animate([{opacity:1,transform:'none'},{opacity:1,transform:'none',offset:.8},{opacity:0,transform:'scale(.75)'}],{duration:sl.dur+140,easing:'ease-out'}).onfinish=()=>m.remove()}}
 const inb=(r,c)=>r>=0&&r<8&&c>=0&&c<8;
-function gen(b,i,att){const o=gen0(b,i,att);return att?o:o.filter(j=>!(b[j]&&(b[j].k==='king'||b[j].k==='flag')))}
+function gen(b,i,att){const o=gen0(b,i,att);return att?o:o.filter(j=>!(b[j]&&((b[j].k==='king'&&VRA!=='last')||b[j].k==='flag')))}
 function gen0(b,i,att){
  const p=b[i],r=i>>3,c=i&7,o=[];
  if(p.k==='flag')return o;
@@ -1401,9 +1365,9 @@ function apply(b,i,j,pk){const n=b.slice(),p=n[i],q=n[j];n[j]=p;n[i]=(q&&q.t===p
  if(p.k==='sword'&&promoRow(p.t,j))n[j]={t:p.t,k:pk||'shark'};return n}
 function promoRow(t,j){return t==='w'?(j>>3)===0:(j>>3)===7}
 function kingIdx(b,t){const k=b.findIndex(p=>p&&p.t===t&&p.k==='king');return k>=0||VRA!=='ctf'?k:b.findIndex(p=>p&&p.t===t&&p.k==='flag')}
-function inCheck(b,t){const k=kingIdx(b,t);if(k<0||VRA==='ctf')return false;const V=VRA;
+function inCheck(b,t){const k=kingIdx(b,t);if(k<0||VRA==='ctf'||VRA==='last')return false;const V=VRA;
  for(let i=0;i<64;i++){const p=b[i];if(!p||p.t===t)continue;const dr=Math.abs((i>>3)-(k>>3)),dc=Math.abs((i&7)-(k&7));if(V==='diag'?(dr===1&&dc===1):V==='full'?(dr<=1&&dc<=1):(dr+dc===1))return true}return false}
-function legalFrom(b,i){const lv=VRA==='lava'?vrRingsAt(log.length+1):0;return gen(b,i,false).filter(j=>!(lv&&vrRingOf(j)<lv)&&!inCheck(apply(b,i,j),b[i].t))}
+function legalFrom(b,i){return gen(b,i,false).filter(j=>!inCheck(apply(b,i,j),b[i].t))}
 function hasMove(b,t){for(let i=0;i<64;i++)if(b[i]&&b[i].t===t&&legalFrom(b,i).length)return true;return false}
 /*PZ-BEGIN*/
 
@@ -1498,11 +1462,11 @@ function move(i,j,remote,pk0){
  let n=(p.k==='king'&&VRA==='twostep'?'Q':SYM[p.k])+(q?(p.k==='sword'?'abcdefgh'[i&7]:'')+'x':'')+sqName(j)+(promo?'='+SYM[pk]:'');
  B=apply(B,i,j,pk);last=[i,j];const bonus=VRA==='twostep'&&!(log.length&&/\*$/.test(log[log.length-1]))&&!inCheck(B,turn==='w'?'b':'w')&&B[j]&&B[j].k!=='ninja'&&legalFrom(B,j).length>0;if(!bonus)turn=turn==='w'?'b':'w';else n+='*';
  const chk=bonus?inCheck(B,turn==='w'?'b':'w'):inCheck(B,turn),mv=bonus?true:hasMove(B,turn);
- if(chk||!mv){over=chk?{win:bonus?turn:(turn==='w'?'b':'w')}:{draw:1};n+=chk?'#':''}
+ if(VRA==='last'&&!B.some(x=>x&&x.t===turn)){over={win:p.t,vm:'by eliminating every enemy piece'};n+='#'}else if(chk||!mv){over=chk?{win:bonus?turn:(turn==='w'?'b':'w')}:{draw:1};n+=chk?'#':''}
  if(VRA==='roll'&&!over){const rr=rollApply(log.length+1,true);if(!rr)over={draw:1}}
  if(VRA==='ctf'&&!over){flStep(p,i,j,q);if(over)n+='#'}
  if(!over&&VRA!=='classic'){const me=p.t;if(VRA==='hill'&&[27,28,35,36].includes(kingIdx(B,me)))over={win:me,vm:'by reaching the hill'};else if(VRA==='bounty'&&cap[me].length>=6)over={win:me,vm:'by claiming the bounty'};if(over)n+='#'}
- try{vrFun(p,q,bonus,log.length+1)}catch(e){}let jf=j;if(!over&&(VRA==='portal'||VRA==='lava'||VRA==='quake')){const tw=vrTwist(p,i,j,!!q);jf=tw.j;n+=tw.add}
+ try{vrFun(p,q,bonus,log.length+1)}catch(e){}let jf=j;if(!over&&(VRA==='portal'||VRA==='quake')){const tw=vrTwist(p,i,j,!!q);jf=tw.j;n+=tw.add}
  log.push(n);if(PZ&&!over&&p.t===mySide&&((log.length+1)>>1)>=PZ.n)over={draw:1,pz:1};if(QM){if(q){qEv('cap');if(p.k==='shark')qEv('capShark');if(p.k==='ninja')qEv('capKnight');if(p.k==='shark'&&q.k==='shark')qEv('sharkXshark')}if(over&&over.win)QWP=p.k;if(promo)qEv('promo');if(chk)qEv('check')}if(FOG&&mode==='local'&&!over)FH=true;sel=null;legal=[];if(bonus&&!over&&!remote&&(mode==='local'||(turn===mySide&&(mode==='bot'||mode==='online')))){sel=j;legal=legalFrom(B,j)}const dist=Math.max(Math.abs((j>>3)-(i>>3)),Math.abs((j&7)-(i&7))),dur=(DRAG||!SET.anim)?0:Math.min(800,340+dist*55),ex=over?(over.win?'win':'draw'):chk?'check':promo?'promo':null;
  sfx(q?'cap':'move',p.k,dur/1000);if(ex)sfx(ex,p.k,dur/1000+.2);
  render(DRAG?-1:jf,{dur,list:[{f:i,t:jf,k:p.k,c:p.t}].concat(sw?[{f:j,t:i,k:sw.k,c:sw.t}]:[]),ghost:q?{at:j,k:q.k,c:q.t}:null});if(mode==='online'&&room&&!remote)room.emit('mv',{i,j,n:log.length-1,p:promo?pk:undefined,f:mvAs||myId});try{botTalk(p,q,chk,promo)}catch(e){}maybeBot()}
@@ -1591,12 +1555,12 @@ function render(landed,sl){
  else if(VRA==='roll'&&hist.length===log.length){log.forEach((e,n)=>{const bl=hist[n].turn==='b';lg.insertAdjacentHTML('beforeend','<span>'+(n+1)+'.</span>'+(bl?'<b></b>':'')+'<b style="color:var(--c'+(bl?'b':'w')+')">'+e+'</b>'+(bl?'':'<b></b>'))})}
  else for(let n=0;n<log.length;n+=2)lg.insertAdjacentHTML('beforeend','<span>'+(n/2+1)+'.</span><b>'+log[n]+'</b><b>'+(log[n+1]||'')+'</b>');
  lg.scrollTop=lg.scrollHeight;renderCount();menuSync();mnIntro();tutUI();rkLiveUI();qBadge();try{tsUI()}catch(e){}if(sl&&sl.dur&&(!VS||sl.list.some(e=>VS.has(e.f)||VS.has(e.t))))glide(sl)}
-function rulesDraw(){document.getElementById('rules').innerHTML=(VRA==='twostep'?[[null,'2 Step','Each turn you take two steps with the same piece. Move one piece, then either move that same piece again or press End turn. A Knight cannot take both steps: if the Knight moves, your turn ends.']]:VRA==='roll'?[[null,'Roll','Before every turn both players roll a die. The higher number moves and a tie is rolled again, so you can get several moves in a row.']]:[]).concat([
+function rulesDraw(){document.getElementById('rules').innerHTML=(VRA==='twostep'?[[null,'2 Step','Each turn you take two steps with the same piece. Move one piece, then either move that same piece again or press End turn. A Knight cannot take both steps: if the Knight moves, your turn ends.']]:VRA==='last'?[[null,'Last Piece Standing','No check and no checkmate. Eliminate every enemy piece, including the King, to win.']]:VRA==='roll'?[[null,'Roll','Before every turn both players roll a die. The higher number moves and a tie is rolled again, so you can get several moves in a row.']]:[]).concat([
  ['sword','Sword','Steps forward or sideways. Strikes diagonally, or thrusts two squares straight ahead. At the far end it becomes a Shark, Fish or Ninja of your choice.'],
  ['ninja','Knight','Teleports to any empty square unless an enemy piece stands on the same file between your rank and the target’s rank (you can pass through your own pieces). Unless an enemy piece is in the 3×3 around it, then it can only step or capture one square up, down, left or right.'],
  ['fish','Fish','Swims any distance diagonally, or one step straight.'],
  ['shark','Shark','Charges any distance in straight lines, but only two squares diagonally.'],
- VRA==='twostep'?['queen','Queen','Glides up to three squares in any direction (she cannot jump over pieces) to move, capture, or swap places with a friendly piece. Any enemy piece directly above, below or beside her is checkmate; her diagonal corners are safe. She can never be captured.']:['king','King','One step any way, or swap places with a friendly piece next to it. Once per game a two-square leap. Any enemy piece directly above, below or beside it is checkmate; its diagonal corners are safe. It can never be captured.'+vrRule()]
+ VRA==='twostep'?['queen','Queen','Glides up to three squares in any direction (she cannot jump over pieces) to move, capture, or swap places with a friendly piece. Any enemy piece directly above, below or beside her is checkmate; her diagonal corners are safe. She can never be captured.']:VRA==='last'?['king','King','One step any way, or swap places with a friendly piece next to it. Once per game a two-square leap. In this mode it has no protection: there is no checkmate and it can be captured like any other piece.']:['king','King','One step any way, or swap places with a friendly piece next to it. Once per game a two-square leap. Any enemy piece directly above, below or beside it is checkmate; its diagonal corners are safe. It can never be captured.'+vrRule()]
 ]).map(r=>'<div>'+(r[0]?'<img src="'+S[r[0]]+'" alt="">':'')+'<span><b>'+r[1]+'.</b> '+r[2]+'</span></div>').join('')}
 rulesDraw();
 document.getElementById('undo').onclick=()=>{if(mode==='online'||tour||ranked||FOG)return;if((VRA==='twostep'||VRA==='roll')&&mode==='bot'){let g=0;while(hist.length){const h=hist.pop();({B,turn,cap,last,log}=h);if(h.fl)FL=JSON.parse(h.fl);over=null;g++;if(turn===mySide&&tsSq()<0)break}}else{let n=mode==='bot'?2:1;while(n--){const h=hist.pop();if(!h)break;({B,turn,cap,last,log}=h);if(h.fl)FL=JSON.parse(h.fl)}}pending=null;sel=null;legal=[];over=null;if(PZ)PZ.done=false;ROLL=null;render();maybeBot()};
@@ -2125,10 +2089,13 @@ function styApply(){const r=document.documentElement.style,S=Object.assign({},sh
  set('--co',(S.l||S.d)?((styLum(S.l||'#fde3c8')+styLum(S.d||'#8ecae6'))/2>.55?'#1f4256':'#f3efe6'):'');
  set('--cw',S.w&&styLum(S.w)>.4?S.w:'');set('--cb',S.b&&styLum(S.b)>.4?S.b:'')}
 function stySave(){try{if(STY)localStorage.setItem('checks-style',JSON.stringify(STY));else localStorage.removeItem('checks-style')}catch(e){}}
+const STYS_K='checks-styles',STYS_MAX=12;
+function stysGet(){try{const a=JSON.parse(localStorage.getItem(STYS_K));return Array.isArray(a)?a.filter(x=>x&&typeof x.n==='string'&&x.s&&typeof x.s==='object').slice(0,STYS_MAX):[]}catch(e){return[]}}
+function stysPut(a){try{localStorage.setItem(STYS_K,JSON.stringify(a));return true}catch(e){return false}}
 function styOpen(){if(document.getElementById('styM'))return;
  const m=document.createElement('div');m.className='modal';m.id='styM';
  const EB=shEq(),ROWS=[['w','Peach pieces',EB.tp?EB.dw:STY_DEFW],['b','Tide pieces',EB.tp?EB.db:STY_DEFB],['l','Light squares',EB.l||'#fde3c8'],['d','Dark squares',EB.d||'#8ecae6'],['f','Board frame',EB.f||'#dbe9f0']];
- m.innerHTML='<div class="card wide" role="dialog" aria-modal="true" aria-labelledby="styT"><h2 id="styT">Your style</h2><div class="sty-prev" id="styP"></div><div class="sty-pre">'+STY_PRE.map((p,i)=>'<button class="b2" data-p="'+i+'">'+p[0]+'</button>').join('')+'</div><div id="styR">'+ROWS.map(r=>'<label class="sty-row"><span>'+r[1]+'</span><input type="color" data-k="'+r[0]+'" value="'+((STY&&STY[r[0]])||r[2])+'"></label>').join('')+'</div><p class="hint">Only changes how you see the game. Saved in this browser.'+(()=>{const e=shEq();return(e.tp?' Your piece skin brings its own colours. Pick colours here to override them.':'')+((e.tl||e.ov)?' Your board skin adds texture and uses your square and frame colours.':'')+(e.hl?' A highlight skin is equipped and replaces the highlight colours. Unequip it in the Shop to use your own.':'')})()+'</p><div class="row"><button class="b2" id="styReset">Reset</button><button class="b1" id="styDone">Done</button></div></div>';
+ m.innerHTML='<div class="card wide" role="dialog" aria-modal="true" aria-labelledby="styT"><h2 id="styT">Your style</h2><div class="sty-prev" id="styP"></div><div class="sty-pre">'+STY_PRE.map((p,i)=>'<button class="b2" data-p="'+i+'">'+p[0]+'</button>').join('')+'</div><div id="styR">'+ROWS.map(r=>'<label class="sty-row"><span>'+r[1]+'</span><input type="color" data-k="'+r[0]+'" value="'+((STY&&STY[r[0]])||r[2])+'"></label>').join('')+'</div><div class=\"sty-sv\"><div class=\"sty-svh\">Saved styles</div><div class=\"sty-svn\"><input id=\"stySvName\" type=\"text\" maxlength=\"20\" placeholder=\"Name this style\" autocomplete=\"off\" aria-label=\"Style name\"><button class=\"b2\" id=\"stySvBtn\" type=\"button\">Save</button></div><div class=\"sty-svl\" id=\"stySvL\"></div></div><p class="hint">Only changes how you see the game. Saved in this browser.'+(()=>{const e=shEq();return(e.tp?' Your piece skin brings its own colours. Pick colours here to override them.':'')+((e.tl||e.ov)?' Your board skin adds texture and uses your square and frame colours.':'')+(e.hl?' A highlight skin is equipped and replaces the highlight colours. Unequip it in the Shop to use your own.':'')})()+'</p><div class="row"><button class="b2" id="styReset">Reset</button><button class="b1" id="styDone">Done</button></div></div>';
  document.body.appendChild(m);
  const pv=m.querySelector('#styP'),L=[['w','king'],['b','shark'],['w','fish'],['b','sword'],['b','ninja'],['w','sword'],['b','fish'],['w','shark']];
  pv.innerHTML=L.map((q,i)=>'<div class="sq '+(((i>>2)+i)%2?'d':'l')+'"><img class="'+q[0]+'" src="'+S[q[1]]+'" alt=""></div>').join('');
@@ -2136,6 +2103,23 @@ function styOpen(){if(document.getElementById('styM'))return;
  let raf=0;m.querySelectorAll('input[data-k]').forEach(e=>e.oninput=()=>{STY=STY||{};STY[e.dataset.k]=e.value;stySave();cancelAnimationFrame(raf);raf=requestAnimationFrame(styApply)});
  m.querySelectorAll('button[data-p]').forEach(b=>b.onclick=()=>{const p=STY_PRE[+b.dataset.p][1];STY=p?{...p}:null;stySave();styApply();sync()});
  m.querySelector('#styReset').onclick=()=>{STY=null;stySave();styApply();sync()};
+ const svL=m.querySelector('#stySvL'),svN=m.querySelector('#stySvName'),dotCols=o=>[o.w||STY_DEFW,o.b||STY_DEFB,o.l||'#fde3c8',o.d||'#8ecae6',o.f||'#dbe9f0'];
+ const svDraw=()=>{const L=stysGet();svL.textContent='';
+  if(!L.length){const p=document.createElement('p');p.className='hint';p.textContent='Nothing saved yet. Pick your colours, name them and press Save.';svL.appendChild(p);return}
+  L.forEach((x,n)=>{const r=document.createElement('div');r.className='sty-svi';
+   const dots=document.createElement('span');dots.className='dots';dotCols(x.s).forEach(c=>{const d=document.createElement('i');d.style.background=/^#[0-9a-f]{6}$/i.test(c)?c:'#888';dots.appendChild(d)});
+   const nm=document.createElement('span');nm.className='nm';nm.textContent=x.n;nm.title=x.n;
+   const ld=document.createElement('button');ld.type='button';ld.className='b2';ld.textContent='Load';ld.setAttribute('aria-label','Load style '+x.n);
+   ld.onclick=()=>{STY=Object.keys(x.s).length?JSON.parse(JSON.stringify(x.s)):null;stySave();styApply();sync();try{sfx('select')}catch(e){}try{tmToast('Loaded style: '+x.n)}catch(e){}};
+   const dl=document.createElement('button');dl.type='button';dl.className='b2';dl.textContent='Delete';dl.setAttribute('aria-label','Delete style '+x.n);
+   dl.onclick=()=>{const a=stysGet();a.splice(n,1);stysPut(a);svDraw()};
+   r.append(dots,nm,ld,dl);svL.appendChild(r)})};
+ const svSave=()=>{const a=stysGet();let name=svN.value.trim().slice(0,20);if(!name)name='Style '+(a.length+1);
+  const snap=STY?JSON.parse(JSON.stringify(STY)):{},at=a.findIndex(x=>x.n.toLowerCase()===name.toLowerCase());
+  if(at>=0){a[at]={n:a[at].n,s:snap}}else{if(a.length>=STYS_MAX){try{tmToast('You can keep up to '+STYS_MAX+' styles. Delete one first.')}catch(e){}return}a.push({n:name,s:snap})}
+  if(!stysPut(a)){try{tmToast('Could not save: browser storage is full or blocked.')}catch(e){}return}
+  svN.value='';svDraw();try{sfx('select')}catch(e){}try{tmToast((at>=0?'Updated style: ':'Saved style: ')+(at>=0?a[at].n:name))}catch(e){}};
+ m.querySelector('#stySvBtn').onclick=svSave;svN.onkeydown=e=>{e.stopPropagation();if(e.key==='Enter')svSave();else if(e.key==='Escape')m.remove()};svDraw();
  const close=()=>m.remove();m.querySelector('#styDone').onclick=close;m.onkeydown=e=>{if(e.key==='Escape')close()};m.addEventListener('pointerdown',e=>{if(e.target===m)close()});
  m.querySelector('#styDone').focus()}
 styApply();document.getElementById('sty').onclick=styOpen;document.getElementById('pfb').onclick=pfOpen;
