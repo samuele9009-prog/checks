@@ -298,7 +298,9 @@ body.noCoord .co{display:none!important}body.noDots .sq.mv::after,body.noDots .s
 .mnBadge{align-self:flex-start;font:inherit;font-weight:600;font-size:14px;color:#06222f;background:var(--tide);border:0;border-radius:999px;padding:6px 14px;cursor:pointer}
 .vrm{position:absolute;pointer-events:none;z-index:0}.vrm.ring{inset:16%;border:4px solid var(--c);border-radius:50%;box-shadow:0 0 12px var(--c),inset 0 0 10px var(--c);animation:vrp 2s ease-in-out infinite}.vrm.lv{inset:0;background:repeating-linear-gradient(45deg,#6e1a0b,#6e1a0b 7px,#b02e0e 7px,#b02e0e 14px)}.vrm.lw{inset:0;border:3px solid #ff7a3a;background:radial-gradient(circle,rgba(255,110,20,.12),rgba(255,70,0,.38));box-shadow:inset 0 0 14px rgba(255,90,20,.8);animation:vrp .9s ease-in-out infinite}@keyframes vrp{50%{opacity:.35}}@media(prefers-reduced-motion:reduce){.vrm.ring,.vrm.lw{animation:none}}
 .mnI{position:fixed;inset:0;z-index:9500;display:flex;align-items:center;justify-content:center;padding:24px;text-align:center;background:radial-gradient(ellipse at 50% 40%,#1f4256 0%,var(--ink) 75%);animation:mnIn .35s ease-out}.mnIc{max-width:520px;display:flex;flex-direction:column;gap:12px;align-items:center}.mnIk{margin:0;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--tide);font-weight:600}.mnIc h1{margin:6px 0 0;font-size:clamp(34px,9vw,64px);font-weight:600}.mnIc p{margin:0;font-size:18px;line-height:1.45;color:var(--muted)}.mnIc button{margin-top:18px;min-width:180px;font-size:18px;padding:12px 20px}@keyframes mnIn{from{opacity:0;transform:scale(1.04)}}
-.mnI{overflow:auto;align-items:flex-start}.mnIc{margin:auto;max-width:540px;width:100%;box-sizing:border-box;background:linear-gradient(180deg,rgba(23,44,53,.92),rgba(15,31,38,.92));border:1.5px solid var(--line);border-radius:24px;padding:26px 26px 24px;box-shadow:0 24px 70px rgba(0,0,0,.45),0 0 0 1px rgba(111,195,232,.08) inset}
+.mnI{overflow:auto;align-items:flex-start}
+html:has(#mnI),body:has(#mnI){overflow:hidden;overscroll-behavior:none}
+.mnI{overscroll-behavior:contain}.mnIc{margin:auto;max-width:540px;width:100%;box-sizing:border-box;background:linear-gradient(180deg,rgba(23,44,53,.92),rgba(15,31,38,.92));border:1.5px solid var(--line);border-radius:24px;padding:26px 26px 24px;box-shadow:0 24px 70px rgba(0,0,0,.45),0 0 0 1px rgba(111,195,232,.08) inset}
 .mnIh{display:flex;flex-direction:column;align-items:center;gap:4px;margin-bottom:6px}.mnIi{width:92px;height:92px;object-fit:contain;padding:10px;border-radius:50%;background:radial-gradient(circle,rgba(111,195,232,.28),rgba(111,195,232,.06) 70%);border:1.5px solid rgba(111,195,232,.35);filter:drop-shadow(0 6px 8px rgba(0,0,0,.45));animation:mnPop .5s cubic-bezier(.3,1.5,.5,1) both}
 .mnIc .mnIh h1{margin:4px 0 0;font-size:clamp(32px,8vw,48px);line-height:1.05}.mnIc .mnIt{font-size:17px;color:var(--tide);font-weight:600}
 .mnIr{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:10px;width:100%;text-align:left}
@@ -475,7 +477,7 @@ function vrAvail(){return mnOK()&&!ranked}
 function vrSync(){if(VR!=='classic'&&FOG)VR='classic';VRA=vrAvail()?VR:'classic'}
 /* ===== 2 Step: after your first step the same piece must take the second (or you end your turn) ===== */
 function tsSq(){if(VRA!=='twostep'||over||!log.length||!last||!/\*$/.test(log[log.length-1]))return-1;const p=B[last[1]];return p&&p.t===turn?last[1]:-1}
-function tsWin2(b,j,t){if(VRA!=='twostep'||!b[j]||b[j].t!==t)return false;const op=t==='w'?'b':'w';for(const k of gen(b,j,false)){const n2=apply(b,j,k);if(inCheck(n2,op)&&!inCheck(n2,t))return true}return false}
+function tsWin2(b,j,t){if(VRA!=='twostep'||!b[j]||b[j].t!==t||b[j].k==='ninja')return false;const op=t==='w'?'b':'w';for(const k of gen(b,j,false)){const n2=apply(b,j,k);if(inCheck(n2,op)&&!inCheck(n2,t))return true}return false}
 function tsEnd(remote){if(tsSq()<0)return;hist.push({fl:JSON.stringify(FL),B:B.slice(),turn,cap:{w:cap.w.slice(),b:cap.b.slice()},last,log:log.slice()});
  log[log.length-1]=log[log.length-1].replace(/\*$/,'');const mover=turn;turn=turn==='w'?'b':'w';
  if(inCheck(B,turn))over={win:mover};else if(!hasMove(B,turn))over={draw:1};
@@ -579,7 +581,7 @@ function vrMark(bd){if(VRA!=='lava')lavaLayer(bd,null);if(VRA!=='ctf'&&VRA!=='la
  if(VRA==='lava')lavaLayer(bd,lk)}
 let mnKey='',mnShown='off';
 let mnQuiet=false;
-function mnIntro(force){if(mnQuiet||PZ||!mnOK())return;const on=[];if(FOG)on.push(['Fog of war','You only see your own pieces and the squares they can move to. The move list is hidden.']);
+function mnIntro(force){if(mnQuiet||PZ||!mnOK())return;const on=[];if(FOG)on.push(['Fog of war','You only see your own pieces and the squares they can move to. The move list is hidden.',{ic:'king',tag:'You can only see what your pieces can reach',r:[['Your view','You see your own pieces and every square they can move to. Everything else is hidden in fog.'],['Hidden enemies','Enemy pieces outside your view are invisible, so an enemy can be sitting right next to your King without you knowing.'],['The Knight','A Knight only lights up the 8 squares around it, even though it can teleport.'],['Captures','You can see an enemy piece only if one of your pieces could move onto its square, so you can always see what you can capture.'],['No move list','The move list is hidden, and Undo is turned off, so remember what you saw.'],['Pass and play','On one screen, hand the device over and tap reveal so the next player only sees their own side.'],['Win','The win rule of the game mode you picked still applies. In Classic, any enemy piece directly above, below or beside the King is checkmate.']]}]);
  if(VR!=='classic'){const x=VARS.find(y=>y[0]===VR);on.push([x[1],x[2],x[3]])}
  const k=on.map(x=>x[0]).join('+')||'off';if(k===mnShown&&!force)return;mnShown=k;if(!on.length||document.getElementById('mnI'))return;
  const m=document.getElementById('mnM');if(m)m.remove();
@@ -1405,7 +1407,7 @@ function move(i,j,remote,pk0){
  if(limit&&tStart===null)tStart=Date.now();let p=B[i],q=B[j];const sw=q&&q.t===p.t?q:null;if(sw)q=null;if(q)cap[turn].push(q);
  const promo=p.k==='sword'&&promoRow(p.t,j);const pk=promo&&['shark','fish','ninja'].includes(pk0)?pk0:'shark';
  let n=(p.k==='king'&&VRA==='twostep'?'Q':SYM[p.k])+(q?(p.k==='sword'?'abcdefgh'[i&7]:'')+'x':'')+sqName(j)+(promo?'='+SYM[pk]:'');
- B=apply(B,i,j,pk);last=[i,j];const bonus=VRA==='twostep'&&!(log.length&&/\*$/.test(log[log.length-1]))&&!inCheck(B,turn==='w'?'b':'w')&&legalFrom(B,j).length>0;if(!bonus)turn=turn==='w'?'b':'w';else n+='*';
+ B=apply(B,i,j,pk);last=[i,j];const bonus=VRA==='twostep'&&!(log.length&&/\*$/.test(log[log.length-1]))&&!inCheck(B,turn==='w'?'b':'w')&&B[j]&&B[j].k!=='ninja'&&legalFrom(B,j).length>0;if(!bonus)turn=turn==='w'?'b':'w';else n+='*';
  const chk=bonus?inCheck(B,turn==='w'?'b':'w'):inCheck(B,turn),mv=bonus?true:hasMove(B,turn);
  if(chk||!mv){over=chk?{win:bonus?turn:(turn==='w'?'b':'w')}:{draw:1};n+=chk?'#':''}
  if(VRA==='ctf'&&!over){flStep(p,i,j,q);if(over)n+='#'}
@@ -1497,7 +1499,7 @@ function render(landed,sl){
  if(FG)lg.innerHTML='<p class="hint">The move list is hidden during Fog of War.</p>';else if(VRA==='twostep'){const tg=[];for(const e of log){const g=tg[tg.length-1],c=e.replace(/\*$/,'');if(g&&g.open){g.t+=' + '+c;g.open=false}else tg.push({t:c,open:/\*$/.test(e)})}for(let n=0;n<tg.length;n+=2)lg.insertAdjacentHTML('beforeend','<span>'+(n/2+1)+'.</span><b>'+tg[n].t+'</b><b>'+(tg[n+1]?tg[n+1].t:'')+'</b>')}
  else for(let n=0;n<log.length;n+=2)lg.insertAdjacentHTML('beforeend','<span>'+(n/2+1)+'.</span><b>'+log[n]+'</b><b>'+(log[n+1]||'')+'</b>');
  lg.scrollTop=lg.scrollHeight;renderCount();menuSync();mnIntro();tutUI();rkLiveUI();qBadge();try{tsUI()}catch(e){}if(sl&&sl.dur&&(!VS||sl.list.some(e=>VS.has(e.f)||VS.has(e.t))))glide(sl)}
-function rulesDraw(){document.getElementById('rules').innerHTML=(VRA==='twostep'?[[null,'2 Step','Each turn you take two steps with the same piece. Move one piece, then either move that same piece again or press End turn.']]:[]).concat([
+function rulesDraw(){document.getElementById('rules').innerHTML=(VRA==='twostep'?[[null,'2 Step','Each turn you take two steps with the same piece. Move one piece, then either move that same piece again or press End turn. A Knight cannot take both steps: if the Knight moves, your turn ends.']]:[]).concat([
  ['sword','Sword','Steps forward or sideways. Strikes diagonally, or thrusts two squares straight ahead. At the far end it becomes a Shark, Fish or Ninja of your choice.'],
  ['ninja','Knight','Teleports to any empty square unless an enemy piece stands on the same file between your rank and the target’s rank (you can pass through your own pieces). Unless an enemy piece is in the 3×3 around it, then it can only step or capture one square up, down, left or right.'],
  ['fish','Fish','Swims any distance diagonally, or one step straight.'],
