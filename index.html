@@ -313,7 +313,7 @@ html:has(#mnI),body:has(#mnI){overflow:hidden;overscroll-behavior:none}
 @media(max-width:480px){.mnIc{padding:20px 16px}.mnIi{width:76px;height:76px}}@media(prefers-reduced-motion:reduce){.mnI{animation:none}}
 .mnCard{max-height:90vh;overflow:hidden}.mnB{display:flex;flex-direction:column;gap:8px;overflow-y:auto;max-height:calc(90vh - 130px);padding-right:2px}
 .mnC{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;width:100%;padding:10px 12px}.mnC b{font-weight:600}.mnC span{font-size:13px;color:var(--muted)}.mnC.on{border-color:var(--mark);background:rgba(47,181,159,.12)}.mnC:disabled{opacity:.45;cursor:default}
-.dsb.open .dsbL{overflow-y:auto;overscroll-behavior:contain}
+.dsb.open .dsbL{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;-ms-overflow-style:none}.dsbL::-webkit-scrollbar{display:none;width:0;height:0}
 .dsbS{margin:10px 6px 2px;font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .dsbI:disabled{opacity:.45;cursor:default}.dsbI:disabled:hover{background:none}
 .dsbI em.off{background:rgba(255,255,255,.1);color:var(--muted)}
@@ -326,6 +326,37 @@ html:has(#mnI),body:has(#mnI){overflow:hidden;overscroll-behavior:none}
 @media(prefers-reduced-motion:reduce){.splH{animation:none}}
 .pvSt{color:var(--tide);font-size:13px;margin-top:2px}.pvRow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.pvCh{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 10px}.pvCh small{display:block;opacity:.7;font-size:11px}.acHint{font-size:12px;opacity:.75;margin:8px 0}
 .pvBx{padding:18px;gap:16px}.pvCh{padding:8px 12px}.pvCh b{font-size:15px}
+.rlO{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 70px);transform:translateX(-50%);z-index:97;pointer-events:none;animation:rlIn .35s cubic-bezier(.2,1.2,.4,1)}
+.rlO.out{animation:rlOut .35s ease-in forwards}
+.rlC{display:flex;flex-direction:column;align-items:center;gap:12px;background:linear-gradient(180deg,rgba(24,46,56,.97),rgba(12,25,31,.97));border:1.5px solid var(--line);border-radius:10px;padding:14px 24px 16px;box-shadow:0 22px 50px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.07);position:relative;overflow:hidden}
+.rlT{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.rlRow{display:flex;align-items:center;gap:20px}
+.rlP{display:flex;flex-direction:column;align-items:center;gap:12px;font-weight:600;font-size:14px;max-width:110px;transition:transform .35s cubic-bezier(.2,1.4,.4,1),opacity .3s}
+.rlP>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.rlP.w{color:var(--cw)}.rlP.b{color:var(--cb)}
+.rlP.lose{opacity:.5;transform:scale(.92)}
+.rlP.win{transform:scale(1.1)}
+.rlP.win>span::after{content:' \2605'}
+.rlVs{color:var(--muted);font-size:12px;font-weight:600;letter-spacing:.1em}
+.rlS{width:62px;height:62px;perspective:360px;position:relative}
+.rlS::after{content:'';position:absolute;left:10%;right:10%;bottom:-9px;height:9px;border-radius:50%;background:rgba(0,0,0,.5);filter:blur(4px);transform:scale(var(--sh,1));transition:transform .2s}
+.rlH{width:100%;height:100%}
+.rlCube{width:100%;height:100%;position:relative;transform-style:preserve-3d}
+.rlF{position:absolute;inset:0;border-radius:4px;background:linear-gradient(145deg,#fffaf0,#eadfc4);display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);padding:10px;backface-visibility:hidden;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08),inset 0 -3px 6px rgba(0,0,0,.1)}
+.rlF i{display:block;border-radius:50%;margin:1px}.rlF i.on{background:radial-gradient(circle at 35% 30%,#2a7a9c,#0f3d54)}
+.rlF[data-n="1"] i.on{background:radial-gradient(circle at 35% 30%,#e0584a,#a02418)}
+.rlF[data-n="1"]{transform:translateZ(31px)}
+.rlF[data-n="6"]{transform:rotateY(180deg) translateZ(31px)}
+.rlF[data-n="2"]{transform:rotateY(90deg) translateZ(31px)}
+.rlF[data-n="5"]{transform:rotateY(-90deg) translateZ(31px)}
+.rlF[data-n="3"]{transform:rotateX(90deg) translateZ(31px)}
+.rlF[data-n="4"]{transform:rotateX(-90deg) translateZ(31px)}
+.rlP.win .rlS{filter:drop-shadow(0 0 10px currentColor)}
+.rlR{margin:0;font-size:16px;font-weight:700;color:var(--text);text-align:center;min-height:22px}
+.rlR.tie{color:var(--peach)}
+@keyframes rlIn{from{opacity:0;transform:translate(-50%,-16px) scale(.9)}}
+@keyframes rlOut{to{opacity:0;transform:translate(-50%,-8px) scale(.97)}}
+@media(prefers-reduced-motion:reduce){.rlO,.rlO.out{animation:none}.rlP{transition:none}}
 </style>
 </head>
 <body>
@@ -379,7 +410,7 @@ const setSave=()=>{try{localStorage.setItem(SETK,JSON.stringify(SET))}catch(e){}
 function tex(dark,s){const k=(dark?'d':'l')+s;if(!TX[k]){const cm=dark?'0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .8 -.32':'0 0 0 0 .55 0 0 0 0 .38 0 0 0 0 .2 0 0 0 .9 -.3';
  TX[k]=`url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='${dark?.03:.035}' numOctaves='3' seed='${s+(dark?10:0)}'/><feColorMatrix values='${cm}'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>")`}return TX[k]}
 const TWO=['setrank','addtp','setrating','setrecord','givepts'];let mm=null,pvp=null,pvpR=false,LB=null,AC,muted=false;let mode='local',lvl=2,mySide='w',room=null,code='',oppHere=false,msg='',bt=null,limit=0,tStart=null,tour=null;
-let VR='classic',VRA='classic',VSEED=1,RM=new Set(),FOG=false,FH=false,QDN=false,RMT=0,LPT=0,QRW=false,QWP='';
+let ROLL=null,RLTOK=0,VR='classic',VRA='classic',VSEED=1,RM=new Set(),FOG=false,FH=false,QDN=false,RMT=0,LPT=0,QRW=false,QWP='';
 /* ===== quests ===== */
 const QDAY=[{id:'puzzle',t:'Solve the daily puzzle',e:'puzzle',n:1,pts:80},{id:'cap8',t:'Capture 8 enemy pieces',e:'cap',n:8},{id:'play3',t:'Finish 3 games',e:'game',n:3},{id:'win1',t:'Win a game',e:'win',n:1},{id:'promo1',t:'Promote a sword',e:'promo',n:1},{id:'chk5',t:'Give check 5 times',e:'check',n:5},{id:'winbot',t:'Beat a bot',e:'winbot',n:1},{id:'shark3',t:'Capture 3 pieces with a Shark',e:'capShark',n:3},{id:'kn3',t:'Capture 3 pieces with a Knight',e:'capKnight',n:3},{id:'fog1',t:'Finish a Fog of War game',e:'fogGame',n:1},{id:'winrk',t:'Win a ranked game',e:'winRanked',n:1,pts:25},{id:'winon',t:'Win an online game',e:'winOnline',n:1,pts:15},{id:'winsw',t:'Win a game with a Sword making the final move',e:'winSword',n:1,pts:20},{id:'winkn',t:'Win a game with a Knight making the final move',e:'winKnight',n:1,pts:20},{id:'shsh',t:'Capture a Shark with your Shark',e:'sharkXshark',n:1,pts:20}];
 const QWEEK=[{id:'w_win5',t:'Win 5 games',e:'win',n:5},{id:'w_cap40',t:'Capture 40 pieces',e:'cap',n:40},{id:'w_play12',t:'Finish 12 games',e:'game',n:12},{id:'w_online2',t:'Win 2 online games',e:'winOnline',n:2},{id:'w_fogwin',t:'Win a Fog of War game',e:'fogWin',n:1},{id:'w_chk25',t:'Give check 25 times',e:'check',n:25},{id:'w_rk2',t:'Win 2 ranked games',e:'winRanked',n:2,pts:50},{id:'w_shsh3',t:'Capture 3 Sharks with your Shark',e:'sharkXshark',n:3,pts:45},{id:'w_swkn',t:'Win 2 games with a Knight making the final move',e:'winKnight',n:2,pts:45}];
@@ -437,12 +468,13 @@ const VARS=[
 ['classic','Classic','The normal Checks rules.'],
 ['ctf','Capture the flag','Your King is replaced by a Flag piece that cannot move or be captured. Move any piece right next to the enemy flag (up, down, left or right) to steal it, then carry it back to your two home rows to win. Capture the carrier and the flag jumps back home.',{ic:'flag',tag:'Steal the flag and carry it home',r:[['Your flag','Your King is replaced by a Flag that cannot move or be captured.'],['Steal','Move any piece right next to the enemy flag (up, down, left or right) to pick it up.'],['Carry it home','Bring it back to your two home rows to win. Capture the carrier and the flag jumps back.']]}],
 ['lava','Rising lava','The edge of the board collapses into lava: the outer ring at move 14, then the next ring at move 28. Pieces left on a fallen ring are lost, you cannot step onto fallen squares, and a King on a collapsing ring loses. Watch the flashing border and run for the middle!',{ic:'king',tag:'The floor is collapsing',r:[['Move 14','The outer ring of the board falls into lava.'],['Move 28','The next ring falls too.'],['Stay alive','Pieces on a fallen ring are lost, you cannot step onto fallen squares, and a King on a collapsing ring loses.'],['Tip','Watch the flashing border and run for the middle.']]}],
-['twostep','2 Step','Every turn you take two steps, and both must be made by the same piece: the piece you move first is the one that takes the second step. You can also stop after one step. Your King is replaced by a Queen who glides up to three squares in any direction (she cannot jump), and captures or swaps places with a friendly piece at the end of her line. Any enemy piece directly above, below or beside the Queen is checkmate, and she can never be captured.',{ic:'queen',tag:'Two steps, one piece',r:[['Step 1','Move any piece, as usual.'],['Step 2','Move that same piece again. You cannot switch pieces, but you can press End turn to stop after one step.'],['The Queen','Replaces your King. She glides up to 3 squares in any direction (no jumping) and captures or swaps with a friendly piece at the end of her line.'],['Checkmate','An enemy piece directly above, below or beside the Queen wins. She can never be captured.']]}]];
+['twostep','2 Step','Every turn you take two steps, and both must be made by the same piece: the piece you move first is the one that takes the second step. You can also stop after one step. Your King is replaced by a Queen who glides up to three squares in any direction (she cannot jump), and captures or swaps places with a friendly piece at the end of her line. Any enemy piece directly above, below or beside the Queen is checkmate, and she can never be captured.',{ic:'queen',tag:'Two steps, one piece',r:[['Step 1','Move any piece, as usual.'],['Step 2','Move that same piece again. You cannot switch pieces, but you can press End turn to stop after one step.'],['The Queen','Replaces your King. She glides up to 3 squares in any direction (no jumping) and captures or swaps with a friendly piece at the end of her line.'],['Checkmate','An enemy piece directly above, below or beside the Queen wins. She can never be captured.']]}],
+['roll','Roll','Before every turn, both players roll a die. Whoever rolls the higher number gets to move, and a tie is rolled again. You can win the roll several times in a row, so nobody is safe!',{ic:'dice',tag:'Roll high to move',r:[['The roll','Before every turn, both players roll a die.'],['Higher goes','The player with the higher number gets to move. A tie is rolled again.'],['Streaks','You can win the roll again and again, so you might get several moves in a row. Keep your King safe!'],['Win','The same as Classic: any enemy piece directly above, below or beside the King is checkmate.']]}]];
 function flInit(){return{w:{h:60,p:60,c:-1},b:{h:4,p:4,c:-1}}}let FL=flInit();
 const vrName=v=>VARS.some(x=>x[0]===v)?v:'classic';
 
 /* ===== address bar follows the game mode: /portals, /rising-lava, /portals+fog-of-war ===== */
-const VR_SLUG={ctf:'capture-the-flag',lava:'rising-lava',twostep:'2-step'};
+const VR_SLUG={ctf:'capture-the-flag',lava:'rising-lava',twostep:'2-step',roll:'roll'};
 const FOG_SLUG='fog-of-war';
 const URL_HASHMODE=!/^https?:$/.test(location.protocol);/* file:// and similar cannot change the path, so use #/portals there */
 function urlParseSegs(segs){let vr='classic',fog=false;for(const g of segs.flatMap(x=>x.split('+'))){const k=Object.keys(VR_SLUG).find(x=>VR_SLUG[x]===g);if(k)vr=k;else if(g===FOG_SLUG)fog=true}return{vr,fog}}
@@ -509,6 +541,62 @@ function vrSet(v){if(!mnOK())return;if(!mnGuard('the variant')){menuSync();retur
  VR=vrName(v);FH=false;if(VR!=='classic')FOG=false;if(VR!=='classic'&&ranked){ranked=false;rkMsg='Ranked turned off. It cannot be played with game variants.'}
  urlPushNext=true;VSEED=vrSeed();init();if(mode==='online'&&room)room.emit('newgame',{lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED});renderMode();menuSync();urlSync();urlPushNext=false}
 const vrRingOf=j=>Math.min(j>>3,j&7,7-(j>>3),7-(j&7));
+/* ===== Roll: before every turn both players roll a die, the higher number moves (same seed + move number = same dice on every screen) ===== */
+S.dice='data:image/svg+xml,'+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect x='6' y='6' width='52' height='52' rx='11' fill='#f7efdc'/><g fill='#14506b'><circle cx='20' cy='20' r='5'/><circle cx='44' cy='20' r='5'/><circle cx='32' cy='32' r='5'/><circle cx='20' cy='44' r='5'/><circle cx='44' cy='44' r='5'/></g></svg>");
+const RL_PIPS=[[],[4],[0,8],[0,4,8],[0,2,6,8],[0,2,4,6,8],[0,2,3,5,6,8]];
+function rlFace(el,n){el.innerHTML='';for(let k=0;k<9;k++){const i=document.createElement('i');if(RL_PIPS[n].includes(k))i.className='on';el.appendChild(i)}}
+function rollCalc(ply){const cw=hasMove(B,'w'),cb=hasMove(B,'b');if(!cw&&!cb)return null;
+ if(cw!==cb)return{w:cw?'w':'b',only:1,ply,sd:VSEED};
+ const rnd=vrRnd((VSEED|0)+ply*7919+17);let a,b,tie=0;
+ do{a=1+Math.floor(rnd()*6);b=1+Math.floor(rnd()*6);if(a===b)tie++}while(a===b&&tie<40);
+ if(a===b)b=a%6+1;
+ return{w:a>b?'w':'b',a,b,tie,ply,sd:VSEED}}
+function rollApply(ply,say){const r=rollCalc(ply);if(!r)return null;turn=r.w;ROLL=r;if(say)rollShow(r);return r}
+function rollNow(){if(VRA!=='roll')return null;if(!ROLL||ROLL.ply!==log.length||ROLL.sd!==VSEED)ROLL=rollCalc(log.length);return ROLL}
+function rollTxt(){const r=rollNow();if(!r)return'';if(r.only)return' '+dn(r.w==='w'?'b':'w')+' cannot move, so '+dn(r.w)+' goes.';
+ return' Rolled: '+dn('w')+' '+r.a+', '+dn('b')+' '+r.b+(r.tie?' (tie, rolled again).':'.')}
+const RL_ORI={1:[0,0],6:[0,180],2:[0,-90],5:[0,90],3:[-90,0],4:[90,0]};
+function rlDie(){const sc=document.createElement('div');sc.className='rlS';const h=document.createElement('div');h.className='rlH';const cu=document.createElement('div');cu.className='rlCube';
+ for(let n=1;n<=6;n++){const f=document.createElement('div');f.className='rlF';f.dataset.n=n;rlFace(f,n);cu.appendChild(f)}
+ h.appendChild(cu);sc.appendChild(h);const set=n=>{const[x,y]=RL_ORI[n];cu.style.transform='rotateX('+x+'deg) rotateY('+y+'deg)'};set(1);
+ /* tumble to face n: spins, hops, lands with a bounce. resolves when landed */
+ const roll=(n,ms,delay)=>new Promise(res=>{const[x,y]=RL_ORI[n],rs=()=>Math.random()<.5?-1:1,sx=360*(2+(Math.random()*2|0))*rs(),sy=360*(2+(Math.random()*2|0))*rs();
+  if(!cu.animate){set(n);res();return}
+  const t=ms,e='cubic-bezier(.15,.7,.3,1)';
+  cu.animate([{transform:'rotateX('+(x+sx*-1)+'deg) rotateY('+(y+sy*-1)+'deg) rotateZ(40deg)'},{transform:'rotateX('+x+'deg) rotateY('+y+'deg) rotateZ(0deg)'}],{duration:t,delay,easing:e,fill:'both'});
+  const hop=h.animate([{transform:'translateY(0) scale(1)',offset:0},{transform:'translateY(-34px) scale(1.12)',offset:.28},{transform:'translateY(0) scale(1)',offset:.62},{transform:'translateY(-9px) scale(1.03)',offset:.8},{transform:'translateY(0) scale(1)',offset:1}],{duration:t,delay,easing:'ease-out',fill:'both'});
+  sc.animate([{'--sh':1,offset:0},{'--sh':.6,offset:.28},{'--sh':1,offset:.62},{'--sh':.85,offset:.8},{'--sh':1,offset:1}],{duration:t,delay,fill:'both'});
+  hop.onfinish=()=>{set(n);res()}});
+ return{el:sc,roll}}
+function rollShow(r){const tok=++RLTOK;document.querySelectorAll('.rlO').forEach(e=>e.remove());
+ const go=async()=>{if(tok!==RLTOK||over||VRA!=='roll')return;
+  if(document.getElementById('mnI')||document.getElementById('mnM')){setTimeout(go,250);return}
+  if(r.only){tmToast(dn(r.w==='w'?'b':'w')+' cannot move, so '+dn(r.w)+' goes.');return}
+  const o=document.createElement('div');o.className='rlO';o.setAttribute('role','status');
+  const mk=s=>{const p=document.createElement('div');p.className='rlP '+s;const n=document.createElement('span');n.textContent=dn(s);const d=rlDie();p.append(n,d.el);return[p,d]};
+  const[pw,dw]=mk('w'),[pb,db]=mk('b'),row=document.createElement('div'),vs=document.createElement('div'),res=document.createElement('p'),c=document.createElement('div'),ti=document.createElement('div');
+  ti.className='rlT';ti.textContent='Roll for the move';
+  row.className='rlRow';vs.className='rlVs';vs.textContent='VS';res.className='rlR';c.className='rlC';
+  row.append(pw,vs,pb);c.append(ti,row,res);o.append(c);document.body.appendChild(o);
+  const wait=ms=>new Promise(k=>setTimeout(k,ms)),alive=()=>tok===RLTOK;
+  const clat=()=>{try{/* dice rattling: irregular bright clicks that thin out as the dice settle */
+   let t=0;while(t<.72){const f=2200+Math.random()*2600;hiss(.022,.16*(1-t/1.1),f,f*.6,t,5);if(Math.random()<.5)tone(700+Math.random()*500,.03,'triangle',.05,t,400);t+=.03+Math.random()*.05+t*.07}
+   /* the bounces on the table */
+   [[.78,1],[1.0,.6],[1.22,.35]].forEach(([d,v])=>{hiss(.07,.35*v,900,260,d,1.5);tone(190,.1,'triangle',.16*v,d,90)})}catch(e){}};
+  const land=()=>{try{tone(95,.18,'sine',.14,.02,60);hiss(.05,.18,1400,400,0,2)}catch(e){}};
+const doRoll=async(a,b,txt)=>{res.className='rlR'+(a===b?' tie':'');res.textContent=txt;clat();
+   const m=1250;await Promise.all([dw.roll(a,m,0),db.roll(b,m,90)]);land()};
+  try{
+   if(r.tie){const t=1+(Math.random()*6|0);await doRoll(t,t,'Rolling…');if(!alive())return o.remove();
+    res.className='rlR tie';res.textContent='Tie! Rolling again…';await wait(850);if(!alive())return o.remove()}
+   await doRoll(r.a,r.b,r.tie?'Rolling again…':'Rolling…');if(!alive())return o.remove();
+   (r.w==='w'?pw:pb).classList.add('win');(r.w==='w'?pb:pw).classList.add('lose');
+   res.className='rlR';res.textContent=dn(r.w)+' goes! ('+(r.w==='w'?r.a+' vs '+r.b:r.b+' vs '+r.a)+')';
+   try{[523,659,784].forEach((f,i)=>{tone(f,.28,'sine',.09,.05+i*.09);tone(f*2,.2,'triangle',.025,.05+i*.09)})}catch(e){}
+   await wait(1400);if(!alive())return o.remove();
+   o.classList.add('out');setTimeout(()=>o.remove(),380)
+  }catch(e){o.remove()}};
+ setTimeout(go,380)}
 const vrRingsAt=n=>VRA==='lava'?Math.min(2,Math.floor(n/14)):0;
 function vrRnd(seed){let a=seed|0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const VR_PORTAL_EVERY=2;/* portals re-roll every this many plies (one ply = one player's move) */
@@ -588,7 +676,7 @@ function mnIntro(force){if(mnQuiet||PZ||!mnOK())return;const on=[];if(FOG)on.pus
  const d=document.createElement('div');d.id='mnI';d.className='mnI';d.setAttribute('role','dialog');d.setAttribute('aria-modal','true');
  d.innerHTML='<div class="mnIc"><p class="mnIk">Game mode</p>'+on.map(x=>{const f=x[2];if(!f)return'<h1>'+x[0]+'</h1><p>'+x[1]+'</p>';return'<div class="mnIh">'+(S[f.ic]?'<img class="mnIi" src="'+S[f.ic]+'" alt="">':'')+'<h1>'+x[0]+'</h1><p class="mnIt">'+f.tag+'</p></div><ol class="mnIr">'+f.r.map((r,n)=>'<li style="--d:'+(n*70+120)+'ms"><b class="mnIn">'+(n+1)+'</b><div><strong>'+r[0]+'</strong><span>'+r[1]+'</span></div></li>').join('')+'</ol>'}).join('')+'<button class="b1" id="mnIgo" type="button">Let\u2019s play</button></div>';
  document.body.appendChild(d);const go=()=>d.remove();d.querySelector('#mnIgo').onclick=go;d.onkeydown=e=>{if(e.key==='Escape'||e.key==='Enter')go()};d.querySelector('#mnIgo').focus({preventScroll:true})}
-const MNQ=['ctf','lava','twostep'];
+const MNQ=['ctf','lava','twostep','roll'];
 const mnIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.4 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>';
 function mnPick(v){if(VR===v)v='classic';vrSet(v)}
 function menuSync(){const b=document.getElementById('mnFog');if(!b)return;
@@ -1400,7 +1488,7 @@ function pzHint(){if(!PZ||over||pending||turn!==mySide)return;const done=log.len
 function init(){FL=flInit();QWP='';QRW=false;LK.clear();RM.clear();QDN=false;FH=false;rkForfeitLive();tutGen++;HI=null;
  B=Array(64).fill(null);
  for(let c=0;c<8;c++){B[c]={t:'b',k:BACK[c]};B[8+c]={t:'b',k:'sword'};B[48+c]={t:'w',k:'sword'};B[56+c]={t:'w',k:BACK[c]}}
- vrSync();vrSetup();turn='w';hist=[];pending=null;sel=null;legal=[];last=null;over=null;cap={w:[],b:[]};log=[];tStart=null;if(PZ){B=PZ.b.map(q=>q?{...q}:null);PZ.done=false}rkNew();render();maybeBot()}
+ vrSync();vrSetup();turn='w';hist=[];pending=null;sel=null;legal=[];last=null;over=null;cap={w:[],b:[]};log=[];tStart=null;if(PZ){B=PZ.b.map(q=>q?{...q}:null);PZ.done=false}ROLL=null;if(VRA==='roll')rollApply(0,true);rkNew();render();maybeBot()}
 const sqName=i=>'abcdefgh'[i&7]+(8-(i>>3));
 function move(i,j,remote,pk0){
  RM.clear();const QM=(mode==='bot'||mode==='online')&&!tut&&!PZ&&VRA==='classic'&&turn===mySide&&!remote&&!mvAs;rkNote(i,j,pk0);hist.push({fl:JSON.stringify(FL),B:B.slice(),turn,cap:{w:cap.w.slice(),b:cap.b.slice()},last,log:log.slice()});
@@ -1410,6 +1498,7 @@ function move(i,j,remote,pk0){
  B=apply(B,i,j,pk);last=[i,j];const bonus=VRA==='twostep'&&!(log.length&&/\*$/.test(log[log.length-1]))&&!inCheck(B,turn==='w'?'b':'w')&&B[j]&&B[j].k!=='ninja'&&legalFrom(B,j).length>0;if(!bonus)turn=turn==='w'?'b':'w';else n+='*';
  const chk=bonus?inCheck(B,turn==='w'?'b':'w'):inCheck(B,turn),mv=bonus?true:hasMove(B,turn);
  if(chk||!mv){over=chk?{win:bonus?turn:(turn==='w'?'b':'w')}:{draw:1};n+=chk?'#':''}
+ if(VRA==='roll'&&!over){const rr=rollApply(log.length+1,true);if(!rr)over={draw:1}}
  if(VRA==='ctf'&&!over){flStep(p,i,j,q);if(over)n+='#'}
  if(!over&&VRA!=='classic'){const me=p.t;if(VRA==='hill'&&[27,28,35,36].includes(kingIdx(B,me)))over={win:me,vm:'by reaching the hill'};else if(VRA==='bounty'&&cap[me].length>=6)over={win:me,vm:'by claiming the bounty'};if(over)n+='#'}
  try{vrFun(p,q,bonus,log.length+1)}catch(e){}let jf=j;if(!over&&(VRA==='portal'||VRA==='lava'||VRA==='quake')){const tw=vrTwist(p,i,j,!!q);jf=tw.j;n+=tw.add}
@@ -1494,12 +1583,13 @@ function render(landed,sl){
  const st=document.getElementById('status'),ov=document.getElementById('over');
  if(over){const m=PZ?pzMsg():over.cat?'Cat’s game: time ran out':over.win?dn(over.win)+(over.ff?' wins: the opponent left':over.vm?' wins '+over.vm:' wins by checkmate'):'Stalemate: it’s a draw';
   QRW=!!(over&&over.win&&over.win===mySide&&((ranked&&mode==='bot'&&!tour&&!tut)||pvp));tourScore();rkFinish();pvpFinish();qEnd();pzEnd();let mm=m;if(tour)mm+=tour.done?(tour.me>tour.bot?'. You win the tournament!':tour.me<tour.bot?'. The Champion wins the tournament.':'. The tournament is tied.'):'';st.textContent=mm;document.getElementById('overMsg').textContent=mm;document.getElementById('again').textContent=tour?(tour.done?'New tournament':'Next game'):PZ?(over.win===mySide?'Replay puzzle':'Try again'):pvpR?'Play ranked again':'Play again';ov.classList.add('show')}
- else{ov.classList.remove('show');st.textContent=pending?'Choose what your sword becomes':PZ?pzStat():turnTxt()+(ck>=0?' In check!':'')+(VRA==='twostep'&&tsSq()>=0?' Step 2: same piece only.':'')+(VRA==='ctf'?(FL.b.c>=0?' · Peach has the Tide flag!':'')+(FL.w.c>=0?' · Tide has the Peach flag!':''):'')}
+ else{ov.classList.remove('show');st.textContent=pending?'Choose what your sword becomes':PZ?pzStat():turnTxt()+(ck>=0?' In check!':'')+(VRA==='twostep'&&tsSq()>=0?' Step 2: same piece only.':'')+(VRA==='roll'?rollTxt():'')+(VRA==='ctf'?(FL.b.c>=0?' · Peach has the Tide flag!':'')+(FL.w.c>=0?' · Tide has the Peach flag!':''):'')}
  const lg=document.getElementById('log');lg.innerHTML='';
  if(FG)lg.innerHTML='<p class="hint">The move list is hidden during Fog of War.</p>';else if(VRA==='twostep'){const tg=[];for(const e of log){const g=tg[tg.length-1],c=e.replace(/\*$/,'');if(g&&g.open){g.t+=' + '+c;g.open=false}else tg.push({t:c,open:/\*$/.test(e)})}for(let n=0;n<tg.length;n+=2)lg.insertAdjacentHTML('beforeend','<span>'+(n/2+1)+'.</span><b>'+tg[n].t+'</b><b>'+(tg[n+1]?tg[n+1].t:'')+'</b>')}
+ else if(VRA==='roll'&&hist.length===log.length){log.forEach((e,n)=>{const bl=hist[n].turn==='b';lg.insertAdjacentHTML('beforeend','<span>'+(n+1)+'.</span>'+(bl?'<b></b>':'')+'<b style="color:var(--c'+(bl?'b':'w')+')">'+e+'</b>'+(bl?'':'<b></b>'))})}
  else for(let n=0;n<log.length;n+=2)lg.insertAdjacentHTML('beforeend','<span>'+(n/2+1)+'.</span><b>'+log[n]+'</b><b>'+(log[n+1]||'')+'</b>');
  lg.scrollTop=lg.scrollHeight;renderCount();menuSync();mnIntro();tutUI();rkLiveUI();qBadge();try{tsUI()}catch(e){}if(sl&&sl.dur&&(!VS||sl.list.some(e=>VS.has(e.f)||VS.has(e.t))))glide(sl)}
-function rulesDraw(){document.getElementById('rules').innerHTML=(VRA==='twostep'?[[null,'2 Step','Each turn you take two steps with the same piece. Move one piece, then either move that same piece again or press End turn. A Knight cannot take both steps: if the Knight moves, your turn ends.']]:[]).concat([
+function rulesDraw(){document.getElementById('rules').innerHTML=(VRA==='twostep'?[[null,'2 Step','Each turn you take two steps with the same piece. Move one piece, then either move that same piece again or press End turn. A Knight cannot take both steps: if the Knight moves, your turn ends.']]:VRA==='roll'?[[null,'Roll','Before every turn both players roll a die. The higher number moves and a tie is rolled again, so you can get several moves in a row.']]:[]).concat([
  ['sword','Sword','Steps forward or sideways. Strikes diagonally, or thrusts two squares straight ahead. At the far end it becomes a Shark, Fish or Ninja of your choice.'],
  ['ninja','Knight','Teleports to any empty square unless an enemy piece stands on the same file between your rank and the target’s rank (you can pass through your own pieces). Unless an enemy piece is in the 3×3 around it, then it can only step or capture one square up, down, left or right.'],
  ['fish','Fish','Swims any distance diagonally, or one step straight.'],
@@ -1507,7 +1597,7 @@ function rulesDraw(){document.getElementById('rules').innerHTML=(VRA==='twostep'
  VRA==='twostep'?['queen','Queen','Glides up to three squares in any direction (she cannot jump over pieces) to move, capture, or swap places with a friendly piece. Any enemy piece directly above, below or beside her is checkmate; her diagonal corners are safe. She can never be captured.']:['king','King','One step any way, or swap places with a friendly piece next to it. Once per game a two-square leap. Any enemy piece directly above, below or beside it is checkmate; its diagonal corners are safe. It can never be captured.'+vrRule()]
 ]).map(r=>'<div>'+(r[0]?'<img src="'+S[r[0]]+'" alt="">':'')+'<span><b>'+r[1]+'.</b> '+r[2]+'</span></div>').join('')}
 rulesDraw();
-document.getElementById('undo').onclick=()=>{if(mode==='online'||tour||ranked||FOG)return;if(VRA==='twostep'&&mode==='bot'){let g=0;while(hist.length){const h=hist.pop();({B,turn,cap,last,log}=h);if(h.fl)FL=JSON.parse(h.fl);over=null;g++;if(turn===mySide&&tsSq()<0)break}}else{let n=mode==='bot'?2:1;while(n--){const h=hist.pop();if(!h)break;({B,turn,cap,last,log}=h);if(h.fl)FL=JSON.parse(h.fl)}}pending=null;sel=null;legal=[];over=null;if(PZ)PZ.done=false;render();maybeBot()};
+document.getElementById('undo').onclick=()=>{if(mode==='online'||tour||ranked||FOG)return;if((VRA==='twostep'||VRA==='roll')&&mode==='bot'){let g=0;while(hist.length){const h=hist.pop();({B,turn,cap,last,log}=h);if(h.fl)FL=JSON.parse(h.fl);over=null;g++;if(turn===mySide&&tsSq()<0)break}}else{let n=mode==='bot'?2:1;while(n--){const h=hist.pop();if(!h)break;({B,turn,cap,last,log}=h);if(h.fl)FL=JSON.parse(h.fl)}}pending=null;sel=null;legal=[];over=null;if(PZ)PZ.done=false;ROLL=null;render();maybeBot()};
 document.getElementById('flip').onclick=()=>{flip=!flip;render()};
 const again=()=>{if(pvp&&!over)return;if(tour){if(tour.done)tour={me:0,bot:0,g:1,sc:false,done:false};else{tour.g++;tour.sc=false}mySide=tour.g%2?'w':'b';flip=mySide==='b';init();renderMode();return}if(mode==='online'&&room&&lcap>=3){if(!oppHere)return;if(amHost)startTrio();else room.emit('rematch',{});return}VSEED=vrSeed();init();if(mode==='online'&&room)room.emit('newgame',{lm:limit,fg:FOG?1:0,vr:VR,sd:VSEED})};
 let fgCb=null;
@@ -2558,7 +2648,7 @@ document.getElementById('frb').onclick=frOpen;frStart();setInterval(()=>{if(!doc
 
 /* ===== side menu (daily puzzle) ===== */
 (function(){const d=document.getElementById('dsb'),t=document.getElementById('dsbT');
- const L=document.getElementById('dsbL'),mx=()=>Math.min(L.scrollHeight+1,Math.max(160,innerHeight-130)),fit=()=>{if(d.classList.contains('open'))L.style.height=mx()+'px'},set=o=>{d.classList.toggle('open',o);L.style.height=o?mx()+'px':'0px';t.setAttribute('aria-expanded',String(o));t.setAttribute('aria-label',o?'Close side menu':'Open side menu')};
+ const L=document.getElementById('dsbL'),mx=()=>Math.min(L.scrollHeight+1,Math.max(160,innerHeight-170)),fit=()=>{if(d.classList.contains('open'))L.style.height=mx()+'px'},set=o=>{d.classList.toggle('open',o);L.style.height=o?mx()+'px':'0px';t.setAttribute('aria-expanded',String(o));t.setAttribute('aria-label',o?'Close side menu':'Open side menu')};
  window.dsbFit=fit;addEventListener('resize',fit);['acb','frb','cdb','qb'].forEach(id=>{const e=document.getElementById(id);if(e)e.addEventListener('click',()=>set(false))});t.onclick=()=>set(!d.classList.contains('open'));
  document.addEventListener('pointerdown',e=>{if(d.classList.contains('open')&&!d.contains(e.target))set(false)});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&d.classList.contains('open')){set(false);t.focus()}});
