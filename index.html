@@ -410,7 +410,7 @@ const setSave=()=>{try{localStorage.setItem(SETK,JSON.stringify(SET))}catch(e){}
 function tex(dark,s){const k=(dark?'d':'l')+s;if(!TX[k]){const cm=dark?'0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .8 -.32':'0 0 0 0 .55 0 0 0 0 .38 0 0 0 0 .2 0 0 0 .9 -.3';
  TX[k]=`url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='${dark?.03:.035}' numOctaves='3' seed='${s+(dark?10:0)}'/><feColorMatrix values='${cm}'/></filter><rect width='160' height='160' filter='url(%23f)'/></svg>")`}return TX[k]}
 const TWO=['setrank','addtp','setrating','setrecord','givepts'];let mm=null,pvp=null,pvpR=false,LB=null,AC,muted=false;let mode='local',lvl=2,mySide='w',room=null,code='',oppHere=false,msg='',bt=null,limit=0,tStart=null,tour=null;
-let ROLL=null,RLTOK=0,VR='classic',VRA='classic',VSEED=1,RM=new Set(),FOG=false,FH=false,QDN=false,RMT=0,LPT=0,QRW=false,QWP='';
+let ROLL=null,RLTOK=0,RLWAIT=false,VR='classic',VRA='classic',VSEED=1,RM=new Set(),FOG=false,FH=false,QDN=false,RMT=0,LPT=0,QRW=false,QWP='';
 /* ===== quests ===== */
 const QDAY=[{id:'puzzle',t:'Solve the daily puzzle',e:'puzzle',n:1,pts:80},{id:'cap8',t:'Capture 8 enemy pieces',e:'cap',n:8},{id:'play3',t:'Finish 3 games',e:'game',n:3},{id:'win1',t:'Win a game',e:'win',n:1},{id:'promo1',t:'Promote a sword',e:'promo',n:1},{id:'chk5',t:'Give check 5 times',e:'check',n:5},{id:'winbot',t:'Beat a bot',e:'winbot',n:1},{id:'shark3',t:'Capture 3 pieces with a Shark',e:'capShark',n:3},{id:'kn3',t:'Capture 3 pieces with a Knight',e:'capKnight',n:3},{id:'fog1',t:'Finish a Fog of War game',e:'fogGame',n:1},{id:'winrk',t:'Win a ranked game',e:'winRanked',n:1,pts:25},{id:'winon',t:'Win an online game',e:'winOnline',n:1,pts:15},{id:'winsw',t:'Win a game with a Sword making the final move',e:'winSword',n:1,pts:20},{id:'winkn',t:'Win a game with a Knight making the final move',e:'winKnight',n:1,pts:20},{id:'shsh',t:'Capture a Shark with your Shark',e:'sharkXshark',n:1,pts:20}];
 const QWEEK=[{id:'w_win5',t:'Win 5 games',e:'win',n:5},{id:'w_cap40',t:'Capture 40 pieces',e:'cap',n:40},{id:'w_play12',t:'Finish 12 games',e:'game',n:12},{id:'w_online2',t:'Win 2 online games',e:'winOnline',n:2},{id:'w_fogwin',t:'Win a Fog of War game',e:'fogWin',n:1},{id:'w_chk25',t:'Give check 25 times',e:'check',n:25},{id:'w_rk2',t:'Win 2 ranked games',e:'winRanked',n:2,pts:50},{id:'w_shsh3',t:'Capture 3 Sharks with your Shark',e:'sharkXshark',n:3,pts:45},{id:'w_swkn',t:'Win 2 games with a Knight making the final move',e:'winKnight',n:2,pts:45}];
@@ -569,9 +569,10 @@ function rlDie(){const sc=document.createElement('div');sc.className='rlS';const
   hop.onfinish=()=>{set(n);res()}});
  return{el:sc,roll}}
 function rollShow(r){const tok=++RLTOK;document.querySelectorAll('.rlO').forEach(e=>e.remove());
- const go=async()=>{if(tok!==RLTOK||over||VRA!=='roll')return;
+ RLWAIT=true;const fin=()=>{if(tok!==RLTOK||!RLWAIT)return;RLWAIT=false;try{render()}catch(e){}try{maybeBot()}catch(e){}};setTimeout(fin,20000);
+ const go=async()=>{if(tok!==RLTOK)return;if(over||VRA!=='roll'){fin();return}
   if(document.getElementById('mnI')||document.getElementById('mnM')){setTimeout(go,250);return}
-  if(r.only){tmToast(dn(r.w==='w'?'b':'w')+' cannot move, so '+dn(r.w)+' goes.');return}
+  if(r.only){fin();tmToast(dn(r.w==='w'?'b':'w')+' cannot move, so '+dn(r.w)+' goes.');return}
   const o=document.createElement('div');o.className='rlO';o.setAttribute('role','status');
   const mk=s=>{const p=document.createElement('div');p.className='rlP '+s;const n=document.createElement('span');n.textContent=dn(s);const d=rlDie();p.append(n,d.el);return[p,d]};
   const[pw,dw]=mk('w'),[pb,db]=mk('b'),row=document.createElement('div'),vs=document.createElement('div'),res=document.createElement('p'),c=document.createElement('div'),ti=document.createElement('div');
@@ -594,8 +595,8 @@ const doRoll=async(a,b,txt)=>{res.className='rlR'+(a===b?' tie':'');res.textCont
    res.className='rlR';res.textContent=dn(r.w)+' goes! ('+(r.w==='w'?r.a+' vs '+r.b:r.b+' vs '+r.a)+')';
    try{[523,659,784].forEach((f,i)=>{tone(f,.28,'sine',.09,.05+i*.09);tone(f*2,.2,'triangle',.025,.05+i*.09)})}catch(e){}
    await wait(1400);if(!alive())return o.remove();
-   o.classList.add('out');setTimeout(()=>o.remove(),380)
-  }catch(e){o.remove()}};
+   o.classList.add('out');setTimeout(()=>o.remove(),380);fin()
+  }catch(e){o.remove();fin()}};
  setTimeout(go,380)}
 const vrRingsAt=n=>VRA==='lava'?Math.min(2,Math.floor(n/14)):0;
 function vrRnd(seed){let a=seed|0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
@@ -905,11 +906,11 @@ function tourScore(){if(!tour||tour.sc)return;tour.sc=true;
 function maybeBot(){clearTimeout(bt);if(mode==='bot'&&!over&&turn!==mySide){if(lvl===4)document.getElementById('status').textContent='The Champion is thinking…';bt=setTimeout(botMove,500)}
  else if(mode==='online'&&room&&amHost&&trio&&!over&&oppHere&&isBotId(activeId()))bt=setTimeout(obMove,700)}
 /* online lobby bots: the host's copy thinks for each bot and sends its move like a player would */
-function obMove(){if(mode!=='online'||!room||!amHost||!trio||over||!oppHere)return;const a=activeId();if(!isBotId(a))return;const t=turn,sv=lvl;let pick=null;
+function obMove(){if(mode!=='online'||!room||!amHost||!trio||over||!oppHere)return;if(RLWAIT){clearTimeout(bt);bt=setTimeout(obMove,200);return}const a=activeId();if(!isBotId(a))return;const t=turn,sv=lvl;let pick=null;
  lvl=obLvl;try{pick=botPick(t)}catch(e){pick=null}lvl=sv;
  if(!pick){const L=[];for(let i=0;i<64;i++)if(B[i]&&B[i].t===t)for(const j of legalFrom(B,i))L.push([i,j]);pick=L[Math.floor(Math.random()*L.length)]}
  if(!pick)return;mvAs=a;try{move(pick[0],pick[1])}finally{mvAs=null}}
-function botMove(){if(mode!=='bot'||over||turn===mySide)return;const t=turn;let pick=null;
+function botMove(){if(mode!=='bot'||over||turn===mySide)return;if(RLWAIT){clearTimeout(bt);bt=setTimeout(botMove,200);return}const t=turn;let pick=null;
  if(tsSq()>=0){const m=tsBotPick(t,tsSq());if(m)move(m[0],m[1]);else tsEnd(false);return}
  if(FOG&&fogOn()){const real=B,vs=fogVis(t);B=real.map((q,i)=>q&&q.t!==t&&!vs.has(i)?null:q);try{pick=botPick(t)}catch(e){pick=null}finally{B=real}
   if(!(pick&&B[pick[0]]&&B[pick[0]].t===t&&legalFrom(B,pick[0]).includes(pick[1]))){const L=[];for(let i=0;i<64;i++)if(B[i]&&B[i].t===t)for(const j of legalFrom(B,i))L.push([i,j]);if(!L.length)return;let c=pick?L.filter(m=>m[0]===pick[0]):[];if(c.length){const d=m=>Math.abs((m[1]>>3)-(pick[1]>>3))+Math.abs((m[1]&7)-(pick[1]&7));c.sort((a,b)=>d(a)-d(b));pick=c[0]}else pick=L[Math.floor(Math.random()*L.length)]}}
@@ -1485,7 +1486,7 @@ function pzHint(){if(!PZ||over||pending||turn!==mySide)return;const done=log.len
  if(done===0){show(PZ.sol);return}
  tmToast('Thinking…');const key=tutKey();setTimeout(()=>{if(!PZ||over||pending||turn!==mySide||tutKey()!==key)return;let m=null;PZDL=performance.now()+3000;PZN=0;try{m=pzForce(B,left,mySide)}catch(e){m=e==='pz'?'slow':null}finally{PZDL=0}if(m==='slow'){tmToast('That line is too tangled for a quick hint. Press Retry to start over.');return}show(m)},40)}
 /*PZ-END*/
-function init(){FL=flInit();QWP='';QRW=false;LK.clear();RM.clear();QDN=false;FH=false;rkForfeitLive();tutGen++;HI=null;
+function init(){RLWAIT=false;FL=flInit();QWP='';QRW=false;LK.clear();RM.clear();QDN=false;FH=false;rkForfeitLive();tutGen++;HI=null;
  B=Array(64).fill(null);
  for(let c=0;c<8;c++){B[c]={t:'b',k:BACK[c]};B[8+c]={t:'b',k:'sword'};B[48+c]={t:'w',k:'sword'};B[56+c]={t:'w',k:BACK[c]}}
  vrSync();vrSetup();turn='w';hist=[];pending=null;sel=null;legal=[];last=null;over=null;cap={w:[],b:[]};log=[];tStart=null;if(PZ){B=PZ.b.map(q=>q?{...q}:null);PZ.done=false}ROLL=null;if(VRA==='roll')rollApply(0,true);rkNew();render();maybeBot()}
@@ -1513,7 +1514,7 @@ const isLk=i=>{const p=B[i],v=LK.get(i);if(!v)return false;if(!p||v!==p.t+p.k){L
 function toggleLock(i){const p=B[i];if(!p||over||pending||drg)return;if(mode!=='local'&&p.t!==mySide)return;if(isLk(i))LK.delete(i);else LK.set(i,p.t+p.k);if(sel===i){sel=null;legal=[]}sfx('select');render()}
 const sqEl=i=>document.querySelectorAll('#board .sq')[flip?63-i:i];
 function pdown(ev,i){
- if((FOG&&FH&&mode==='local'&&fogOn())||ev.button||over||pending||!B[i]||isLk(i)||B[i].t!==turn||(tsSq()>=0&&i!==tsSq())||(mode==='bot'&&turn!==mySide)||(mode==='online'&&!myTurn()))return;
+ if(RLWAIT||(FOG&&FH&&mode==='local'&&fogOn())||ev.button||over||pending||!B[i]||isLk(i)||B[i].t!==turn||(tsSq()>=0&&i!==tsSq())||(mode==='bot'&&turn!==mySide)||(mode==='online'&&!myTurn()))return;
  const x0=ev.clientX,y0=ev.clientY;let on=false;
  const mv=e=>{if(!on){if(Math.hypot(e.clientX-x0,e.clientY-y0)<6)return;on=true;dragStart(i,e)}if(drg)dragMove(e)},
  up=e=>{off();if(on)dragEnd(e)},off=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up)};
@@ -1542,6 +1543,7 @@ function dragEnd(e){const d=drg;if(!d)return;drg=null;cancelAnimationFrame(d.raf
   if(ok&&sel===d.i&&!over){const pc=B[d.i];if(pc.k==='sword'&&promoRow(pc.t,t)){pending={from:d.i,to:t};sfx('select');render()}else{DRAG=true;move(d.i,t);DRAG=false}}
   else{render();clack(0,.3,1.2,1)}}}
 function click(i){
+ if(RLWAIT)return;
  if(FOG&&FH&&mode==='local'&&fogOn())return;
  if(over||(mode==='bot'&&turn!==mySide)||(mode==='online'&&!myTurn()))return;
  if(pending)pending=null;
