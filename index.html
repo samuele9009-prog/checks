@@ -355,6 +355,51 @@ html:has(#mnI),body:has(#mnI){overflow:hidden;overscroll-behavior:none}
 @keyframes rlOut{to{opacity:0;transform:translate(-50%,-8px) scale(.97)}}
 @media(prefers-reduced-motion:reduce){.rlO,.rlO.out{animation:none}.rlP{transition:none}}
 </style>
+<style id="xtra">
+/* admin shield */
+.admSh{display:inline-block;width:1.15em;height:1.15em;margin-left:5px;vertical-align:-.2em;flex:none}
+.admSh .sh{fill:#6fc3e8}.admSh .ck{fill:none;stroke:#06222f;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.admSh.adO .sh{fill:#ffc83d}
+/* fullscreen Find players */
+.modal.fdFull{z-index:120;padding:0;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;background:var(--ink);animation:fdIn .18s ease-out}
+@keyframes fdIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fdTop{display:flex;align-items:center;gap:10px;padding:calc(env(safe-area-inset-top,0px) + 12px) max(14px,env(safe-area-inset-right,0px)) 12px max(14px,env(safe-area-inset-left,0px));background:var(--panel);border-bottom:1px solid var(--line);flex:none}
+.fdBk{flex:none;width:42px;height:42px;border-radius:50%;border:0;background:rgba(255,255,255,.06);color:var(--text);display:grid;place-items:center;cursor:pointer;padding:0}
+.fdBk:hover,.fdBk:focus-visible{background:rgba(255,255,255,.14);outline:none}
+.fdBk svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.fdSw{flex:1;min-width:0;max-width:760px;margin:0 auto;display:flex;align-items:center;gap:10px;height:46px;padding:0 8px 0 14px;border-radius:999px;background:var(--ink);border:1.5px solid var(--line);box-sizing:border-box;cursor:text}
+.fdSw:focus-within{border-color:var(--tide);box-shadow:0 0 0 3px rgba(111,195,232,.2)}
+.fdMg{width:22px;height:22px;flex:none;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round}
+.fdSw input#fdQ{flex:1;min-width:0;width:auto;height:100%;border:0;background:transparent;color:var(--text);font:inherit;font-size:18px;padding:0;margin:0;outline:none;box-shadow:none;-webkit-appearance:none;appearance:none}
+.fdSw input#fdQ::-webkit-search-cancel-button,.fdSw input#fdQ::-webkit-search-decoration{-webkit-appearance:none;display:none}
+.fdClr{flex:none;width:32px;height:32px;border-radius:50%;border:0;background:rgba(255,255,255,.1);color:var(--text);font-size:20px;line-height:1;cursor:pointer;padding:0}
+.fdClr[hidden]{display:none}
+.fdBody{flex:1;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:18px max(14px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 28px) max(14px,env(safe-area-inset-left,0px))}
+.fdIn{max-width:980px;margin:0 auto}
+.fdSt{font-size:15px;font-weight:600;color:var(--muted);margin:2px 2px 12px;min-height:20px}
+.fdRh{display:flex;justify-content:space-between;align-items:center;font-size:15px;font-weight:600;color:var(--muted);margin:0 2px 8px}
+.fdRh button{border:0;background:none;color:var(--tide);font:inherit;font-size:14px;cursor:pointer;padding:4px}
+.fdChips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.fdChip{border:1px solid var(--line);background:var(--panel);color:var(--text);font:inherit;font-size:15px;padding:7px 14px;border-radius:999px;cursor:pointer}
+.fdChip:hover{background:#1d3a46}
+.fdG{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:12px}
+.fdC{display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:16px 10px 12px;border:1px solid var(--line);border-radius:16px;background:var(--panel);min-width:0}
+.fdC.fdT{cursor:pointer;transition:transform .12s,background .12s,border-color .12s}
+.fdC.fdT:hover,.fdC.fdT:focus-visible{background:#1d3a46;border-color:var(--pc,var(--tide));transform:translateY(-2px);outline:none}
+.fdC .av.fdAv{width:88px;height:88px;color:var(--pc,var(--tide));margin-bottom:8px}
+.fdN{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:17px;font-weight:700}
+.fdU{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13.5px;color:var(--muted)}
+.fdS{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;color:var(--text);opacity:.8;min-height:17px}
+.fdX2{display:flex;align-items:center;justify-content:center;gap:8px;min-height:26px;margin-top:6px}
+.fdX2 em{font-style:normal;font-size:12px;color:var(--tide)}
+.fdX2 .prFv{width:24px;height:24px}
+.fdSk .av{background:#1d3a46;box-shadow:none}.fdSk b{width:70%;height:14px;border-radius:7px;background:#1d3a46;margin-top:2px}.fdSk small{width:45%;height:11px;border-radius:6px;background:#1d3a46;margin-bottom:30px}
+.fdSk{animation:fdPulse 1.1s ease-in-out infinite}@keyframes fdPulse{50%{opacity:.55}}
+.fdEmpty{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;padding:64px 16px;color:var(--muted)}
+.fdEmpty .fdMg{width:54px;height:54px;stroke-width:1.6;margin-bottom:6px}.fdEmpty b{color:var(--text);font-size:19px}
+@media(max-width:480px){.fdG{grid-template-columns:repeat(2,1fr);gap:10px}.fdC .av.fdAv{width:72px;height:72px}}
+@media(prefers-reduced-motion:reduce){.modal.fdFull,.fdSk{animation:none}.fdC.fdT{transition:none}}
+</style>
 </head>
 <body>
 <button class="gearBtn" id="setb" type="button" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></button>
@@ -642,13 +687,18 @@ function mnIntro(force){if(mnQuiet||PZ||!mnOK())return;const on=[];if(FOG)on.pus
  document.body.appendChild(d);const go=()=>d.remove();d.querySelector('#mnIgo').onclick=go;d.onkeydown=e=>{if(e.key==='Escape'||e.key==='Enter')go()};d.querySelector('#mnIgo').focus({preventScroll:true})}
 const MNQ=['ctf','last','twostep','roll'];
 const mnIcon='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.4 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg>';
+const MNIC={
+ ctf:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V3"/><path d="M6 4.5h11.5l-2.8 3.8 2.8 3.7H6"/></svg>',
+ last:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 18.5 2.8 7.5l5.2 4.2L12 4.5l4 7.2 5.2-4.2-.7 11z"/><path d="M4 21.5h16"/></svg>',
+ twostep:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 6 6 6-6 6"/><path d="m13 6 6 6-6 6"/></svg>',
+ roll:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="8.6" cy="8.6" r="1.2" style="fill:var(--peach)"/><circle cx="15.4" cy="8.6" r="1.2" style="fill:var(--peach)"/><circle cx="12" cy="12" r="1.2" style="fill:var(--peach)"/><circle cx="8.6" cy="15.4" r="1.2" style="fill:var(--peach)"/><circle cx="15.4" cy="15.4" r="1.2" style="fill:var(--peach)"/></svg>'};
 function mnPick(v){if(VR===v)v='classic';vrSet(v)}
 function menuSync(){const b=document.getElementById('mnFog');if(!b)return;
  if(!b.dataset.bound){b.dataset.bound='1';b.onclick=fogToggle}
  const ok=mnOK(),k=[ok,FOG,VR,ranked,mode==='online'&&!amHost].join();if(k===mnKey)return;mnKey=k;
  const st=document.getElementById('mnFogSt'),nt=document.getElementById('mnNote'),L=document.getElementById('mnList');
  b.disabled=!ok;st.textContent=FOG&&ok?'On':'Off';st.classList.toggle('off',!(FOG&&ok));
- L.innerHTML=MNQ.map(id=>{const x=VARS.find(y=>y[0]===id),on=ok&&VR===id;return'<button class="dsbI" type="button" data-v="'+id+'"'+(ok?'':' disabled')+'>'+mnIcon+'<span>'+x[1]+'</span><em class="'+(on?'':'off')+'">'+(on?'On':'Off')+'</em></button>'}).join('');
+ L.innerHTML=MNQ.map(id=>{const x=VARS.find(y=>y[0]===id),on=ok&&VR===id;return'<button class="dsbI" type="button" data-v="'+id+'"'+(ok?'':' disabled')+'>'+(MNIC[id]||mnIcon)+'<span>'+x[1]+'</span><em class="'+(on?'':'off')+'">'+(on?'On':'Off')+'</em></button>'}).join('');
  L.querySelectorAll('button').forEach(x=>x.onclick=()=>mnPick(x.dataset.v));
  const cur=VARS.find(x=>x[0]===VR);
  nt.textContent=ok?(mode==='online'&&!amHost?'The host picks the game modes.':(VR!=='classic'?cur[1]+': '+cur[2]:'')):'Game modes work in 2 players, Vs bot and private online games.';
@@ -1150,7 +1200,7 @@ const okPf=p=>{p=String(p||'');return(/^p:(sword|ninja|fish|shark|king):[0-5]$/.
 const defPf=n=>{let h=0;for(const c of String(n||'?'))h=(h*31+c.charCodeAt(0))|0;h=Math.abs(h);return'p:'+PRE[h%5]+':'+((h>>3)%6)};
 function av(p,n,cls){p=okPf(p)||defPf(n);if(p[0]==='p'){const a=p.split(':');return'<span class="av '+(cls||'')+'" style="background:'+PCOL[+a[2]]+'"><img src="'+S[a[1]]+'" alt=""></span>'}return'<span class="av '+(cls||'')+'"><img class="ph" src="'+p+'" alt=""></span>'}
 const cn=s=>String(s||'').replace(/[<>]/g,'').slice(0,16),sid=s=>String(s||'').replace(/[^a-z0-9]/gi,'').slice(0,12);
-const meR=()=>({id:myId,n:cn(user)||'Guest',pf:okPf(myPf)});
+const meR=()=>({id:myId,n:cn(user)||'Guest',pf:okPf(myPf),ad:admSelf()?1:0});
 const R_=id=>isBotId(id)?botObj(id):(roster.find(r=>r.id===id)||{n:'Player',pf:''});
 const okTrio=t=>t&&Array.isArray(t.w)&&Array.isArray(t.b)&&t.w.length>=1&&t.b.length>=1&&t.w.length<=2&&t.b.length<=2&&t.w.length+t.b.length>=3;
 const sideOf=id=>trio?(trio.w.includes(id)?'w':'b'):(id===myId?mySide:(mySide==='w'?'b':'w'));
@@ -1167,9 +1217,9 @@ function startTrio(){const sh=a=>{for(let i=a.length-1;i>0;i--){const j=Math.flo
   const n=hs.length+bs.length,sd=Math.random()<.5?'w':'b',od=sd==='w'?'b':'w',A=n===3?od:sd,Z=A==='w'?'b':'w',
   sl=lbots&&obLay==='hvb'?(n===3?[A,A,Z]:[A,A,Z,Z]):(n===3?[A,Z,A]:[A,Z,A,Z]),a=lbots?hs.concat(bs):hs,t={w:[],b:[]};
   a.forEach((id,i)=>t[sl[i]].push(id));adoptTrio(t);init();renderMode();tmToast(tmText());room.emit('start',{tr:t,lm:limit,r:roster,c:n,nb:lbots,bl:obLvl})}
-function sendWho(){if(room)room.emit('who',{id:myId,n:user,pf:myPf})}
-function sayHello(){if(room)room.emit('hello',{id:myId,n:user,pf:myPf})}
-function setRoster(l){roster=(l||[]).slice(0,4).map(r=>({id:sid(r.id),n:cn(r.n)||'Guest',pf:okPf(r.pf)}));const o=roster.filter(r=>r.id!==myId);if(lcap===2)oppName=o[0]?o[0].n:''}
+function sendWho(){if(room)room.emit('who',{id:myId,n:user,pf:myPf,ad:admSelf()?1:0})}
+function sayHello(){if(room)room.emit('hello',{id:myId,n:user,pf:myPf,ad:admSelf()?1:0})}
+function setRoster(l){roster=(l||[]).slice(0,4).map(r=>{const n=cn(r.n)||'Guest';if(r.n)admMark(n,+r.ad===1);return{id:sid(r.id),n,pf:okPf(r.pf),ad:+r.ad===1?1:0}});const o=roster.filter(r=>r.id!==myId);if(lcap===2)oppName=o[0]?o[0].n:''}
 function leaveLobby(t){pvpForfeit();pvpR=false;FOG=false;VR='classic';FH=false;if(room){const r0=room;setTimeout(()=>{try{r0.leave()}catch(e){}},300)}room=null;oppHere=false;trio=null;roster=[];lcap=2;lbots=0;msg=t||'';mySide='w';flip=false;init();renderMode()}
 /* tab closed: tell the lobby right away, leave the room, drop out of matchmaking and the online list */
 let leftOnHide=false;
@@ -1202,12 +1252,12 @@ function wireRoom(host){oppName='';amHost=host;trio=null;peersN=0;if(room.direct
   room.on('mv',m=>{if(m.isMe)return;const d=m.data||{};if(d.e){if(d.n===log.length&&tsSq()>=0&&turn!==mySide)tsEnd(true);else sayHello();return}if(d.n!==log.length||!B[d.i]||B[d.i].t!==turn||(tsSq()>=0&&d.i!==tsSq())||!legalFrom(B,d.i).includes(d.j)||(lcap>=3&&(!trio||d.f!==activeId()))){sayHello();return}move(d.i,d.j,true,d.p)});
   room.on('hello',m=>{if(m.isMe||!amHost)return;const d=m.data||{},id=sid(d.id)||'anon';if(isBotId(id))return;let r=roster.find(x=>x.id===id);
    if(!r){if(roster.length>=humanCap()){room.emit('full',{to:id});return}r={id};roster.push(r)}
-   r.n=cn(d.n)||'Guest';r.pf=okPf(d.pf);if(lcap===2)oppName=r.n;
+   r.n=cn(d.n)||'Guest';r.pf=okPf(d.pf);r.ad=+d.ad===1?1:0;if(d.n)admMark(r.n,r.ad===1);if(lcap===2)oppName=r.n;
    room.emit('roster',{lcap,r:roster,nb:lbots,bl:obLvl});
    if(lcap>=3&&!trio&&roster.length===humanCap())startTrio();else if(lcap===2||trio)sendSync();
    renderMode();render()});
   room.on('roster',m=>{if(m.isMe||amHost)return;const d=m.data||{};lcap=d.lcap===4?4:d.lcap===3?3:2;lbots=lcap>=3?Math.max(0,Math.min(lcap-2,+d.nb||0)):0;obLvl=Math.max(1,Math.min(4,+d.bl||2));setRoster(d.r);render();renderMode()});
-  room.on('who',m=>{if(m.isMe)return;const d=m.data||{},r=roster.find(x=>x.id===sid(d.id));if(r){r.n=cn(d.n)||'Guest';r.pf=okPf(d.pf);if(lcap===2&&r.id!==myId)oppName=r.n;render();renderMode()}});
+  room.on('who',m=>{if(m.isMe)return;const d=m.data||{},r=roster.find(x=>x.id===sid(d.id));if(r){r.n=cn(d.n)||'Guest';r.pf=okPf(d.pf);r.ad=+d.ad===1?1:0;if(d.n)admMark(r.n,r.ad===1);if(lcap===2&&r.id!==myId)oppName=r.n;render();renderMode()}});
   room.on('full',m=>{if(!m.isMe&&(m.data||{}).to===myId)leaveLobby('That lobby is full.')});
   room.on('start',m=>{if(m.isMe||amHost)return;const d=m.data||{};if(!okTrio(d.tr))return;lcap=d.c===4?4:3;lbots=Math.max(0,Math.min(lcap-2,+d.nb||0));obLvl=Math.max(1,Math.min(4,+d.bl||2));setRoster(d.r);limit=+d.lm||0;document.getElementById('lim').value=limit||'';adoptTrio(d.tr);init();renderMode();tmToast(tmText())});
   room.on('rematch',m=>{if(!m.isMe&&amHost&&lcap>=3&&oppHere)startTrio()});
@@ -1821,12 +1871,28 @@ Object.defineProperty(window,'qeytuopyiwtuphsfjklhgjldgbncxuwyhqrgbgakldfgakflbn
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function nameOf(t){if(mode==='online')return t===mySide?(user||'Guest'):oppName;if(mode==='bot')return t===mySide?(user||'Guest'):(tour?'The Champion':'Bot');return ''}
 function dn(t){return mode==='online'&&room&&lcap>=3&&trio?teamName(t):nameOf(t)||NAME[t]}
-function renderWho(){const u=user?rkAcct(user):null;lbPres();const ad=document.getElementById('adm');if(ad){ad.style.display=(isOwnerName(user)&&ownerOK())||admxOK()?'':'none';ad.onclick=adminOpen}document.getElementById('who').innerHTML=av(myPf,user)+' '+(user?'Playing as '+esc(user)+ownTag(user):'Playing as guest')+(u&&u.placed?' '+rkBadge(rkIdx(u.rating)):'');const pa=document.querySelector('#who .av');if(pa){pa.classList.add('avBtn');pa.setAttribute('role','button');pa.tabIndex=0;pa.title='Account';pa.onclick=()=>acOpen();pa.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();acOpen()}}}}
+function renderWho(){const u=user?rkAcct(user):null;lbPres();{const a=admSelf()?1:0;if(window.__admLast!==a){const first=window.__admLast===undefined;window.__admLast=a;if(!first){setTimeout(()=>{try{sendWho()}catch(e){}try{if(ACC)profPush()}catch(e){}},400)}}}const ad=document.getElementById('adm');if(ad){ad.style.display=(isOwnerName(user)&&ownerOK())||admxOK()?'':'none';ad.onclick=adminOpen}document.getElementById('who').innerHTML=av(myPf,user)+' '+(user?'Playing as '+esc(user)+ownTag(user):'Playing as guest')+(u&&u.placed?' '+rkBadge(rkIdx(u.rating)):'');const pa=document.querySelector('#who .av');if(pa){pa.classList.add('avBtn');pa.setAttribute('role','button');pa.tabIndex=0;pa.title='Account';pa.onclick=()=>acOpen();pa.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();acOpen()}}}}
 /* owner + admin (client-side only: it can only touch data saved in this browser) */
 const OWN_H='d153f72c3cfcc9e6c9969ec7cf082e1dcfa7a98c6045a1cdd40f01641caef5da';let ownSess=false,ownRaw='';
 const isOwnerName=n=>String(n||'').replace(/\s+/g,'').toLowerCase()==='figo9009';
 const ownerOK=()=>{if(ownSess)return true;try{return localStorage.getItem('checks-owner')===OWN_H}catch(e){return false}};
-const ownTag=n=>isOwnerName(n)?' <span class="own">(OWNER)</span>':'';
+/* admin shield: shown next to the name of anyone who has the admin panel (owner = gold shield) */
+const ADM_SEEN=new Set();
+function admKey(n){return String(n||'').replace(/\s+/g,'').toLowerCase()}
+function admSelf(){try{return !!user&&((isOwnerName(user)&&ownerOK())||admxOK())}catch(e){return false}}
+function admIs(n){const k=admKey(n);if(!k)return false;if(isOwnerName(n))return true;if(user&&k===admKey(user))return admSelf();return ADM_SEEN.has(k)}
+function admMark(n,f){const k=admKey(n);if(!k)return;if(f)ADM_SEEN.add(k);else ADM_SEEN.delete(k)}
+function admShield(o){const t=o?'Owner':'Admin';return'<svg class="admSh'+(o?' adO':'')+'" viewBox="0 0 24 24" role="img" aria-label="'+t+'"><title>'+t+'</title><path class="sh" d="M12 2.6 4.6 5.7v5.6c0 4.6 3.1 8.2 7.4 10.1 4.3-1.9 7.4-5.5 7.4-10.1V5.7z"/><path class="ck" d="m8.7 12.2 2.3 2.3 4.4-4.8"/></svg>'}
+const ownTag=n=>(admIs(n)?admShield(isOwnerName(n)):'')+(isOwnerName(n)?' <span class="own">(OWNER)</span>':'');
+/* username filter: blocks swear words, slurs and names that pretend to be staff. Edit the lists to taste. */
+const UF_STRONG=['fuck','shit','bitch','cunt','nigg','fagg','whore','slut','hitler','penis','vagina','pussy','retard','tranny','blowjob','handjob','dildo','jizz','molest','cumshot','cocksuck','motherf','bullshit','asshole','dickhead'];
+const UF_TOK=new Set(['ass','arse','sex','sexy','cum','dick','cock','tit','tits','boob','boobs','anal','rape','raped','raping','rapist','kys','fag','spic','chink','kike','paki','nazi','nazis','porn','porno','pornhub','pedo','xxx','nsfw','horny','dumbass','jackass']);
+const UF_RX=UF_STRONG.map(w=>new RegExp(w.split('').map(c=>c+'+').join('')));
+const UF_OK=/scunthorpe|shiitake|mishit|sussex|middlesex/g;/* harmless words that contain a blocked stem */
+const UF_RES=/admin|owner|moderator|staff|official|checksdev|figo9009/;
+function ufNorm(x){return String(x||'').toLowerCase().replace(/[01345789@$!|]/g,c=>({'0':'o','1':'i','3':'e','4':'a','5':'s','7':'t','8':'b','9':'g','@':'a','$':'s','!':'i','|':'i'}[c]||c))}
+function ufBad(n){const t=ufNorm(n);if(!t.trim())return false;const flat=t.replace(/[^a-z]/g,'').replace(UF_OK,'');if(UF_RX.some(r=>r.test(flat)))return true;return t.split(/[^a-z]+/).filter(Boolean).some(w=>UF_TOK.has(w)||UF_TOK.has(w.replace(/(.)\1{2,}/g,'$1$1')))}
+function ufCheck(n){if(isOwnerName(n))return'';if(ufBad(n))return'That name is not allowed. Please pick a different one.';if(UF_RES.test(ufNorm(n).replace(/[^a-z0-9]/g,'')))return'Names that look like staff (admin, owner, moderator) are reserved. Please pick a different one.';return''}
 async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 function ownerAsk(n,nameModal){if(document.getElementById('ownM'))return;const m=document.createElement('div');m.className='modal';m.id='ownM';
  m.innerHTML='<div class="card" role="dialog" aria-modal="true" aria-labelledby="ownT"><h2 id="ownT">Owner login</h2><p class="hint">This name is reserved. Enter the owner code to use it.</p><input id="ownIn" type="password" autocomplete="off" placeholder="Owner code"><p class="hint" id="ownE" style="color:#ff9d8a;display:none"></p><button class="b1" id="ownGo">Unlock</button><button class="b2" id="ownX">Cancel</button></div>';
@@ -1943,7 +2009,7 @@ function askName(){
  m.innerHTML='<div class="card acc" id="nmCard" role="dialog" aria-modal="true" aria-labelledby="nmT"><div class="acHd">'+(lg?'<img class="nmLogo" alt="" src="'+lg+'">':'')+'<h2 id="nmT">Welcome to Checks</h2><p>Pick a name to play with, or play as a guest. You can make an account any time to save your progress on every device.</p></div><label class="acLb" for="nmIn">Display name</label><input id="nmIn" maxlength="16" autocomplete="off" placeholder="Pick a name" spellcheck="false"><p class="acmsg err" id="nmErr" style="display:none"></p><button class="b1 acPri" id="nmGo">Continue</button><button class="b2" id="nmGuest">Play as guest</button><div class="nmOr"><span>or</span></div><div class="nmAcc"><button class="b2" id="nmNew" type="button">Create account</button><button class="b2" id="nmLog" type="button">Log in</button></div></div>';
  document.body.appendChild(m);
  const inp=m.querySelector('#nmIn'),er=m.querySelector('#nmErr');inp.value=user;inp.focus();
- let chk=false;const go=async()=>{if(chk)return;const n=inp.value.replace(/[<>]/g,'').replace(/\s+/g,' ').trim();if(!n){er.textContent='Type a name, or play as guest.';er.style.display='block';inp.focus();return}if(isOwnerName(n)&&!ownerOK()){ownerAsk(n,m);return}chk=true;er.style.display='none';let tk=false;try{tk=await nameTaken(n)}catch(e){}chk=false;if(tk){er.textContent='That username belongs to a registered account. Pick another name, or log in to use it.';er.style.display='block';sfx('warn');inp.focus();return}m.remove();setUser(n)};
+ let chk=false;const go=async()=>{if(chk)return;const n=inp.value.replace(/[<>]/g,'').replace(/\s+/g,' ').trim();if(!n){er.textContent='Type a name, or play as guest.';er.style.display='block';inp.focus();return}if(isOwnerName(n)&&!ownerOK()){ownerAsk(n,m);return}{const bd=ufCheck(n);if(bd){er.textContent=bd;er.style.display='block';try{sfx('warn')}catch(e){}inp.focus();return}}chk=true;er.style.display='none';let tk=false;try{tk=await nameTaken(n)}catch(e){}chk=false;if(tk){er.textContent='That username belongs to a registered account. Pick another name, or log in to use it.';er.style.display='block';sfx('warn');inp.focus();return}m.remove();setUser(n)};
  m.querySelector('#nmGo').onclick=go;inp.onkeydown=e=>{if(e.key==='Enter')go()};
  m.querySelector('#nmGuest').onclick=()=>{m.remove();setUser('')};
  m.querySelector('#nmNew').onclick=()=>{m.remove();acOpen(false,true,true)};m.querySelector('#nmLog').onclick=()=>{m.remove();acOpen(false,false,true)};
@@ -2355,7 +2421,7 @@ async function acCheck(){if(!ACC||acBusy||!(CLOUD_URL||SB_URL))return;try{acSync
  try{if(acSame(await acPeek(l.d,ACC.k))){ACC.v=l.v;acStore();return}}catch(e){}
  if(acBusy)return;
  if(confirm('Your account has newer progress from another device. OK = load it here (replaces this device). Cancel = keep this device\'s progress.')){await acApply(l.d,ACC.k);ACC.v=l.v;acStore();location.reload()}else{ACC.v=l.v;acStore()}}catch(e){if(acIsGone(e))acGone()}}
-async function acAuth(reg,u,p,say,em){u=u.trim().toLowerCase();if(!/^[a-z0-9_]{3,20}$/.test(u))return say('Username: 3 to 20 letters, numbers or _.');if(p.length<6)return say('Password needs 6 or more characters.');say('Working…');
+async function acAuth(reg,u,p,say,em){u=u.trim().toLowerCase();if(!/^[a-z0-9_]{3,20}$/.test(u))return say('Username: 3 to 20 letters, numbers or _.');if(p.length<6)return say('Password needs 6 or more characters.');if(reg){const bd=ufCheck(u);if(bd)return say(bd)}say('Working…');
  try{const K=await acKeys(u,p);
   if(reg){await acApi('register',{u,h:K.h});ACC={u,h:K.h,k:K.k,v:0};acStore();const r=await acSave(true);say(r||'Account created. Your progress is saved.');if(!r)setTimeout(()=>{document.getElementById('acM')&&document.getElementById('acM').remove();if(em)emOpen('verify',em);else acOpen(true)},700);return}
   const j=await acApi('load',{u,h:K.h});
@@ -2547,15 +2613,38 @@ function frChOpen(k){const f=frGet(k);if(!f||!f.ok||document.getElementById('frC
 /* ===== reserved usernames, player finder, owner account tools (needs accounts_setup.sql) ===== */
 async function nameTaken(n){const k=String(n||'').trim().toLowerCase();if(!k||!SB_URL||(ACC&&ACC.u===k))return false;
  try{const r=await fetch(SB_URL.replace(/\/+$/,'')+'/rest/v1/rpc/checks_name_taken',{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify({p_u:k})});if(!r.ok)return false;return(await r.json())===true}catch(e){return false}}
-function findOpen(){if(document.getElementById('fdM'))return;const m=document.createElement('div');m.className='modal';m.id='fdM';
- m.innerHTML='<div class="card acc" role="dialog" aria-modal="true" aria-labelledby="fdT"><div class="acHd"><div class="acIc">'+IC_USER+'</div><h2 id="fdT">Find players</h2><p>Every registered account on Checks. Usernames are reserved, so a name here belongs to one player.</p></div><input id="fdQ" type="search" placeholder="Search usernames" autocomplete="off" spellcheck="false" maxlength="20"><div id="fdL" class="fdL" aria-live="polite"></div><button class="b2" id="fdX">Close</button></div>';
- document.body.appendChild(m);const q=x=>m.querySelector(x),L=q('#fdL');let tm=0,seq=0;const close=()=>m.remove();
- q('#fdX').onclick=close;m.onkeydown=e=>{if(e.key==='Escape')close()};m.addEventListener('pointerdown',e=>{if(e.target===m)close()});
- const draw=(a,pm)=>{pm=pm||{};L.innerHTML=a.length?a.map(n=>{const r=pm[String(n).toLowerCase()],p=r?profFrom(r):null,dn=(r&&cn(r.dn))||n;return'<div class="fdR fdT" role="button" tabindex="0" data-n="'+esc(n)+'"'+(p?' style="border-left:4px solid '+PFC[p.col]+'"':'')+'>'+av(r?okPf(r.pf):'',dn)+'<span class="fdB"><b>'+esc(dn)+'</b>'+(p&&(p.st||p.bio)?'<small>'+esc(p.st||p.bio)+'</small>':'')+'</span>'+(p&&p.rk>=0?rkBadge(p.rk):'')+(p&&p.fav&&S[p.fav]?'<img class="prFv" src="'+S[p.fav]+'" alt="">':'')+(ACC&&ACC.u===n?'<em>you</em>':'')+'</div>'}).join(''):'<p class="hint" style="text-align:center;padding:10px 0">No players found.</p>';L.querySelectorAll('.fdT').forEach(e=>{const go=()=>profView(e.dataset.n,pm);e.onclick=go;e.onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();go()}}})};
- const run=async()=>{const my=++seq,v=q('#fdQ').value.trim().toLowerCase();if(!/^[a-z0-9_]{0,20}$/.test(v)){L.innerHTML='<p class="hint" style="text-align:center;padding:10px 0">Usernames only use letters, numbers and _.</p>';return}
-  L.innerHTML='<p class="hint" style="text-align:center;padding:10px 0">Searching…</p>';
-  try{const j=await cdFn('checks_find',{p_q:v});const nm=Array.isArray(j)?j:[],pm={};if(nm.length){try{const pj=await cdFn('checks_profiles',{p_names:nm.slice(0,50)});(Array.isArray(pj)?pj:[]).forEach(x=>{if(x&&x.u)pm[String(x.u).toLowerCase()]=x})}catch(e){}}if(my===seq)draw(nm,pm)}catch(e){if(my===seq)L.innerHTML='<p class="acmsg err">'+esc(e.st===404?'Player search is not set up on the server yet.':netErr(e))+'</p>'}};
- q('#fdQ').oninput=()=>{clearTimeout(tm);tm=setTimeout(run,250)};q('#fdQ').focus();run()}
+function findOpen(){if(document.getElementById('fdM'))return;const m=document.createElement('div');m.className='modal fdFull';m.id='fdM';
+ const MG='<svg class="fdMg" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>';
+ m.innerHTML='<div class="fdTop" role="dialog" aria-modal="true" aria-label="Find players"><button class="fdBk" id="fdX" type="button" aria-label="Back"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></button><label class="fdSw">'+MG+'<input id="fdQ" type="search" placeholder="Search players" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="24" enterkeyhint="search" aria-label="Search players"><button class="fdClr" id="fdClr" type="button" aria-label="Clear search" hidden>&times;</button></label></div>'
+  +'<div class="fdBody"><div class="fdIn"><div id="fdRc" class="fdRc"></div><div id="fdSt" class="fdSt" aria-live="polite"></div><div id="fdL" class="fdG"></div></div></div>';
+ document.body.appendChild(m);const q=x=>m.querySelector(x),L=q('#fdL'),ST=q('#fdSt'),RC=q('#fdRc'),inp=q('#fdQ'),clr=q('#fdClr');let tm=0,seq=0;const close=()=>{clearTimeout(tm);seq++;m.remove()};
+ q('#fdX').onclick=close;m.onkeydown=e=>{if(e.key==='Escape'){e.preventDefault();close()}};
+ const recGet=()=>{try{const a=JSON.parse(localStorage.getItem('fd-recent'));return Array.isArray(a)?a.filter(x=>typeof x==='string').slice(0,6):[]}catch(e){return[]}},
+ recAdd=v=>{if(!v)return;try{const a=recGet().filter(x=>x!==v);a.unshift(v);localStorage.setItem('fd-recent',JSON.stringify(a.slice(0,6)))}catch(e){}},
+ recClear=()=>{try{localStorage.removeItem('fd-recent')}catch(e){}};
+ const recDraw=()=>{const a=recGet();if(inp.value.trim()||!a.length){RC.innerHTML='';return}
+  RC.innerHTML='<div class="fdRh"><span>Recent searches</span><button type="button" id="fdRcX">Clear</button></div><div class="fdChips">'+a.map(x=>'<button type="button" class="fdChip" data-q="'+esc(x)+'">'+esc(x)+'</button>').join('')+'</div>';
+  RC.querySelectorAll('.fdChip').forEach(b=>b.onclick=()=>{inp.value=b.dataset.q;go(true)});RC.querySelector('#fdRcX').onclick=()=>{recClear();recDraw()}};
+ const skel=()=>{ST.textContent='';L.innerHTML=Array.from({length:8},()=>'<div class="fdC fdSk" aria-hidden="true"><span class="av fdAv"></span><b></b><small></small></div>').join('')};
+ const draw=(a,pm,v)=>{pm=pm||{};const ok=a.filter(n=>!ufBad(n)&&!ufBad((pm[String(n).toLowerCase()]||{}).dn));
+  ST.textContent=ok.length?(v?ok.length+(ok.length===1?' player':' players')+' for \u201c'+v+'\u201d':'Everyone on Checks'):'';
+  L.innerHTML=ok.length?ok.map(n=>{const r=pm[String(n).toLowerCase()],p=r?profFrom(r):null,dn=(r&&cn(r.dn))||n,me=ACC&&ACC.u===n;if(p&&p.ad)admMark(n,true);
+   const ad=isOwnerName(n)||(p&&p.ad)||admIs(n);
+   return'<div class="fdC fdT" role="button" tabindex="0" data-n="'+esc(n)+'" style="--pc:'+(p?PFC[p.col]:PFC[0])+'">'+av(r?okPf(r.pf):'',dn,'fdAv')
+    +'<b class="fdN">'+esc(dn)+(ad?admShield(isOwnerName(n)):'')+'</b><small class="fdU">@'+esc(n)+'</small>'
+    +'<small class="fdS">'+esc(p&&(p.st||p.bio)||'')+'</small>'
+    +'<span class="fdX2">'+(p&&p.rk>=0?rkBadge(p.rk):'')+(p&&p.fav&&S[p.fav]?'<img class="prFv" src="'+S[p.fav]+'" alt="">':'')+(me?'<em>you</em>':'')+'</span></div>'}).join(''):'';
+  if(!ok.length){L.innerHTML='<div class="fdEmpty">'+MG+'<b>No players found</b><span>'+(v?'Nobody is called \u201c'+esc(v)+'\u201d. Check the spelling or try fewer letters.':'No registered players yet.')+'</span></div>'}
+  L.querySelectorAll('.fdT').forEach(e=>{const open=()=>{recAdd(inp.value.trim().toLowerCase().replace(/[^a-z0-9_]/g,''));profView(e.dataset.n,pm)};e.onclick=open;e.onkeydown=ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();open()}}})};
+ const run=async()=>{const my=++seq,raw=inp.value.trim().toLowerCase(),v=raw.replace(/[^a-z0-9_]/g,'').slice(0,20);clr.hidden=!inp.value;recDraw();
+  skel();
+  try{const j=await cdFn('checks_find',{p_q:v});if(my!==seq)return;const nm=Array.isArray(j)?j:[],pm={};if(nm.length){try{const pj=await cdFn('checks_profiles',{p_names:nm.slice(0,50)});(Array.isArray(pj)?pj:[]).forEach(x=>{if(x&&x.u)pm[String(x.u).toLowerCase()]=x})}catch(e){}}if(my===seq){draw(nm,pm,v);if(raw!==v&&raw){ST.textContent=(ST.textContent?ST.textContent+' \u00b7 ':'')+'Usernames only use letters, numbers and _'}}}
+  catch(e){if(my===seq){ST.textContent='';L.innerHTML='<div class="fdEmpty">'+MG+'<b>Search unavailable</b><span>'+esc(e.st===404?'Player search is not set up on the server yet.':netErr(e))+'</span></div>'}}};
+ const go=now=>{clearTimeout(tm);if(now)run();else tm=setTimeout(run,250)};
+ inp.oninput=()=>{clr.hidden=!inp.value;go(false)};
+ inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();recAdd(inp.value.trim().toLowerCase().replace(/[^a-z0-9_]/g,''));go(true);inp.blur()}};
+ clr.onclick=()=>{inp.value='';inp.focus();go(true)};
+ inp.focus();run()}
 async function accAdmin(say,op,o){if(!hubIsOwner())return say('Owner only.');const k=cdKey();if(!k)return say('Type: codekey YOUR-OWNER-CODE (once per device), then try again.');
  try{const j=await cdFn('checks_acc_admin',Object.assign({p_key:k,p_op:op},o));if(j.e){say(j.e);return null}return j}catch(e){say(e.st===404?'Run accounts_setup.sql once in Supabase (SQL Editor) first.':e.message);return null}}
 async function accList(rest,say){const j=await accAdmin(say,'list',{p_u:rest.join('')});if(!j)return;say(j.n+' registered account'+(j.n===1?'':'s')+(rest.length?' (showing names starting with "'+rest.join('').toLowerCase()+'")':'')+':');(j.names||[]).forEach(n=>say('  '+n));if(!(j.names||[]).length)say('  none')}
@@ -2567,14 +2656,14 @@ const PR_L=['','he/him','she/her','they/them','any pronouns'],SY_L=['','Aggressi
 const pcl=(s,n)=>String(s||'').replace(/[<>\u0000-\u001f\u00a6~]/g,'').trim().slice(0,n);
 const pnum=(v,a,b,d)=>{if(v===''||v==null)return d;const n=Math.trunc(+v);return isFinite(n)&&n>=a&&n<=b?n:d};
 const mdName=v=>v==='fog'?'Fog of war':((VARS.find(x=>x[0]===v)||[])[1]||'');
-function profOk(o){o=o||{};const c=+o.col,md=String(o.md||'');return{bio:pcl(o.bio,60),col:c>=0&&c<6?(c|0):0,fav:PRE.includes(o.fav)?o.fav:'',st:pcl(o.st,24),lo:pcl(o.lo,20),pr:PR_L.includes(o.pr)?o.pr:'',sy:SY_L.includes(o.sy)?o.sy:'',md:md==='fog'||VARS.some(x=>x[0]===md)?md:'',rk:pnum(o.rk,0,11,-1),w:pnum(o.w,0,99999,0),l:pnum(o.l,0,99999,0),d:pnum(o.d,0,99999,0)}}
+function profOk(o){o=o||{};const c=+o.col,md=String(o.md||'');return{ad:+o.ad===1?1:0,bio:pcl(o.bio,60),col:c>=0&&c<6?(c|0):0,fav:PRE.includes(o.fav)?o.fav:'',st:pcl(o.st,24),lo:pcl(o.lo,20),pr:PR_L.includes(o.pr)?o.pr:'',sy:SY_L.includes(o.sy)?o.sy:'',md:md==='fog'||VARS.some(x=>x[0]===md)?md:'',rk:pnum(o.rk,0,11,-1),w:pnum(o.w,0,99999,0),l:pnum(o.l,0,99999,0),d:pnum(o.d,0,99999,0)}}
 /* the server only has bio/colour/favourite columns, so the extra profile fields ride along inside the bio text after a separator */
-const profPack=P=>P.bio+'\u00a6'+[P.st,P.pr,P.lo,P.sy,P.md,P.rk,P.w,P.l,P.d].join('~');
+const profPack=P=>P.bio+'\u00a6'+[P.st,P.pr,P.lo,P.sy,P.md,P.rk,P.w,P.l,P.d].join('~')+(P.ad?'~1':'');
 function profFrom(r){if(!r)return null;const s=String(r.bio||''),i=s.indexOf('\u00a6'),ex=i<0?[]:s.slice(i+1).split('~');
- return profOk({bio:i<0?s:s.slice(0,i),col:r.col,fav:r.fav,st:ex[0],pr:ex[1],lo:ex[2],sy:ex[3],md:ex[4],rk:ex[5],w:ex[6],l:ex[7],d:ex[8]})}
+ return profOk({bio:i<0?s:s.slice(0,i),col:r.col,fav:r.fav,st:ex[0],pr:ex[1],lo:ex[2],sy:ex[3],md:ex[4],rk:ex[5],w:ex[6],l:ex[7],d:ex[8],ad:ex[9]})}
 let PROF=(()=>{try{return profOk(JSON.parse(localStorage.getItem('checks-profile')))}catch(e){return profOk({})}})();
 const profSave=()=>{try{localStorage.setItem('checks-profile',JSON.stringify(PROF))}catch(e){}};
-function profStats(){const u=user?rkAcct(user):null;return{rk:u&&u.placed?rkIdx(u.rating):-1,w:u?u.w:0,l:u?u.l:0,d:u?u.d:0}}
+function profStats(){const u=user?rkAcct(user):null;return{ad:admSelf()?1:0,rk:u&&u.placed?rkIdx(u.rating):-1,w:u?u.w:0,l:u?u.l:0,d:u?u.d:0}}
 async function profPush(){if(!ACC)return'Log in to an account first.';
  const P=profOk(Object.assign({},PROF,profStats()));
  try{const j=await cdFn('checks_profile_set',{p_u:ACC.u,p_h:ACC.h,p_pf:okPf(myPf),p_bio:profPack(P),p_col:P.col,p_fav:P.fav,p_dn:cn(user)});return j&&j.e?String(j.e):''}
@@ -2587,7 +2676,7 @@ function profOpen(){if(document.getElementById('prM')||!ACC)return;const m=docum
  const opts=(arr,v)=>arr.map(a=>{const k=Array.isArray(a)?a[0]:a,l=Array.isArray(a)?a[1]:(a||'Not set');return'<option value="'+esc(k)+'"'+(k===v?' selected':'')+'>'+esc(l)+'</option>'}).join('');
  function draw(){rd();const S0=profStats(),mdl=[['','Any'],['fog','Fog of war']].concat(VARS.map(x=>[x[0],x[1]]));
   m.innerHTML='<div class="card acc" role="dialog" aria-modal="true" aria-labelledby="acT" style="max-height:92vh;overflow-y:auto">'+acHead(IC_USER,'Your profile','This is what other players see when they look you up in Find players.')
-   +'<div class="prPv" style="border-left-color:'+PFC[P.col]+'">'+av(myPf,cn(user)||ACC.u,'big')+'<div class="prNm"><b>'+esc(cn(user)||ACC.u)+'</b><small id="prPs">'+esc(P.st||P.bio||'No bio yet')+'</small></div>'+(P.fav&&S[P.fav]?'<img class="prFv" src="'+S[P.fav]+'" alt="">':'')+'</div>'
+   +'<div class="prPv" style="border-left-color:'+PFC[P.col]+'">'+av(myPf,cn(user)||ACC.u,'big')+'<div class="prNm"><b>'+esc(cn(user)||ACC.u)+(admSelf()?admShield(isOwnerName(user)):'')+'</b><small id="prPs">'+esc(P.st||P.bio||'No bio yet')+'</small></div>'+(P.fav&&S[P.fav]?'<img class="prFv" src="'+S[P.fav]+'" alt="">':'')+'</div>'
    +'<button class="b2" id="prPic" type="button">Change picture</button>'
    +'<label class="acLb" for="prSt">Status</label><input id="prSt" maxlength="24" placeholder="What are you up to?" autocomplete="off">'
    +'<label class="acLb" for="prBio">Bio</label><input id="prBio" maxlength="60" placeholder="Say something about yourself" autocomplete="off">'
@@ -2613,7 +2702,7 @@ function profView(n,pm){if(document.getElementById('pvM'))return;const r=(pm||{}
  const fav=p&&p.fav&&S[p.fav]?p.fav:'',fn=fav?(fav==='ninja'?'Knight':fav[0].toUpperCase()+fav.slice(1)):'',chip=(k,v)=>v?'<div class="pvCh"><small>'+k+'</small><b>'+esc(v)+'</b></div>':'',gp=p?p.w+p.l+p.d:0;
  m.innerHTML='<div class="card pvc" role="dialog" aria-modal="true" aria-label="Player profile"><div class="pvBn" style="background:linear-gradient(135deg,'+c+',#16303a)"></div>'
   +'<div class="pvHd">'+av(r?okPf(r.pf):'',dn,'pvBig')+(fav?'<div class="pvBdg" title="Favourite piece: '+esc(fn)+'"><img src="'+S[fav]+'" alt=""></div>':'')+'</div>'
-  +'<div class="pvBx"><div><div class="pvNm">'+esc(dn)+'</div><div class="pvUn">@'+esc(n)+(p&&p.pr?' · '+esc(p.pr):'')+'</div>'+(p&&p.st?'<div class="pvSt">'+esc(p.st)+'</div>':'')+'</div>'
+  +'<div class="pvBx"><div><div class="pvNm">'+esc(dn)+((p&&p.ad)||isOwnerName(n)||admIs(n)?admShield(isOwnerName(n)):'')+'</div><div class="pvUn">@'+esc(n)+(p&&p.pr?' · '+esc(p.pr):'')+'</div>'+(p&&p.st?'<div class="pvSt">'+esc(p.st)+'</div>':'')+'</div>'
   +(p&&(p.rk>=0||gp)?'<div class="pvSc"><h4>Ranked</h4><div class="pvRow">'+(p.rk>=0?rkBadge(p.rk):'')+(gp?'<span>'+p.w+'W · '+p.l+'L · '+p.d+'D</span>':'')+'</div></div>':'')
   +'<div class="pvSc"><h4>About me</h4>'+(p&&p.bio?'<p>'+esc(p.bio)+'</p>':'<p class="no">This player has not written a bio yet.</p>')+'</div>'
   +(p&&(p.lo||p.sy||p.md)?'<div class="pvSc"><h4>Details</h4><div class="pvRow">'+chip('Location',p.lo)+chip('Play style',p.sy)+chip('Favourite mode',mdName(p.md)||(p.md?'':''))+'</div></div>':'')
@@ -2645,7 +2734,7 @@ document.getElementById('frb').onclick=frOpen;frStart();setInterval(()=>{if(!doc
 (function(){
  if(!/^https?:/.test(location.protocol))return;
  const url=location.origin+urlRoot();let base=null,pending=false,bn=null;
- const BUILD='build:20261031000500';const sig=async()=>{const r=await fetch(url+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;const t=await r.text();const m=t.match(/const BUILD='(build:\d+)'/);if(m)return m[1];let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return h+':'+t.length};
+ const BUILD='build:20261101120000';const sig=async()=>{const r=await fetch(url+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw 0;const t=await r.text();const m=t.match(/const BUILD='(build:\d+)'/);if(m)return m[1];let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return h+':'+t.length};
  const busy=()=>{try{return !!(mm||room||pvp||peerBusy||(typeof tut!=='undefined'&&tut)||(typeof tour!=='undefined'&&tour)||(typeof over!=='undefined'&&!over&&log&&log.length))}catch(e){return false}};
  const banner=()=>{if(bn)return;bn=document.createElement('div');bn.style.cssText='position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:99999;background:#222;color:#fff;padding:10px 14px;border-radius:10px;font:14px system-ui,sans-serif;box-shadow:0 4px 16px #0006;display:flex;gap:10px;align-items:center';bn.innerHTML='<span>A new update is available. It will refresh when your game ends.</span>';const b=document.createElement('button');b.textContent='Refresh now';b.style.cssText='padding:4px 10px;border-radius:6px;border:0;cursor:pointer';b.onclick=()=>location.reload();bn.appendChild(b);document.body.appendChild(bn)};
  const tick=async()=>{try{const s=await sig();if(base===null){base=BUILD;}if(s!==base)pending=true}catch(e){}
