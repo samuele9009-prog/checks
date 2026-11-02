@@ -4,7 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Checksmail</title>
-<!-- PASTE the <link rel="icon" ...> line from the game's index.html here -->
+<!-- PASTE the game's 3 favicon lines here: rel="icon", rel="shortcut icon", rel="apple-touch-icon" -->
+<meta name="theme-color" content="#14232d">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap">
 <style>
 :root{--ink:#0f1f26;--panel:#172c35;--line:#2a4551;--text:#e9f0ee;--muted:#8fa7ae;--tide:#6fc3e8;--peach:#f9d3b0;--mark:#2fb59f;color-scheme:dark}
@@ -58,6 +59,10 @@ input:focus{outline:none;border-color:var(--tide);box-shadow:0 0 0 3px rgba(111,
 <script>
 const SB_URL='https://sznnanvlpkhsijvhkeex.supabase.co',SB_KEY='sb_publishable_zbaZsHhdHF5ZRrLuwopJBg_dxGWE1aS';
 const GAME_URL='https://playchecks.pages.dev/';
+/* keep the favicon in sync with the live Checks game page */
+(async()=>{try{const t=await (await fetch(GAME_URL)).text(),d=new DOMParser().parseFromString(t,'text/html');
+ d.querySelectorAll('link[rel~="icon"],link[rel="apple-touch-icon"]').forEach(l=>{const h=l.getAttribute('href');if(!h)return;const rel=l.getAttribute('rel');
+  const m=[...document.querySelectorAll('link')].find(x=>x.rel===rel);if(m)m.href=/^(data:|https?:)/.test(h)?h:new URL(h,GAME_URL).href})}catch(e){}})();
 const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const ICON_MAIL='<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3.5 7.5 8.5 6 8.5-6"/></svg>';
 let S=null,MAILS=[],OPEN=null,Q='',TAB='inbox';
