@@ -2473,6 +2473,14 @@ async function sbAuth(){if(SBA)return SBA;if(!SB_URL)throw new Error('Email is n
 function emDone(title,sub,cb){const o=document.createElement('div');o.className='vOv';o.setAttribute('role','status');
  o.innerHTML='<div class="vIn"><svg class="vSvg" viewBox="0 0 120 120" aria-hidden="true"><circle class="vRing" cx="60" cy="60" r="52"/><path class="vChk" d="M34 62 L53 81 L88 42"/></svg><h2>'+title+'</h2><p>'+sub+'</p></div>';
  document.body.appendChild(o);try{sfx('verified')}catch(e){}let gone=false;const end=()=>{if(gone)return;gone=true;o.classList.add('out');setTimeout(()=>{o.remove();cb&&cb()},350)};setTimeout(end,2600);o.onclick=end}
+/* ===== checksmail: only offered when the email step fails with "Error sending confirmation email". Change CHECKSMAIL_URL to wherever the checksmail site lives. ===== */
+const CHECKSMAIL_URL='https://figmail.dpdns.org';
+function cmOpen(){if(document.getElementById('cmM'))return;const m=document.createElement('div');m.className='modal';m.id='cmM';m.style.zIndex=110;
+ m.innerHTML='<div class="card acc" role="dialog" aria-modal="true" aria-labelledby="acT">'+acHead(IC_MAIL,'Use checksmail!','Your email provider is not letting our code through right now. Get a free checksmail address, an inbox that only works for Checks, and use it instead.')
+  +'<button class="b1 acPri" id="cmG">Get a checksmail</button><button class="b2" id="cmK">Back</button></div>';
+ document.body.appendChild(m);const close=()=>m.remove();
+ m.querySelector('#cmK').onclick=close;m.onkeydown=e=>{if(e.key==='Escape')close()};m.addEventListener('pointerdown',e=>{if(e.target===m)close()});
+ m.querySelector('#cmG').onclick=()=>{window.open(CHECKSMAIL_URL,'_blank','noopener');close()};m.querySelector('#cmG').focus()}
 function emOpen(mode,pre){if(document.getElementById('emM'))return;const rs=mode==='reset',m=document.createElement('div');m.className='modal';m.id='emM';
  m.innerHTML='<div class="card acc" role="dialog" aria-modal="true" aria-labelledby="acT">'+acHead(IC_MAIL,rs?'Reset password':'Verify your email',rs?'Enter your username and the email you verified on it. We will send you a code.':'Add an email so you can reset your password if you forget it. We will send you a code to confirm it is yours.')
   +'<div class="acSteps"><span class="on" id="emS1">1 &middot; Email</span><span id="emS2">2 &middot; Code</span></div>'
@@ -2482,7 +2490,7 @@ function emOpen(mode,pre){if(document.getElementById('emM'))return;const rs=mode
   +(rs?'<label class="acLb" for="emP">New password</label><input id="emP" type="password" autocomplete="new-password" placeholder="At least 6 characters">':'')
   +'<button type="button" class="acLink" id="emR" disabled>Resend code</button></div>'
   +'<p class="acmsg" id="emX"></p><button class="b1 acPri" id="emG">Send code</button><button class="b2" id="emK">Close</button></div>';
- document.body.appendChild(m);const q=x=>m.querySelector(x),say=t=>{const e=q('#emX');e.textContent=t;e.className='acmsg '+acKind(t)};let sent=false,cd=0,cdT=null;
+ document.body.appendChild(m);const q=x=>m.querySelector(x),say=t=>{const e=q('#emX');e.className='acmsg '+acKind(t);if(/error sending (confirmation )?email/i.test(t)){e.textContent='';const b=document.createElement('button');b.type='button';b.className='acLink';b.id='emCM';b.textContent=t+' Tap here for a fix.';b.onclick=cmOpen;e.appendChild(b)}else e.textContent=t};let sent=false,cd=0,cdT=null;
  const stop=()=>clearInterval(cdT),close=()=>{stop();m.remove()};
  q('#emK').onclick=close;m.onkeydown=e=>{if(e.key==='Escape')close()};m.addEventListener('pointerdown',e=>{if(e.target===m)close()});q(rs?'#emU':'#emE').focus();if(pre){q('#emE').value=pre;setTimeout(()=>q('#emG').click(),60)}
  const tick=()=>{const b=q('#emR');if(!b)return;if(cd>0){b.disabled=true;b.textContent='Resend code in '+cd+'s'}else{b.disabled=false;b.textContent='Resend code';stop()}},
