@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checksmail</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap">
+<style>
+:root{--ink:#0f1f26;--panel:#172c35;--line:#2a4551;--text:#e9f0ee;--muted:#8fa7ae;--tide:#6fc3e8;--peach:#f9d3b0;--mark:#2fb59f;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--text);font-family:'Fredoka',system-ui,sans-serif;min-height:100vh}
+button{font:inherit;cursor:pointer}
+input{font:inherit;color:var(--text);background:#0f1f26;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;width:100%}
+input:focus{outline:none;border-color:var(--tide);box-shadow:0 0 0 3px rgba(111,195,232,.18)}
+.b1{background:var(--tide);color:#06222e;border:0;border-radius:12px;padding:11px 16px;font-weight:600}
+.b2{background:transparent;color:var(--text);border:1.5px solid var(--line);border-radius:12px;padding:9px 14px}
+.hint{color:var(--muted);font-size:14px;margin:0}
+.top{display:flex;align-items:center;gap:14px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:22px}
+.logo svg{color:var(--tide)}
+.srch{flex:1;max-width:640px;margin:0 auto}
+.srch input{border-radius:999px;padding:9px 16px}
+.me{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--muted)}
+.layout{display:flex;min-height:calc(100vh - 58px)}
+.side{width:210px;padding:14px 10px;border-right:1px solid var(--line);flex:none}
+.side button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;color:var(--text);padding:10px 14px;border-radius:999px}
+.side button.on{background:rgba(111,195,232,.18);color:var(--tide);font-weight:600}
+.side button:hover{background:rgba(255,255,255,.06)}
+.side em{margin-left:auto;font-style:normal;font-size:12px;background:var(--tide);color:#06222e;border-radius:99px;padding:1px 8px;font-weight:600}
+.main{flex:1;min-width:0;padding:8px 14px}
+.row{display:flex;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:8px}
+.row:hover{background:rgba(255,255,255,.04)}
+.row.unread .sub,.row.unread .from{font-weight:600}
+.row .from{width:150px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .sub{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .sub span{color:var(--muted);font-weight:400}
+.row .dt{flex:none;color:var(--muted);font-size:13px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--tide);flex:none}
+.row:not(.unread) .dot{background:transparent}
+.view{padding:18px 8px;max-width:760px}
+.view h2{margin:0 0 6px;font-size:26px}
+.view .meta{display:flex;gap:10px;align-items:center;margin:12px 0 16px}
+.view .body{white-space:pre-wrap;word-break:break-word;line-height:1.55;font-size:16px}
+.av{width:38px;height:38px;border-radius:50%;background:var(--tide);color:#06222e;display:grid;place-items:center;font-weight:600;flex:none}
+.empty{text-align:center;color:var(--muted);padding:70px 16px}
+.empty svg{opacity:.5;margin-bottom:8px}
+.login{max-width:400px;margin:60px auto;padding:26px;background:var(--panel);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;gap:12px}
+.login h1{margin:0;text-align:center;font-size:28px}
+.lb{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:-6px}
+.err{color:#ff9d9d;min-height:1.3em;font-size:14px;text-align:center;margin:0}
+.note{background:#0f1f26;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--muted);line-height:1.45;margin:10px 8px}
+@media(max-width:700px){.side{width:64px}.side span{display:none}.row .from{width:90px}.me span{display:none}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const SB_URL='https://sznnanvlpkhsijvhkeex.supabase.co',SB_KEY='sb_publishable_zbaZsHhdHF5ZRrLuwopJBg_dxGWE1aS';
+const GAME_URL='https://playchecks.pages.dev/';
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ICON_MAIL='<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3.5 7.5 8.5 6 8.5-6"/></svg>';
+let S=null,MAILS=[],OPEN=null,Q='',TAB='inbox';
+try{S=JSON.parse(localStorage.getItem('cm-session'))}catch(e){}
+const seenKey=()=>'cm-seen-'+(S&&S.u),seen=()=>{try{return JSON.parse(localStorage.getItem(seenKey()))||[]}catch(e){return[]}},markSeen=id=>{const a=seen();if(!a.includes(id)){a.push(id);try{localStorage.setItem(seenKey(),JSON.stringify(a))}catch(e){}}};
+const b64e=b=>{let t='';new Uint8Array(b).forEach(x=>t+=String.fromCharCode(x));return btoa(t)};
+/* same login hash the game uses, so your Checks username and password work here */
+async function authHash(u,p){const e=new TextEncoder(),base=await crypto.subtle.importKey('raw',e.encode(p),'PBKDF2',false,['deriveBits']);
+ const bits=new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',salt:e.encode('checks-auth|'+u),iterations:150000,hash:'SHA-256'},base,256));return[...bits].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function rpc(fn,args){let r;try{r=await fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify(args)})}catch(e){throw new Error("Can't reach the server. Check your internet connection.")}
+ const j=await r.json().catch(()=>({}));if(r.status===404)throw new Error('Checksmail is not set up on the server yet (mail_setup.sql).');if(!r.ok)throw new Error(j.message||'Server error.');return j}
+function loginView(){$('#app').innerHTML='<div class="login"><div class="logo" style="justify-content:center"><span style="color:var(--tide)">'+ICON_MAIL+'</span>Checksmail</div><p class="hint" style="text-align:center">The inbox for Checks. Sign in with your Checks account.</p><label class="lb" for="u">Username</label><input id="u" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20"><label class="lb" for="p">Password</label><input id="p" type="password" autocomplete="current-password"><p class="err" id="e"></p><button class="b1" id="go">Sign in</button><a class="hint" style="text-align:center;color:var(--tide)" href="'+GAME_URL+'">No account? Create one in Checks</a></div>';
+ const go=async()=>{const u=$('#u').value.trim().toLowerCase(),p=$('#p').value;if(!/^[a-z0-9_]{3,20}$/.test(u)||p.length<6)return $('#e').textContent='Enter your Checks username and password.';
+  $('#e').textContent='Signing in…';try{const h=await authHash(u,p);const j=await rpc('checks_api',{p_a:'ver',p_u:u,p_h:h,p_v:0,p_d:''});if(j.e)throw new Error(j.e);S={u,at:Date.now()};localStorage.setItem('cm-session',JSON.stringify(S));boot()}catch(e){$('#e').textContent=e.message||'Wrong username or password.'}};
+ $('#go').onclick=go;$('#p').onkeydown=e=>{if(e.key==='Enter')go()};$('#u').focus()}
+const when=t=>{const d=new Date(t),n=new Date();return d.toDateString()===n.toDateString()?d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):d.toLocaleDateString([],{month:'short',day:'numeric'})};
+const subj=t=>{const l=String(t).split('\n')[0];return l.length>70?l.slice(0,70)+'…':l};
+function mailView(){const sn=seen(),un=MAILS.filter(m=>!sn.includes(m.id)).length;
+ let list=MAILS.slice();if(TAB==='unread')list=list.filter(m=>!sn.includes(m.id));if(Q)list=list.filter(m=>m.t.toLowerCase().includes(Q));
+ const m=OPEN&&MAILS.find(x=>x.id===OPEN);
+ $('#app').innerHTML='<div class="top"><div class="logo"><span>'+ICON_MAIL+'</span>Checksmail</div><div class="srch"><input id="q" placeholder="Search mail" value="'+esc(Q)+'" aria-label="Search mail"></div><div class="me"><span>'+esc(S.u)+'</span><div class="av">'+esc(S.u[0].toUpperCase())+'</div><button class="b2" id="out">Sign out</button></div></div>'
+  +'<div class="layout"><nav class="side"><button data-t="inbox" class="'+(TAB==='inbox'?'on':'')+'">'+ICON_MAIL.replace(/28/g,'20')+'<span>Inbox</span>'+(un?'<em>'+un+'</em>':'')+'</button><button data-t="unread" class="'+(TAB==='unread'?'on':'')+'"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><circle cx="12" cy="12" r="5"/></svg><span>Unread</span></button><button id="back"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 8 12l7 7"/></svg><span>Back to Checks</span></button></nav>'
+  +'<main class="main">'+(m?'<div class="view"><button class="b2" id="bk">← Inbox</button><div class="meta"><div class="av">C</div><div><b>Checks Team</b><div class="hint">to '+esc(S.u)+' · '+new Date(m.at).toLocaleString()+'</div></div></div><h2>'+esc(subj(m.t))+'</h2><div class="body">'+esc(m.t)+'</div></div>'
+   :(list.length?list.map(x=>'<div class="row'+(sn.includes(x.id)?'':' unread')+'" data-id="'+x.id+'"><i class="dot"></i><span class="from">Checks Team</span><span class="sub">'+esc(subj(x.t))+'</span><span class="dt">'+when(x.at)+'</span></div>').join(''):'<div class="empty">'+ICON_MAIL.replace(/28/g,'48')+'<p>'+(MAILS.length?'No messages match.':'No messages yet.')+'</p></div>')
+   +'<div class="note">Checksmail shows messages from the Checks team. Mail from other websites can’t be received here yet.</div>')+'</main></div>';
+ $('#q').oninput=e=>{Q=e.target.value.trim().toLowerCase();OPEN=null;const p=e.target.selectionStart;mailView();const i=$('#q');i.focus();i.setSelectionRange(p,p)};
+ $('#out').onclick=()=>{localStorage.removeItem('cm-session');S=null;OPEN=null;loginView()};
+ $('#back').onclick=()=>location.href=GAME_URL;
+ document.querySelectorAll('.side [data-t]').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;OPEN=null;mailView()});
+ document.querySelectorAll('.row').forEach(r=>r.onclick=()=>{OPEN=+r.dataset.id;markSeen(OPEN);mailView()});
+ if($('#bk'))$('#bk').onclick=()=>{OPEN=null;mailView()}}
+async function boot(){if(!S)return loginView();$('#app').innerHTML='<p class="empty">Loading…</p>';
+ try{const j=await rpc('checks_mail_list',{p_n:50});MAILS=Array.isArray(j)?j:[]}catch(e){MAILS=[];mailView();$('.main').insertAdjacentHTML('afterbegin','<p class="err" style="margin:12px">'+esc(e.message)+'</p>');return}
+ mailView()}
+boot();
+</script>
+</body>
+</html>
