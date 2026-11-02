@@ -2785,8 +2785,8 @@ document.getElementById('cmb').onclick=()=>{window.open(CHECKSMAIL_URL,'_blank',
 </script>
 <script>
 /* when a popup covers the screen, the page behind it cannot scroll */
-(function(){const st=document.createElement('style');st.textContent='html.lockbg,html.lockbg body{overflow:hidden!important;overscroll-behavior:none}.modal,.over{overscroll-behavior:contain}';document.head.appendChild(st);
-const open=()=>!!document.querySelector('.modal,.over.show');let on=false;
+(function(){const st=document.createElement('style');st.textContent='html.lockbg,html.lockbg body{overflow:hidden!important;overscroll-behavior:none}.modal{overscroll-behavior:contain}.over{touch-action:pan-y}';document.head.appendChild(st);
+const open=()=>!!document.querySelector('.modal');let on=false;/* the game-over overlay (.over) no longer locks page scrolling */
 const sync=()=>{const o=open();if(o!==on){on=o;document.documentElement.classList.toggle('lockbg',o)}};
 new MutationObserver(sync).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});sync();
 const scrollable=(el)=>{for(;el&&el!==document.body&&el.nodeType===1;el=el.parentElement){const cs=getComputedStyle(el);if(/(auto|scroll)/.test(cs.overflowY)&&el.scrollHeight>el.clientHeight+1&&el.closest('.modal,.over'))return true}return false};
