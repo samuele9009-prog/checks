@@ -2480,7 +2480,7 @@ function emDone(title,sub,cb){const o=document.createElement('div');o.className=
  o.innerHTML='<div class="vIn"><svg class="vSvg" viewBox="0 0 120 120" aria-hidden="true"><circle class="vRing" cx="60" cy="60" r="52"/><path class="vChk" d="M34 62 L53 81 L88 42"/></svg><h2>'+title+'</h2><p>'+sub+'</p></div>';
  document.body.appendChild(o);try{sfx('verified')}catch(e){}let gone=false;const end=()=>{if(gone)return;gone=true;o.classList.add('out');setTimeout(()=>{o.remove();cb&&cb()},350)};setTimeout(end,2600);o.onclick=end}
 /* ===== checksmail: only offered when the email step fails with "Error sending confirmation email". Change CHECKSMAIL_URL to wherever the checksmail site lives. ===== */
-const CHECKSMAIL_URL='https://figmail.dpdns.org';
+const CHECKSMAIL_URL='https://playchecks.pages.dev/checksmail';
 function cmOpen(){if(document.getElementById('cmM'))return;const m=document.createElement('div');m.className='modal';m.id='cmM';m.style.zIndex=110;
  m.innerHTML='<div class="card acc" role="dialog" aria-modal="true" aria-labelledby="acT">'+acHead(IC_MAIL,'Use checksmail!','Your email provider is not letting our code through right now. Get a free checksmail address, an inbox that only works for Checks, and use it instead.')
   +'<button class="b1 acPri" id="cmG">Get a checksmail</button><button class="b2" id="cmK">Back</button></div>';
