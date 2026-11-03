@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checksmail</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="shortcut icon" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<meta name="theme-color" content="#14232d">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap">
+<style>
+:root{--ink:#0f1f26;--panel:#172c35;--line:#2a4551;--text:#e9f0ee;--muted:#8fa7ae;--tide:#6fc3e8;--peach:#f9d3b0;--mark:#2fb59f;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--text);font-family:'Fredoka',system-ui,sans-serif;min-height:100vh}
+button{font:inherit;cursor:pointer}
+input,textarea{font:inherit;color:var(--text);background:#0f1f26;border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;width:100%}
+textarea{resize:vertical;min-height:150px;line-height:1.45}
+input:focus,textarea:focus{outline:none;border-color:var(--tide);box-shadow:0 0 0 3px rgba(111,195,232,.18)}
+.b1{background:var(--tide);color:#06222e;border:0;border-radius:12px;padding:11px 16px;font-weight:600}
+.b1:disabled{opacity:.6;cursor:default}
+.b2{background:transparent;color:var(--text);border:1.5px solid var(--line);border-radius:12px;padding:9px 14px}
+.hint{color:var(--muted);font-size:14px;margin:0}
+.top{display:flex;align-items:center;gap:14px;padding:10px 16px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.logo{display:flex;align-items:center;gap:8px;font-weight:600;font-size:22px}
+.logo svg{color:var(--tide)}
+.srch{flex:1;max-width:640px;margin:0 auto}
+.srch input{border-radius:999px;padding:9px 16px}
+.me{position:relative}
+.avb{background:none;border:0;padding:0;border-radius:50%;display:block}
+.avb:focus-visible{outline:2px solid var(--tide);outline-offset:2px}
+.prof{position:absolute;right:0;top:48px;width:290px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 12px 32px rgba(0,0,0,.45);z-index:20}
+.prof .av{width:64px;height:64px;font-size:28px}
+.prof b{font-size:18px}
+.prof .lb2{font-size:12px;color:var(--muted);margin-top:4px}
+.addr{background:#0f1f26;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:15px;word-break:break-all;text-align:center;width:100%;user-select:all}
+.prof .b2{width:100%}
+.layout{display:flex;min-height:calc(100vh - 58px)}
+.side{width:210px;padding:14px 10px;border-right:1px solid var(--line);flex:none}
+.side button{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:none;border:0;color:var(--text);padding:10px 14px;border-radius:999px}
+.side button.on{background:rgba(111,195,232,.18);color:var(--tide);font-weight:600}
+.side button:hover{background:rgba(255,255,255,.06)}
+.side button.cmp{background:var(--tide);color:#06222e;font-weight:600;margin-bottom:12px;padding:13px 16px}
+.side button.cmp:hover{filter:brightness(1.08);background:var(--tide)}
+.side em{margin-left:auto;font-style:normal;font-size:12px;background:var(--tide);color:#06222e;border-radius:99px;padding:1px 8px;font-weight:600}
+.side button.on em{background:var(--tide)}
+.main{flex:1;min-width:0;padding:8px 14px}
+.row{display:flex;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;border-radius:8px}
+.row:hover{background:rgba(255,255,255,.04)}
+.row.unread .sub b,.row.unread .from{font-weight:600}
+.row .sub b{font-weight:400}
+.row .from{width:170px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .sub{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .sub span{color:var(--muted);font-weight:400}
+.row .dt{flex:none;color:var(--muted);font-size:13px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--tide);flex:none}
+.row:not(.unread) .dot{background:transparent}
+.view{padding:18px 8px;max-width:760px}
+.view h2{margin:16px 0 6px;font-size:26px;word-break:break-word}
+.view .meta{display:flex;gap:10px;align-items:center;margin:12px 0 16px}
+.view .body{white-space:pre-wrap;word-break:break-word;line-height:1.55;font-size:16px}
+.view .acts{margin-top:22px;display:flex;gap:10px}
+.av{width:38px;height:38px;border-radius:50%;background:var(--tide);color:#06222e;display:grid;place-items:center;font-weight:600;flex:none}
+.empty{text-align:center;color:var(--muted);padding:70px 16px}
+.empty svg{opacity:.5;margin-bottom:8px}
+.login{max-width:400px;margin:60px auto;padding:26px;background:var(--panel);border:1px solid var(--line);border-radius:18px;display:flex;flex-direction:column;gap:12px}
+.login h1{margin:0;text-align:center;font-size:28px}
+.lb{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:-6px}
+.err{color:#ff9d9d;min-height:1.3em;font-size:14px;text-align:center;margin:0}
+.note{background:#0f1f26;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:14px;color:var(--muted);line-height:1.45;margin:10px 8px}
+.cw{position:fixed;right:20px;bottom:0;width:440px;max-width:calc(100vw - 16px);background:var(--panel);border:1px solid var(--line);border-bottom:0;border-radius:16px 16px 0 0;box-shadow:0 -8px 32px rgba(0,0,0,.5);z-index:30;display:flex;flex-direction:column;gap:8px;padding:0 12px calc(12px + env(safe-area-inset-bottom,0px))}
+.cw[hidden]{display:none}
+.cwh{display:flex;align-items:center;justify-content:space-between;padding:12px 2px 4px;font-weight:600}
+.cwh button{background:none;border:0;color:var(--muted);font-size:18px;padding:2px 6px}
+.cwf{display:flex;gap:10px;align-items:center}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--tide);color:#06222e;font-weight:600;padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s;z-index:40}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:700px){.side{width:64px}.side span{display:none}.side button.cmp{padding:13px 10px;justify-content:center}.row .from{width:96px}.cw{right:8px;left:8px;width:auto}.prof{right:-8px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="cw" id="cw" hidden role="dialog" aria-label="New message">
+ <div class="cwh"><span id="cwt">New message</span><button id="cwx" aria-label="Close">✕</button></div>
+ <input id="cto" placeholder="To: username or username@checksmail.pages" autocomplete="off" autocapitalize="none" spellcheck="false" aria-label="To">
+ <input id="csb" placeholder="Subject" maxlength="120" aria-label="Subject">
+ <textarea id="cbd" maxlength="5000" placeholder="Write your message" aria-label="Message"></textarea>
+ <p class="err" id="cer"></p>
+ <div class="cwf"><button class="b1" id="csend">Send</button><button class="b2" id="cdisc">Discard</button></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const SB_URL='https://sznnanvlpkhsijvhkeex.supabase.co',SB_KEY='sb_publishable_zbaZsHhdHF5ZRrLuwopJBg_dxGWE1aS';
+const GAME_URL='https://playchecks.pages.dev/';
+const DOM='checksmail.pages',addr=u=>u+'@'+DOM;
+/* keep the favicon in sync with the live Checks game page */
+(async()=>{try{const t=await (await fetch(GAME_URL)).text(),d=new DOMParser().parseFromString(t,'text/html');
+ d.querySelectorAll('link[rel~="icon"],link[rel="apple-touch-icon"]').forEach(l=>{const h=l.getAttribute('href');if(!h)return;const rel=l.getAttribute('rel');
+  const m=[...document.querySelectorAll('link')].find(x=>x.rel===rel);if(m)m.href=/^(data:|https?:)/.test(h)?h:new URL(h,GAME_URL).href})}catch(e){}})();
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ICON_MAIL='<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3.5 7.5 8.5 6 8.5-6"/></svg>';
+const ICON_PEN='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+const ICON_SENT='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>';
+let S=null,MAILS=[],PM=[],SENT=[],PMOK=true,PMERR='',LOADERR='',OPEN=null,Q='',TAB='inbox',PROF=false,POLL=0;
+try{S=JSON.parse(localStorage.getItem('cm-session'))}catch(e){}
+/* the game passes its own address (?o=...) so we can tell it what you've read, even on a different domain */
+let GAME_ORIGIN='';try{const o=new URLSearchParams(location.search).get('o')||sessionStorage.getItem('cm-from')||'';const u=new URL(o);if(/^https?:$/.test(u.protocol)){GAME_ORIGIN=u.origin;sessionStorage.setItem('cm-from',GAME_ORIGIN)}}catch(e){}
+const SHARED_SEEN='checks-mail-seen-ids';
+const sharedIds=()=>{try{return JSON.parse(localStorage.getItem(SHARED_SEEN))||[]}catch(e){return[]}};
+const shareSeen=id=>{try{const a=sharedIds();if(!a.includes(id)){a.push(id);localStorage.setItem(SHARED_SEEN,JSON.stringify(a))}}catch(e){}};
+const tellGame=()=>{try{if(GAME_ORIGIN&&window.opener&&!window.opener.closed)window.opener.postMessage({cmSeen:sharedIds()},GAME_ORIGIN)}catch(e){}};
+const backUrl=()=>(GAME_ORIGIN?GAME_ORIGIN+'/':GAME_URL)+(sharedIds().length?'#cmseen='+sharedIds().join(','):'');
+const seenKey=()=>'cm-seen-'+(S&&S.u),seen=()=>{try{return JSON.parse(localStorage.getItem(seenKey()))||[]}catch(e){return[]}},markSeen=id=>{const a=seen();if(!a.includes(id)){a.push(id);try{localStorage.setItem(seenKey(),JSON.stringify(a))}catch(e){}}};
+/* same login hash the game uses, so your Checks username and password work here */
+async function authHash(u,p){const e=new TextEncoder(),base=await crypto.subtle.importKey('raw',e.encode(p),'PBKDF2',false,['deriveBits']);
+ const bits=new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',salt:e.encode('checks-auth|'+u),iterations:150000,hash:'SHA-256'},base,256));return[...bits].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function rpc(fn,args){let r;try{r=await fetch(SB_URL+'/rest/v1/rpc/'+fn,{method:'POST',headers:{'Content-Type':'application/json',apikey:SB_KEY},body:JSON.stringify(args)})}catch(e){throw new Error("Can't reach the server. Check your internet connection.")}
+ const j=await r.json().catch(()=>({}));if(r.status===404){const e=new Error('Not set up on the server yet.');e.nf=true;throw e}if(!r.ok)throw new Error(j.message||'Server error.');return j}
+function toast(t){const e=$('#toast');e.textContent=t;e.className='toast on';clearTimeout(toast.t);toast.t=setTimeout(()=>{e.className='toast'},2600)}
+function loginView(){closeCompose();$('#app').innerHTML='<div class="login"><div class="logo" style="justify-content:center"><span style="color:var(--tide)">'+ICON_MAIL+'</span>Checksmail</div><p class="hint" style="text-align:center">The inbox for Checks. Sign in with your Checks account. Your address is your username @'+DOM+'.</p><label class="lb" for="u">Username</label><input id="u" autocomplete="username" autocapitalize="none" spellcheck="false" maxlength="20"><label class="lb" for="p">Password</label><input id="p" type="password" autocomplete="current-password"><p class="err" id="e"></p><button class="b1" id="go">Sign in</button><a class="hint" style="text-align:center;color:var(--tide)" href="'+GAME_URL+'">No account? Create one in Checks</a></div>';
+ const go=async()=>{const u=$('#u').value.trim().toLowerCase(),p=$('#p').value;if(!/^[a-z0-9_]{3,20}$/.test(u)||p.length<6)return $('#e').textContent='Enter your Checks username and password.';
+  $('#e').textContent='Signing in…';try{const h=await authHash(u,p);const j=await rpc('checks_api',{p_a:'ver',p_u:u,p_h:h,p_v:0,p_d:''});if(j.e)throw new Error(j.e);S={u,h,at:Date.now()};localStorage.setItem('cm-session',JSON.stringify(S));boot()}catch(e){$('#e').textContent=e.message||'Wrong username or password.'}};
+ $('#go').onclick=go;$('#p').onkeydown=e=>{if(e.key==='Enter')go()};$('#u').focus()}
+const when=t=>{const d=new Date(t),n=new Date();return d.toDateString()===n.toDateString()?d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):d.toLocaleDateString([],{month:'short',day:'numeric'})};
+const subj=t=>{const l=String(t).split('\n')[0];return l.length>70?l.slice(0,70)+'…':l};
+/* one list shape for team messages (b), personal inbox (p) and sent (s) */
+function inboxItems(){const sn=seen();
+ const b=MAILS.map(m=>({key:'b'+m.id,id:m.id,kind:'b',from:'Checks Team',addr:'',subj:subj(m.t),body:m.t,at:m.at,read:sn.includes(m.id)}));
+ const p=PM.map(m=>({key:'p'+m.id,id:m.id,kind:'p',from:m.from_u,addr:addr(m.from_u),subj:m.subj||'(no subject)',body:m.body||'',at:m.at,read:!!m.is_read}));
+ return b.concat(p).sort((x,y)=>new Date(y.at)-new Date(x.at))}
+const sentItems=()=>SENT.map(m=>({key:'s'+m.id,id:m.id,kind:'s',from:S.u,to:m.to_u,addr:addr(m.to_u),subj:m.subj||'(no subject)',body:m.body||'',at:m.at,read:true}));
+function mailView(){const all=inboxItems(),sent=sentItems(),un=all.filter(x=>!x.read).length;
+ let list=TAB==='sent'?sent:(TAB==='unread'?all.filter(x=>!x.read):all);
+ if(Q)list=list.filter(x=>(x.subj+' '+x.body+' '+x.from+' '+(x.to||'')).toLowerCase().includes(Q));
+ const m=OPEN&&all.concat(sent).find(x=>x.key===OPEN);
+ const mine=addr(S.u);
+ let main;
+ if(m){const isSent=m.kind==='s';
+  main='<div class="view"><button class="b2" id="bk">← Back</button><h2>'+esc(m.subj)+'</h2><div class="meta"><div class="av">'+esc((isSent?S.u:m.from)[0].toUpperCase())+'</div><div><b>'+esc(isSent?S.u:m.from)+'</b> <span class="hint">'+(isSent?'':(m.addr?'&lt;'+esc(m.addr)+'&gt;':''))+'</span><div class="hint">to '+esc(isSent?m.addr:mine)+' · '+new Date(m.at).toLocaleString()+'</div></div></div><div class="body">'+esc(m.body)+'</div>'
+   +(m.kind==='p'?'<div class="acts"><button class="b1" id="rp">Reply</button></div>':(isSent?'<div class="acts"><button class="b2" id="rp">Send another</button></div>':''))+'</div>'}
+ else{
+  main=(list.length?list.map(x=>'<div class="row'+(x.read?'':' unread')+'" data-k="'+x.key+'"><i class="dot"></i><span class="from">'+esc(x.kind==='s'?'To: '+x.to:x.from)+'</span><span class="sub"><b>'+esc(x.subj)+'</b>'+(x.kind==='b'?'':'<span> – '+esc(x.body.replace(/\s+/g,' ').slice(0,90))+'</span>')+'</span><span class="dt">'+when(x.at)+'</span></div>').join(''):'<div class="empty">'+ICON_MAIL.replace(/28/g,'48')+'<p>'+(TAB==='sent'?'You haven’t sent anything yet.':(all.length?'No messages match.':'No messages yet.'))+'</p></div>')
+   +(LOADERR?'<p class="err" style="margin:12px">'+esc(LOADERR)+'</p>':'')
+   +(PMERR?'<p class="err" style="margin:12px">'+esc(PMERR)+'</p>':'')
+   +(PMOK?'':'<div class="note">Mail between players isn’t switched on yet. Run <b>mail_setup2.sql</b> once in Supabase (SQL Editor) to turn on sending and receiving.</div>')
+   +'<div class="note">Your Checksmail address is <b>'+esc(mine)+'</b>. You can write to other Checks players here. Mail to and from outside websites isn’t supported.</div>'}
+ $('#app').innerHTML='<div class="top"><div class="logo"><span>'+ICON_MAIL+'</span>Checksmail</div><div class="srch"><input id="q" placeholder="Search mail" value="'+esc(Q)+'" aria-label="Search mail"></div>'
+  +'<div class="me"><button class="avb" id="avb" aria-label="Your profile" aria-expanded="'+PROF+'"><div class="av">'+esc(S.u[0].toUpperCase())+'</div></button>'
+  +(PROF?'<div class="prof"><div class="av">'+esc(S.u[0].toUpperCase())+'</div><b>'+esc(S.u)+'</b><span class="lb2">Your Checksmail address</span><div class="addr" id="adr">'+esc(mine)+'</div><button class="b1" id="cp">Copy address</button><button class="b2" id="out">Sign out</button></div>':'')+'</div></div>'
+  +'<div class="layout"><nav class="side"><button class="cmp" id="cmp" aria-label="Compose">'+ICON_PEN+'<span>Compose</span></button>'
+  +'<button data-t="inbox" class="'+(TAB==='inbox'?'on':'')+'">'+ICON_MAIL.replace(/28/g,'20')+'<span>Inbox</span>'+(un?'<em>'+un+'</em>':'')+'</button>'
+  +'<button data-t="unread" class="'+(TAB==='unread'?'on':'')+'"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><circle cx="12" cy="12" r="5"/></svg><span>Unread</span></button>'
+  +'<button data-t="sent" class="'+(TAB==='sent'?'on':'')+'">'+ICON_SENT+'<span>Sent</span></button>'
+  +'<button id="back"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 8 12l7 7"/></svg><span>Back to Checks</span></button></nav>'
+  +'<main class="main">'+main+'</main></div>';
+ $('#q').oninput=e=>{Q=e.target.value.trim().toLowerCase();OPEN=null;const p=e.target.selectionStart;mailView();const i=$('#q');i.focus();i.setSelectionRange(p,p)};
+ $('#avb').onclick=()=>{PROF=!PROF;mailView()};
+ if($('#out'))$('#out').onclick=()=>{localStorage.removeItem('cm-session');S=null;OPEN=null;PROF=false;MAILS=[];PM=[];SENT=[];loginView()};
+ if($('#cp'))$('#cp').onclick=async()=>{try{await navigator.clipboard.writeText(mine);$('#cp').textContent='Copied!'}catch(e){const r=document.createRange();r.selectNodeContents($('#adr'));const s=getSelection();s.removeAllRanges();s.addRange(r);$('#cp').textContent='Press Ctrl+C'}};
+ $('#cmp').onclick=()=>openCompose();
+ $('#back').onclick=()=>location.href=backUrl();
+ document.querySelectorAll('.side [data-t]').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;OPEN=null;mailView()});
+ document.querySelectorAll('.row').forEach(r=>r.onclick=()=>openMail(r.dataset.k));
+ if($('#bk'))$('#bk').onclick=()=>{OPEN=null;mailView()};
+ if($('#rp'))$('#rp').onclick=()=>{if(m.kind==='p')openCompose(m.from,/^re:/i.test(m.subj)?m.subj:'Re: '+m.subj,'\n\n— '+m.from+' wrote:\n'+m.body.split('\n').map(l=>'> '+l).join('\n'));else openCompose()}}
+function openMail(k){OPEN=k;const id=+k.slice(1);
+ if(k[0]==='b'){markSeen(id);shareSeen(id);tellGame()}
+ else if(k[0]==='p'){const p=PM.find(x=>x.id===id);if(p&&!p.is_read){p.is_read=true;rpc('checksmail_read',{p_u:S.u,p_h:S.h,p_id:id}).catch(()=>{})}}
+ mailView()}
+/* compose window (Gmail style, bottom right) */
+function openCompose(to,sj,bd){if(!S)return;const w=$('#cw');w.hidden=false;$('#cwt').textContent=to?'Reply':'New message';$('#cto').value=to?addr(to):'';$('#csb').value=sj||'';$('#cbd').value=bd||'';$('#cer').textContent='';(to?$('#cbd'):$('#cto')).focus();if(to)$('#cbd').setSelectionRange(0,0)}
+function closeCompose(){$('#cw').hidden=true}
+async function sendMail(){const er=$('#cer'),btn=$('#csend');
+ const to=$('#cto').value.trim().toLowerCase().replace(/@checksmail\.pages$/,''),sj=$('#csb').value.trim(),bd=$('#cbd').value.trim();
+ if(!/^[a-z0-9_]{3,20}$/.test(to))return er.textContent='Enter a Checks username, like name or name@'+DOM+'.';
+ if(!bd)return er.textContent='Write a message first.';
+ if(!PMOK)return er.textContent='Sending isn’t switched on yet. Run mail_setup2.sql in Supabase once.';
+ btn.disabled=true;er.textContent='Sending…';
+ try{const j=await rpc('checksmail_send',{p_u:S.u,p_h:S.h,p_to:to,p_subj:sj,p_body:bd});
+  if(j&&j.e){er.textContent=j.e}else{closeCompose();toast('Message sent to '+addr(to));await load();TAB='sent';OPEN=null;mailView()}}
+ catch(e){if(e.nf){PMOK=false;er.textContent='Sending isn’t switched on yet. Run mail_setup2.sql in Supabase once.'}else er.textContent=e.message||'Could not send.'}
+ btn.disabled=false}
+$('#cwx').onclick=$('#cdisc').onclick=closeCompose;$('#csend').onclick=sendMail;
+$('#cw').addEventListener('keydown',e=>{if(e.key==='Escape')closeCompose();if(e.key==='Enter'&&(e.ctrlKey||e.metaKey))sendMail()});
+document.addEventListener('click',e=>{if(PROF&&S&&!e.target.closest('.prof,#avb')){PROF=false;mailView()}});
+async function load(){LOADERR='';PMERR='';
+ await Promise.all([
+  rpc('checks_mail_list',{p_n:50}).then(j=>{MAILS=Array.isArray(j)?j:[]}).catch(e=>{MAILS=[];LOADERR=e.nf?'Checksmail is not set up on the server yet (mail_setup.sql).':e.message}),
+  (async()=>{try{
+    const [a,s]=await Promise.all([rpc('checksmail_list',{p_u:S.u,p_h:S.h,p_box:'in',p_n:50}),rpc('checksmail_list',{p_u:S.u,p_h:S.h,p_box:'sent',p_n:50})]);
+    PMOK=true;if(a&&a.e){PMERR=a.e;PM=[];SENT=[]}else{PM=Array.isArray(a)?a:[];SENT=Array.isArray(s)?s:[]}
+   }catch(e){if(e.nf){PMOK=false;PM=[];SENT=[]}else PMERR=e.message}})()])}
+async function boot(){if(!S||!S.h){S=null;return loginView()}$('#app').innerHTML='<p class="empty">Loading…</p>';
+ await load();mailView();
+ if(!POLL)POLL=setInterval(async()=>{if(!S||document.hidden)return;await load();const a=document.activeElement;if(S&&!OPEN&&!(a&&a.id==='q'))mailView()},60000)}
+boot();
+</script>
+</body>
+</html>
