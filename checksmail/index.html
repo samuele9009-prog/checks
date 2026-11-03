@@ -196,10 +196,18 @@ let ATT=null,NSFW=null;const IMG={};
 const IMGBOX=(m,isSent)=>m.img?'<div class="imgbox" id="ib">'+(m.rep&&!isSent?'<p class="hint">This image was reported and hidden.</p>':(isSent?'<p class="hint">Loading image…</p>':'<button class="b2" id="ldimg">🖼 Show image</button>'))+'</div>':'';
 function clearAtt(){ATT=null;$('#cimg').hidden=true;$('#cpv').removeAttribute('src');$('#cst').textContent='';$('#cfile').value=''}
 const loadScript=src=>new Promise((ok,no)=>{const t=document.createElement('script');t.src=src;t.onload=ok;t.onerror=()=>no(new Error('load'));document.head.appendChild(t)});
-async function getFilter(){if(NSFW)return NSFW;
- if(!window.tf)await loadScript('https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js');
- if(!window.nsfwjs)await loadScript('https://cdn.jsdelivr.net/npm/nsfwjs@4.2.0/dist/browser/nsfwjs.min.js');
- NSFW=await window.nsfwjs.load();return NSFW}
+const FLOG=[];
+async function tryScripts(urls){let last;for(const u of urls){try{await loadScript(u);return}catch(e){FLOG.push('could not download from '+new URL(u).host);last=e}}throw last||new Error('download failed')}
+async function getFilter(){if(NSFW)return NSFW;FLOG.length=0;
+ try{
+  if(!window.tf)await tryScripts(['https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js','https://unpkg.com/@tensorflow/tfjs@4.22.0/dist/tf.min.js']);
+  if(!window.tf)throw new Error('TensorFlow did not start');
+  if(!window.nsfwjs)await tryScripts(['https://cdn.jsdelivr.net/npm/nsfwjs@4.2.0/dist/browser/nsfwjs.min.js','https://unpkg.com/nsfwjs@4.2.0/dist/browser/nsfwjs.min.js']);
+  if(!window.nsfwjs)throw new Error('the filter script did not start');
+ }catch(e){throw new Error('scripts: '+(FLOG.join(', ')||e.message))}
+ let le;
+ for(const a of [[],['MobileNetV2']]){try{NSFW=await window.nsfwjs.load(...a);return NSFW}catch(e){le=e;FLOG.push('model '+(a[0]||'default')+': '+((e&&e.message)||e))}}
+ throw new Error(FLOG.join('; ')||(le&&le.message)||'model failed to load')}
 async function prepImage(file){
  if(!/^image\/(jpeg|png|webp|gif)$/.test(file.type))throw new Error('Use a JPG, PNG, WebP or GIF image.');
  if(file.size>10*1048576)throw new Error('That image is over 10 MB.');
@@ -214,7 +222,7 @@ async function prepImage(file){
    if(out.length<=600000)break;sc*=.75}
   if(out.length>600000)throw new Error('That image is too big to send.');
   $('#cst').textContent='Checking image… (the first time loads the filter, a few MB)';
-  let model;try{model=await getFilter()}catch(e){throw new Error('Couldn’t load the image filter, so the image can’t be sent. Check your connection and try again.')}
+  let model;try{model=await getFilter()}catch(e){console.error('image filter',e);throw new Error('Couldn’t load the image filter ('+(e.message||'unknown')+'), so the image can’t be sent.')}
   const pr=await model.classify(c),g=k=>(pr.find(z=>z.className===k)||{}).probability||0;
   if(g('Porn')>.35||g('Hentai')>.5||g('Sexy')>.8)throw new Error('That image was blocked by the filter.');
   return out}
