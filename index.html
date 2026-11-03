@@ -2742,7 +2742,8 @@ async function cmRpc(fn,args){if(!SB_URL)throw new Error('Checksmail needs the o
  const j=await r.json().catch(()=>({}));
  if(r.status===404)throw new Error('Checksmail is not set up on the server yet. Run mail_setup.sql once in Supabase (SQL Editor).');
  if(!r.ok)throw new Error(j.message||'Server error.');return j}
-function cmBadge(){const e=document.getElementById('cmBdg');if(!e)return;const n=CM_LIST.filter(x=>x.id>cmSeen()).length;e.style.display=n?'':'none';e.textContent=n?(n>9?'9+':String(n)):''}
+const cmSeenIds=()=>{try{return JSON.parse(localStorage.getItem('checks-mail-seen-ids'))||[]}catch(e){return[]}};
+function cmBadge(){const e=document.getElementById('cmBdg');if(!e)return;const sn=cmSeenIds(),hw=cmSeen(),n=CM_LIST.filter(x=>x.id>hw&&!sn.includes(x.id)).length;e.style.display=n?'':'none';e.textContent=n?(n>9?'9+':String(n)):''}
 async function cmRefresh(){try{const j=await cmRpc('checks_mail_list',{p_n:30});CM_LIST=Array.isArray(j)?j:[];cmBadge();return''}catch(e){return e.message||'Could not load.'}}
 async function cmInbox(){if(document.getElementById('cmI'))return;const m=document.createElement('div');m.className='modal';m.id='cmI';
  m.innerHTML='<div class="card acc" role="dialog" aria-modal="true" aria-labelledby="acT">'+acHead(IC_MAIL,'Checksmail','Messages from the Checks team.')
@@ -2759,7 +2760,7 @@ async function cmInbox(){if(document.getElementById('cmI'))return;const m=docume
 async function cmSend(rest,say){if(!hubIsOwner())return say('Owner only.');const t=rest.join(' ').trim();if(!t)return say('Usage: mailall TEXT');if(t.length>500)return say('Keep it under 500 characters.');
  const k=cdKey();if(!k)return say('Type: codekey YOUR-OWNER-CODE (once per device), then try again.');
  try{const j=await cmRpc('checks_mail_send',{p_key:k,p_body:t});if(j&&j.e)return say(j.e);say('Checksmail sent to everyone.');cmRefresh()}catch(e){say(e.message)}}
-document.getElementById('cmb').onclick=()=>{window.open(CHECKSMAIL_URL,'_blank','noopener')};setTimeout(cmRefresh,2500);setInterval(()=>{if(!document.hidden)cmRefresh()},120000);
+document.getElementById('cmb').onclick=()=>{window.open(CHECKSMAIL_URL,'_blank','noopener')};window.addEventListener('storage',e=>{if(e.key==='checks-mail-seen-ids')cmBadge()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)cmBadge()});setTimeout(cmRefresh,2500);setInterval(()=>{if(!document.hidden)cmRefresh()},120000);
 
 
 /* ===== side menu (daily puzzle) ===== */
