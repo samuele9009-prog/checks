@@ -206,7 +206,9 @@ async function getFilter(){if(NSFW)return NSFW;FLOG.length=0;
   if(!window.nsfwjs)throw new Error('the filter script did not start');
  }catch(e){throw new Error('scripts: '+(FLOG.join(', ')||e.message))}
  let le;
- for(const a of [[],['MobileNetV2']]){try{NSFW=await window.nsfwjs.load(...a);return NSFW}catch(e){le=e;FLOG.push('model '+(a[0]||'default')+': '+((e&&e.message)||e))}}
+ const MU=['https://cdn.jsdelivr.net/gh/infinitered/nsfwjs@master/models/mobilenet_v2/model.json','https://cdn.jsdelivr.net/npm/nsfwjs@4.2.0/models/mobilenet_v2/model.json'];
+ for(const u of MU){try{NSFW=await window.nsfwjs.load(u,{size:224,type:'graph'});return NSFW}catch(e){le=e;FLOG.push('model from '+new URL(u).pathname.split('/')[1]+' failed: '+String((e&&e.message)||e).slice(0,70))}}
+ try{NSFW=await window.nsfwjs.load();return NSFW}catch(e){le=e;FLOG.push('built-in model failed')}
  throw new Error(FLOG.join('; ')||(le&&le.message)||'model failed to load')}
 async function prepImage(file){
  if(!/^image\/(jpeg|png|webp|gif)$/.test(file.type))throw new Error('Use a JPG, PNG, WebP or GIF image.');
